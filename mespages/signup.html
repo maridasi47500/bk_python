@@ -1,0 +1,60 @@
+<main>
+    <div class="mydiv">
+        <div class="tabs">
+
+          <div class="selected">S'inscrire
+          </div>
+        <a href="/signin">Se connecter
+        </a>            
+        </div>
+            
+                <div class="fields">
+                    
+<form action="/signup" method="post" class="login-form"  id="myform">
+  <input type="text" name="prenom" id="prenom" autocomplete="none" required />
+  <label for="prenom">Prénom</label>
+
+  <input type="text" name="email" id="email" autocomplete="none" required />
+  <label for="email">Email</label>
+  <button class="accordion">Information optionnelle</button>
+<div class="panel">
+    <p>
+  <label for="dateofbirth">Date de naissance</label>
+    </p>
+    <table>
+        <tr>
+        
+       <td>
+        <input type="text" name="yy" id="yy" autocomplete="none" required />
+          <label for="yy">Année</label>
+          <p>AAAA</p>
+            </td>
+              <td>
+        <input type="text" name="mm" id="mm" autocomplete="none" required />
+          <label for="mm">Mois</label>
+          <p>MM</p>
+            </td>
+             <td>
+        <input type="text" name="dd" id="dd" autocomplete="none" required />
+          <label for="dd">Jour</label>
+          <p>DD</p>
+            </td>
+        </tr>
+    </table>
+        
+</div>
+  <div class="autreschamps">
+<input type="checkbox" name="offres" id="offres" autocomplete="none" required />
+<label for="offres">
+Je souhaite recevoir des offres spéciales et d'autres informations de Burger King par e-mail
+</label>
+<input type="checkbox" name="confidentialite" id="confidentialite" autocomplete="none" required />
+
+<label for="confidentialite">
+J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation
+</label>
+  </div>
+<a href="" class="mybtn" onclick="myform.submit();return false;">Créer un compte</a>
+</form>        </div>
+    </div>
+</main>

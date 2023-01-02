@@ -1,0 +1,19 @@
+<div ng-if="featured.length === 0">
+<h2>Sorry No Items Found</h2>
+
+<p>There are no items available at this time. Please check back later.</p>
+
+Back To Menu
+</div>
+<div ng-if="featured.length > 0">
+    <div class="list card">
+
+  <div ng-repeat="item in featured" class="item item-avatar">
+    <img src="{{item.pic}}"/>
+    <h2>{{item.name}}</h2>
+    <p>{{item.price}}</p>
+  </div>
+
+
+</div>
+</div>

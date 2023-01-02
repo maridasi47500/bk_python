@@ -1,0 +1,17 @@
+<h2 ng-if="!favorites_bk_store || !favorites_bk_store.length || favorites_bk_store.length === 0">No Favorites Yet</h2>
+
+<p ng-if="!favorites_bk_store || !favorites_bk_store.length || favorites_bk_store.length === 0">Tap the heart on a store to save it as a favorite.</p>
+
+<div ng-if="favorites_bk_store && favorites_bk_store.length && favorites_bk_store.length > 0" class="list card">
+
+  <ion-item ng-repeat="item in favorites_bk_store" class="item item-avatar">
+      
+      <h2>
+  {{item.address}}</h2>
+  <ion-icon item-right ng-if="!user.favorite_bk.includes(item.id)" ng-click="addfavbk(item)"  class="ion ion-ios-heart-outline"></ion-icon>
+    <ion-icon item-right ng-if="user.favorite_bk.includes(item.id)" ng-click="removefavbk(item)" class="ion ion-heart-outline"></ion-icon>
+
+  </ion-item>
+
+
+</div>

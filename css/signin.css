@@ -1,0 +1,151 @@
+a, a:visited, a:hover, a:link, a:active {
+    text-decoration:none;
+    color:black;
+}
+
+form input,
+label {
+  transition: all 500ms;
+  touch-action: manipulation;
+}
+
+form input {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  height: 1.5em;
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+form label {
+  display: block;
+  transform-origin: left bottom;
+  transform: translate(1.5em, -2em);
+}
+
+form input:focus {
+  border: none;
+  outline-width: 0;
+  border-bottom: 1px solid #5fa8d3;
+}
+
+form input:focus+label {
+  transform: translate(0, -3.4em);
+}
+
+form input[filled="true"]+label {
+  transform: translate(0, -3.4em);
+}
+.fields, .tabs {
+    width: 300px; /* Can be in percentage also. */
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+}
+.login-form {
+    width:100%;
+}
+.tabs > a {
+    text-decoration:none;
+}
+.tabs {
+    display:inline-block;
+}
+
+.mydiv {
+    text-align:center;
+}
+form label, form input {
+    float:left;
+}
+.tabs > * {
+    width:50%;
+        float:left;
+            text-align:center;
+}
+.tabs .selected {
+    border-bottom: red 1px solid;
+}
+.login-form .mybtn {
+    background:red;
+        color:white;
+        font-weight:900;
+            font-size:20px;
+            width:100%;
+            padding-top:10px;
+            padding-bottom:10px;
+            border-radius:500px;
+            display:inline-block;
+            text-align: center;
+            text-decoration:none;
+}
+.accordion {
+  background-color: #fff;
+  color: #444;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  /*padding: 0 18px;*/
+  background-color: white;
+  display: none;
+  overflow: hidden;
+}
+td input {
+	/* height: 50%; */
+	height: 20px;
+	padding-top: 10px;
+}
+.panel table {
+    float:left;
+}
+td p {
+	text-align: left;
+	float: left;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+.accordion:after {
+  content: '\25BC'; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: #777;
+  
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\25B2"; /* Unicode character for "minus" sign (-) */
+}
+.autreschamps {
+    text-align:left;
+}
+.autreschamps > input {
+    width:revert;
+}
+.autreschamps label {
+     transition: revert;
+  touch-action: revert;
+transform-origin: left bottom;
+  transform: translate(1.5em, -2em);
+}
+.autreschamps input:focus+label {
+ transform-origin: left bottom;
+  transform: translate(1.5em, -2em);
+}
+
+.autreschamps input[filled="true"]+label {
+  transform-origin: left bottom;
+  transform: translate(1.5em, -2em);
+}

@@ -1,0 +1,39 @@
+<ion-modal-view  class="mymodalviewdelivery" style="overflow:scroll;">
+ 
+    <ion-view class="myviewdelivery">
+     <ion-content class="mycontent mycontentdelivery">  
+      <button class = "button icon icon-right ion-ios-close-outline btnclosedelivery"
+         ng-click = "closedeliverymodal()"></button>
+         <label class="labeldelivery">Enter your address</label>
+    <div class="autocomplete">
+	
+    <input type="text"
+           id="user_address_delivery"
+		ng-model="user.address_delivery"
+		onfocus="addFocusDelivery()"
+		ng-change="searchDelivery()"
+		onblur="removeFocusDelivery()"
+		debounce=500 />
+	
+	<ion-list style="display:none;" ng-mousedown="addNoteDelivery($event)" id="mylist_pickup_delivery">
+		<ion-item ng-repeat="res in myaddresses_delivery" data-id="{{res.id}}" >
+                    <div class='myaddress_user'>{{res.address}}</div>
+		</ion-item>
+	</ion-list>
+</div>
+    <p>Unit can be entered during checkout</p>
+    <p>Delivery Terms and Fees Apply. Click here for Details.</p>
+
+<button  disabled="true" ng-if="(user.pickup || user.drivethru || user.dinein) === false && user.address_delivery_id === 0" class="button share-loc deliver-here disabledbtn "  id="get-address-disabled" color="mycolor1" >Deliver here
+</button>
+    <button ng-if="(user.pickup || user.drivethru || user.dinein) === false && user.address_delivery_id > 0" class="button share-loc deliver-here" ng-click="selectDelivery()" id="get-address" color="mycolor1" >Deliver here
+</button>
+ <button ng-if="user.pickup || user.drivethru || user.dinein" class="button share-loc deliver-here" id="get-addressok" color="mycolor1" > <ion-spinner icon="dots" class="spinner-energized"></ion-spinner>
+
+</button>
+    <p ng-if="user.pickup || user.drivethru || user.dinein">We are checking which restaurant will service your address. This may take a few moments...</p>
+    </ion-content>
+       </ion-view>
+
+
+</ion-modal-view>

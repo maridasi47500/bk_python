@@ -1,0 +1,20 @@
+<h2 ng-if="!nearby || !nearby.length || nearby.length === 0">Find a Location Nearby</h2>
+
+<p ng-if="!nearby || !nearby.length || nearby.length === 0">Let us know where you are so we can recommend nearby locations.</p>
+        <button ng-if="!nearby || !nearby.length || nearby.length === 0" class="button share-loc" onclick="getlocation()" id="get-location" color="mycolor1" >Share Location
+</button>
+
+<div ng-if="nearby.length && nearby.length > 0" class="list card">
+
+  <ion-item ng-repeat="item in nearby" class="item item-avatar">
+      
+      <h2>
+  {{item.address}}</h2>
+  <ion-icon item-right ng-if="user.signedin && !user.favorite_bk.includes(item.id)" ng-click="addfavbk(item)"  class="ion ion-ios-heart-outline"></ion-icon>
+  <ion-icon item-right ng-if="!user.signedin && !user.favorite_bk.includes(item.id)" ng-click="onsignin()"  class="ion ion-ios-heart-outline"></ion-icon>
+    <ion-icon item-right ng-if="user.signedin && user.favorite_bk.includes(item.id)" ng-click="removefavbk(item)" class="ion ion-heart-outline"></ion-icon>
+
+  </ion-item>
+
+
+</div>

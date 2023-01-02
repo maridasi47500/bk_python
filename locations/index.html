@@ -1,0 +1,28 @@
+     <ion-header-bar style="" align-title="center" class="bar-positive macouleur macouleurdefond mylocationbar">
+    <div class="locations">
+        <span>Locations</span>
+        <button ng-if="maplist === 'list'" class="button map-list" color="mycolor1" ng-click="showmap()">Map
+</button>
+        <button ng-if="maplist ==='map'" class="button map-list" color="mycolor1" ng-click="showlist()">List
+</button>
+    </div>
+</ion-header-bar>
+       <div class=" myfieldslocation mytoggletab ">
+             <div class="active pickup">Pick-up</div>
+             
+             <div class="delivery" ng-click="showdeliverymodal()">Delivery</div>
+    </div>         <div class="myfieldslocation myaddressfield_pickup ">
+<div class="autocomplete">
+        <label>Your address</label>
+    <input type="text"
+           id="user_address"
+		ng-model="user.address"
+		onfocus="addFocus()"
+		ng-change="search()"
+		onblur=""
+		debounce=500 />	<ion-list style="display:none;" ng-mousedown="addNote($event)" id="mylist_pickup">
+		<ion-item ng-repeat="res in myaddresses" data-id="{{res.id}}">
+                    <div class='myaddress_user'>{{res.address}}</div>
+		</ion-item>	</ion-list></div>    <div class="contenu_vue_emplacement" ng-if="maplist === 'list'" ng-include="'locations/list.html'"></div>
+    <div class="contenu_vue_emplacement" ng-if="maplist === 'map'" ng-include="'locations/map.html'" onload="loadmap();"></div>    </div>
+
