@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
 from os.path import exists
 from urlparse import urlparse, parse_qs
 import os
@@ -44,6 +46,10 @@ menuburger=[
 # SQL command to create a table in the database
 f=codecs.open(path1+"/mespages/dump.sql")
 sql_command = f.read()
+global myroutes
+myroutes = {
+'/confirm-otp': '/signup/confirm-otp'
+}
 global signmein
 def myparams(x):
     myvar={
@@ -57,7 +63,9 @@ def signmein(query_components):
     try:
         print("sign me in",query_components["email"])
         if query_components.get("email"):
+            print("data_string = query_components[\"email\"][0]") 
             data_string = query_components["email"][0] 
+            print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
             crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
             mycontent=""
             # store all the fetched data in the ans variable
@@ -68,28 +76,39 @@ def signmein(query_components):
             else:
                 crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
                 connection.commit()
-                #import smtplib, ssl
-                #from email.message import EmailMessage
 
-                #msg = EmailMessage()
-
-                #import random as rand
+                import random as rand
                 bkcode=rand.randint(1,999999)
-                crsr.execute("UPDATE users SET code = '" + bkcode + "' WHERE email = '"+data_string+"'")
+                crsr.execute("UPDATE users SET code = '" + str(bkcode) + "' WHERE email = '"+data_string+"'")
                 connection.commit()
-                #msg.set_content(bkcode)
-                #msg["Subject"] = "code burger king"
-                #msg["From"] = "cleo.ordioni@gmail.com"
-                #msg["To"] = "mary.goudon@gmail.com"
+                import smtplib
 
-                #context=ssl.create_default_context()
+                # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
+                host_smtp = "smtp.gmail.com"
+                port_smtp = 587
+                email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
+                mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
 
-                #with smtplib.SMTP("smtp.gmail.com", port=587) as smtp:
-                #    smtp.starttls(context=context)
-                #    smtp.login(msg["From"], "password")
-                #    smtp.send_message(msg)
+                # Configuration du mail
+                prenom = "cleo jeanne"
+                formule_p = "code de burger king"
+                email_destinataire = "cleo.ordioni@gmail.com"
+                mail_content = str(bkcode)+" est votre code de connexion de burger king"
+                msg = MIMEMultipart()
+                msg['From'] = email_smtp
+                msg['To'] = email_destinataire
+                msg['Subject'] = formule_p
+                msg.attach(MIMEText(mail_content))
+                # Création de l'objet mail
+                mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
+                mail.ehlo() # protocole pour SMTP étendu
+                mail.starttls() # email crypté
+                mail.login(email_smtp, mdp_smtp)
+                mail.sendmail(email_smtp, email_destinataire, msg.as_string())
+                mail.close()
                 Program.set_url("/confirm-otp")
                 confirmotp(data_string)
+                Program.set_redirect("/confirm-otp")
     except Exception as e:
         print("erreur sign me in",e)
 global insertburger
@@ -237,6 +256,8 @@ class directory(object):
         self.title = title
         self.js=""
         self.url=""
+        self.redirect=False
+        self.email=""
         self.css=""
         h=header
         i=footer
@@ -247,6 +268,10 @@ class directory(object):
         return self.email
     def set_email(self,email):
         self.email=email
+    def get_redirect(self):
+        return self.redirect
+    def set_redirect(self,redirect):
+        self.redirect=redirect
     def get_url(self):
         return self.url
     def set_url(self,url):
@@ -587,6 +612,7 @@ class S(BaseHTTPRequestHandler):
         pathd=path1+urlpath.split("?")[0].replace(".html","")
         pathb=path1+urlpath.split("?")[0]+"index.html"
         pathc=path1+urlpath.split("?")[0]+"/index.html"
+        pathe=path1+str(myroutes.get(urlpath.split("?")[0]))+".html"
         copy()
         if exists(patha):
             f=codecs.open(patha,'r')
@@ -600,6 +626,9 @@ class S(BaseHTTPRequestHandler):
         elif exists(pathd):
             f=codecs.open(pathd,'r')
             mytype=pathd.split(".")[-1]
+        elif exists(pathe):
+            f=codecs.open(pathe,'r')
+            mytype=pathe.split(".")[-1]
         switcher={
         'html':'text/html',
         'css':'text/css',
@@ -634,6 +663,7 @@ class S(BaseHTTPRequestHandler):
         pathb=path1+urlpath.split("?")[0]+"index.html"
         pathc=path1+urlpath.split("?")[0]+"/index.html"
         pathd=path1+urlpath.split("?")[0].replace(".html","")
+        pathe=path1+str(myroutes.get(urlpath.split("?")[0]))+".html"
 
         copy()
         if exists(patha):
@@ -648,16 +678,27 @@ class S(BaseHTTPRequestHandler):
         elif exists(pathd):
             f=codecs.open(pathd,'r')
             mytype=pathd.split(".")[-1]
+        elif exists(pathe):
+            f=codecs.open(pathe,'r')
+            mytype=pathe.split(".")[-1]
         switcher={
         'html':'text/html',
         'css':'text/css',
         'js':'text/javascript'
         }
-        print(mytype)
-        self._set_headers(switcher.get(mytype))    
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(f.read())
+        
+        if Program.get_redirect():
+            Program.set_redirect(False)
+            self.send_response(301)
+            self.send_header('Location',Program.get_url())
+            self.end_headers()
+        else:
+            print(mytype)
+            self._set_headers(switcher.get(mytype))    
+            self.send_response(200)
+            self.end_headers()
+        
+            self.wfile.write(f.read())
 
         return
 

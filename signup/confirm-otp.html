@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="UTF-8"><title>Burger King</title><link rel="stylesheet" href="/css/css.css"/><link rel="stylesheet" href="/css/signin.css"/></head><body><header>
+    <nav>
+        <ul>
+            <li><a href="/">&#8592</a></li>
+        </ul>
+    </nav>
+</header><main>
+    <div class="mydiv">
+        <div class="tabs">
+                      <a href="/signup">S'inscrire
+          </a>
+        <div class="selected">Se connecter
+        </div>
+
+        </div>
+            
+                <div class="fields">
+                    <b>Vérifier avec le code</b>
+
+                    <p>Nous avons envoyé un email à cleo@gmail.com avec les instructions de connexion</p>                 
+<form action="/confirm-otp" method="post" class="login-form" id="myform">
+
+  <input type="text" name="code" id="code" autocomplete="none" onkeyup="validatecode();return false;" required />
+  <label for="code">Code de vérification</label>
+</form>        </div>
+    </div>
+</main><script type="text/javascript" src="/js/signin.js"></script></body></html>
