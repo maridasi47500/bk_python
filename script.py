@@ -1,34 +1,211 @@
 # -*- coding: utf-8 -*-
+import json
+import binascii
+import random as rand
+import smtplib
+import datetime
+import sys
+import requests
+global session
+import sqlite3
+global copy
+global render_pages
+global connection
+global get_file
+global switcher
+
+switcher={
+'html':'text/html',
+'css':'text/css',
+'json':'application/json',
+'js':'text/javascript',
+'png':"image/png",
+'ico':'image/vnd.microsoft.icon'
+}
+
+
+connection = sqlite3.connect("data_base_burger.db")
+ 
+# cursor
+global crsr
+crsr = connection.cursor()
+
+myusers=crsr.execute("PRAGMA table_info([users])")
+table_users = myusers.fetchall()
+global force_to_unicode
+global decode_any_string
+def decode_any_string(text):
+    try:
+        print(text)
+        return force_to_unicode(text)
+    except UnicodeEncodeError as e:
+        print(type(e))
+        print('gerer cette erreur')
+        return text.encode('utf-8')
+    except UnicodeDecodeError as e:
+        print(type(e))
+        print('gerer cette erreur')
+        return text
+
+def force_to_unicode(text):
+    "If text is unicode, it is returned as is. If it's str, convert it to Unicode using UTF-8 encoding"
+    return text if isinstance(text, unicode) else text.decode('utf-8')
+session = requests.Session()
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from os.path import exists
 from urlparse import urlparse, parse_qs
 import os
+global path1
+path1=os.getcwd()
+sys.path.append(os.path.abspath(os.getcwd()+"/pythonfile"))
+from myfunc import *
+from pagehtml import *
 import codecs
 import re
-import sqlite3
-global path1
+
+
 global Program
+global get_file
+global get_file_dir
+def get_file(file):
+    print("get file:")
+    print(Program.get_filename_path(file))
+    return open(Program.get_filename_path(file),'r')
+def get_file_dir(file,dir):
+    print("get file:"+dir)
+    Program.set_path(dir)
+    return open(Program.get_path()+"/"+file,'r')
+
 global mycard
 global myparams
-path1 = "/home/mary/ionicsite"
+
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 
 import random
-global copy
 
-global connection
 # connecting to the database
-connection = sqlite3.connect("data_base_1burker.db")
- 
-# cursor
-global crsr
-crsr = connection.cursor()
+
+
 global __words__
 __words__ = ""
- 
+def render_figure(pathname):
+    try:
+        global path1
+        path1=os.getcwd()
+        Program.set_filename(pathname)
+
+        print("render figure")
+        print('ok')
+        p1=Program.get_path
+        p2=Program.get_filename
+        print("okdac")
+        print(p1())
+        print("okokdac")
+        print(p2())
+        print(p1()+p2())
+        print('dac')
+        title=Program.get_title
+        try:
+            print(session.current_user)
+            Program.set_path("./mespages")
+            h=get_file("mynavsignedin.html")
+            Program.set_menu(h.read())
+        except:
+            h=open("./mespages/mynav.html",'r')
+            Program.set_menu(h.read())
+        header=Program.get_header
+        content=Program.get_content
+        footer=Program.get_footer
+        html="<!doctype html>"
+        html+="<html>"
+        html+="<head>"
+        html+="<meta charset=\"UTF-8\">"
+        html+="<title>"
+        print("title")
+        html+=title()
+        html+="</title>"
+        html+="<link rel=\"icon\" href=\"/images/logo.png\">"
+        html+="<link rel=\"stylesheet\" href=\"/css/css.css\"/>"
+        html+=Program.get_css()
+        html+="</head>"
+        html+="<body>"
+        print("header")
+        html+=decode_any_string(header())
+        html+="<main>"
+        print("content")
+        try:
+            html+=decode_any_string(myparams(content()))
+        except Exception as e: 
+            html+=myparams(content().encode("utf-8"))
+        print("footer")
+        print("type footer")
+        
+        print(type(force_to_unicode(footer())))
+        
+        try:
+            html+=decode_any_string(footer())
+        except UnicodeEncodeError as e:
+            print(type(e))
+            print('gerer cette erreur')
+            html+=footer().encode('utf-8')
+        except UnicodeDecodeError as e:
+            print(type(e))
+            print('gerer cette erreur')
+            html+=footer()
+        print("footer ajouté")    
+        html+="</main>"  
+        print("type menu")
+        print(type(Program.get_menu()))
+        try:
+            html+=force_to_unicode(Program.get_menu())
+        except UnicodeEncodeError as e:
+            print(type(e))
+            print('gerer cette erreur')
+            html+=Program.get_menu().encode('utf-8')
+        except UnicodeDecodeError as e:
+            print(type(e))
+            print('gerer cette erreur')
+            html+=Program.get_menu()
+        print("meu ajouté") 
+        html+="<script src=\"/js/jquery.js\"></script>"
+        html+="<script src=\"/js/js.js\"></script>"
+        html+=Program.get_js()
+        html+="</body>"
+        html+="</html>"
+        #print(html)
+        print("fin balise")
+        result = re.search('<li class=\"mycat\">(.*?)</li>', html)
+        #print(result.group(1))
+        __words__ = result.group(1) if result is not None else ''
+        print("===words")
+        #print(__words__)
+        mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
+        print(mychemin)
+        #try:
+        #    s1=(html)
+        #except Exception as e:
+        #    print(e)
+        #    s1=(html)
+        #    print(type(s1))
+        #s1=(html).encode("ascii", "ignore")
+        print(type(html))
+        if isinstance(html,str):
+            s1=html
+        else:    
+            s1=html.encode('utf-8')
+        return s1
+        #f=codecs.open(mychemin,'w')
+        
+        #print(type(s1))
+        #f.write(s1)
+        #f.close()
+        #if (__words__).rstrip() == "Full Menu":
+        #print(Program.get_path())
+    except Exception as e:
+        print(e,'erreru')
 menuburger=[
 {'url':'fullmenu', 'title': "Full Menu",'myurl':"pages/menu/fullmenu.html"},
 {'url':'recents', 'title': "Recents",'myurl':"pages/menu/recents.html"},
@@ -47,18 +224,276 @@ menuburger=[
 f=codecs.open(path1+"/mespages/dump.sql")
 sql_command = f.read()
 global myroutes
-myroutes = {
-'/confirm-otp': '/signup/confirm-otp'
-}
-global signmein
+
+
+
 def myparams(x):
     myvar={
-    'monemailici': Program.get_email()
+    'monemailici': Program.get_email(),
+    'monuseridici': Program.get_userid()
     }
     for y in myvar:
         x=x.replace(y,myvar[y])
     return x
+global accountinfo
+def accountinfo(query_components):
+    try:
+        
+        myaccountinfo()
+    except Exception as e:
+        print("erreur account info",e)
+global savemyinfo
+def savemyinfo(query_components):
+    try:
+        print("save my info",query_components["user_number"])
+        if query_components.get("user_number"):
+            try:
+                id=query_components.get("user_number")[0]
+                try:
+                    print("date de naisance===")
+                    annee=int(query_components.get("yy")[0])
+                    print(annee)
+                    mois=int(query_components.get("mm")[0])
+                    print(mois)
+                    jour=int(query_components.get("dd")[0])
+                    print(jour)
+                    w=datetime.datetime(annee,mois,jour)
+                    print(w) 
+                    date=str(w)
+                except:
+                    date=""
+                print(date)
+                print(query_components)
+                try:
+                    tel=query_components.get("tel")[0]
+                except:
+                    tel=""
+                print(tel)
+                try:
+                    zip=query_components.get("zip")[0]
+                except:
+                    zip=""
+                try:
+                    prenom=query_components.get("prenom")[0]
+                except:
+                    prenom=""
+                offres="0"
+                print(offres)
+                try:
+                    offres=query_components.get("offres")[0]
+                except:
+                    print("erreur recevoir offres")
+                crsr.execute("update users set dateofbirth = '"+date+"', prenom = '"+prenom+"',offres='"+offres+"', zip = '"+zip+"', tel = '"+tel+"' where user_number = " + str(id) + "")
+                connection.commit()
+                crsr.execute("select * from users where user_number = " + str(id) + "")
+                ant=crsr.fetchall()
+                session.current_user=ant[0]
+                print("hello")
+                Program.set_json({"sauve":"1"})
+            except Exception as e:
+                print("erreur save data",e)
+                Program.set_json({"sauve":"0"})
+    except Exception as e:
+        print("erreur save data",e)
+global setcookie
+def setcookie(query_components):
+    try:
+        print("set cookie",query_components["user"])
+        if query_components.get("user"):
+            token=query_components.get("user")[0]
 
+            crsr.execute("select * from users where user_number = '" + str(token) + "'")
+            connection.commit()
+            user=crsr.fetchall()[0]
+            
+            Program.set_json({})
+
+    except:
+        print("erreur set cookie")
+
+global confirmjwt
+def confirmjwt(query_components):
+    try:
+        print("sign sign up",query_components["token"])
+        if query_components.get("token"):
+            token=query_components.get("token")[0]
+
+            crsr.execute("select * from users where token = '" + str(token) + "'")
+            connection.commit()
+            user=crsr.fetchall()[0]
+            prenom = user[1]
+            email = user[2]
+            offres = user[5]
+            #user = crsr.fetchall()
+            print("envoyer le code bk")
+            bkcode=user[3]
+
+
+            # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
+            host_smtp = "smtp.gmail.com"
+            port_smtp = 587
+            email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
+            mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
+
+            # Configuration du mail
+            Program.set_path("./mespages")
+            m=get_file("inscription.txt")
+            n=m.read()
+            print("mail")
+            mail_content = n
+            print("mail")
+            mail_content+="\n http://localhost:8000/confirm-jwt?token="+str()
+            print("dest")
+            email_destinataire = "cleo.ordioni@gmail.com"
+            formule_p = "Inscription à Burger King"
+            msg = MIMEMultipart()
+            msg['From'] = email_smtp
+            msg['To'] = email_destinataire
+            msg['Subject'] = formule_p
+            print("message")
+            msg.attach(MIMEText(str(mail_content)))
+            # Création de l'objet mail
+            mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
+            mail.ehlo() # protocole pour SMTP étendu
+            mail.starttls() # email crypté
+            mail.login(email_smtp, mdp_smtp)
+            print("envoyer message")
+            mail.sendmail(email_smtp, email_destinataire, msg.as_string())
+            mail.close()
+            Program.set_path("./")
+            
+            Program.set_url("/")
+            Program.set_js("<script>window.onload=function(){$.ajax({type:\"post\",url:\"/aftersignup\",success:function(){window.userconnecte=true;window.location=\"/\";}});}</script>")
+            return confirmotp(email)
+            
+    except Exception as e:
+        print("erreur confirm jwt",e)
+global signup_user
+def signup_user(query_components):
+    global Program
+    try:
+        print("sign sign up",query_components["email"])
+        if query_components.get("email"):
+            print("data_string = query_components[\"email\"][0]") 
+            data_string = query_components["email"][0] 
+
+            print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
+            mycontent=""
+            # store all the fetched data in the ans variable
+            date=""
+            try:
+                print("date de naisance===")
+                annee=int(query_components.get("yy")[0])
+                print(annee)
+                mois=int(query_components.get("mm")[0])
+                print(mois)
+                jour=int(query_components.get("dd")[0])
+                print(jour)
+                w=datetime.datetime(annee,mois,jour)
+                print(w) 
+                date=str(w)
+            except:
+                print("erreur champ date de naissance")
+            prenom = query_components.get("prenom")[0]
+            email = query_components.get("email")[0]
+            offreparam=query_components.get("offres")
+            offres = offreparam[0] if offreparam == ["1"] else "0"
+            #user = crsr.fetchall()
+            print("envoyer le code bk")
+            bkcode=rand.randint(100000,999999)
+            token=binascii.b2a_hex(os.urandom(159))
+
+            crsr.execute("insert into users (prenom,email,code,token,dateofbirth) values ('" + str(prenom) + "','" + str(email) + "','"+str(bkcode)+"','" + str(token) + "','" + str(date) + "')")
+            connection.commit()
+            crsr.execute("select * from users where email = '"+email+"'")
+            connection.commit()
+            ant=crsr.fetchall()
+            session.current_user = ant[0]
+            urlconfirmjwt="/confirm-jwt?token="+str(token)
+            Program.set_url(urlconfirmjwt)
+            
+            #confirmotp(data_string)
+            print("set redirect ICI")
+            Program.set_redirect("/confirm-jwt?token="+str(token))
+            return Program
+    except Exception as e:
+        print("erreur sign up",e)
+global aftersignup
+def aftersignup(query_components):
+    try:
+        print(query_components)
+        print("validate code",query_components.get("email"))
+        Program.set_js("")
+
+        fff=open(path1+"/mespages/header.html")
+        myheader=fff.read()
+
+        Program.set_header(myheader)
+        
+        Program.set_json({"ok":"1"})
+    except Exception as e:
+        print("erreur after signup",e)
+
+global checkuser
+def checkuser(query_components):
+    try:
+        print(query_components)
+        print("validate code",query_components.get("email"))
+        if query_components.get("email"):
+            email=query_components.get("email")[0]
+            crsr.execute("SELECT * FROM users where email = '"+str(email)+"'")
+            connection.commit()
+            users=crsr.fetchall()
+            mytype="json"
+            if len(users) == 0:
+                Program.set_json({"usernotexist":"1"})
+            else:
+                Program.set_json({"usernotexist":"0"})
+            return Program    
+    except Exception as e:
+        print("erreur validate code",e)
+
+global checkemail
+
+def checkemail(query_components):
+    try:
+        print(query_components)
+        print("validate code",query_components.get("email"))
+        if query_components.get("email"):
+            email=query_components.get("email")[0]
+            crsr.execute("SELECT * FROM users where email = '"+str(email)+"'")
+            connection.commit()
+            users=crsr.fetchall()
+            if len(users) > 0:
+                Program.set_json({"correctemail":"1"})
+                print(Program.get_json())
+            else:
+                Program.set_json({"correctemail":"0"})
+                print(Program.get_json())
+    except Exception as e:
+        print("erreur validate code",e)
+
+global validatecode
+def validatecode(query_components):
+    try:
+        print(query_components)
+        print("validate code",query_components.get("code"))
+        if query_components.get("code"):
+            code=query_components.get("code")[0]
+            userid=query_components.get("userid")[0]
+            crsr.execute("SELECT * FROM users where code = '"+str(code)+"' and user_number = '"+str(userid)+"'")
+            connection.commit()
+            users=crsr.fetchall()
+            if len(users) > 0:
+                session.current_user=users[0]
+                Program.set_json({"id":users[0][0],"correcturl":"1","url": "/store-locator"})
+                print(Program.get_json())
+            else:
+                Program.set_json({"correcturl":"0","url": "/signin/codeincorrect"})
+                print(Program.get_json())
+    except Exception as e:
+        print("erreur validate code",e)
+global signmein
 def signmein(query_components):
     try:
         print("sign me in",query_components["email"])
@@ -76,12 +511,16 @@ def signmein(query_components):
             else:
                 crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
                 connection.commit()
-
-                import random as rand
-                bkcode=rand.randint(1,999999)
+                user = crsr.fetchall()
+                print("envoyer le code bk")
+                print(user[0])
+                print(user[0][0])
+                Program.set_userid(user[0][0])
+                return render_figure("confirm-otp.html")
+                bkcode=rand.randint(100000,999999)
                 crsr.execute("UPDATE users SET code = '" + str(bkcode) + "' WHERE email = '"+data_string+"'")
                 connection.commit()
-                import smtplib
+                
 
                 # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
                 host_smtp = "smtp.gmail.com"
@@ -91,14 +530,33 @@ def signmein(query_components):
 
                 # Configuration du mail
                 prenom = "cleo jeanne"
-                formule_p = "code de burger king"
+                print(prenom)
+                print("prenom")
+                mail_content = force_to_unicode("Prêt pour les hamburgers ? !\nVous trouverez ci-dessous le code de connexion sécurisé que vous avez demandé pour vous connecter à Burger King. Entrez simplement ceci dans l'application et nous vous connecterons immédiatement.\n ") + force_to_unicode(str(bkcode))
+                print("mail_content")
                 email_destinataire = "cleo.ordioni@gmail.com"
-                mail_content = str(bkcode)+" est votre code de connexion de burger king"
+                print(email_destinataire)
+                formule_p = force_to_unicode(str(bkcode))+" est votre code de connexion de burger king"
+                print(formule_p)
                 msg = MIMEMultipart()
+                print("from")
                 msg['From'] = email_smtp
+                print("to")
                 msg['To'] = email_destinataire
+                print("subject")
                 msg['Subject'] = formule_p
-                msg.attach(MIMEText(mail_content))
+                print("formule")
+                try:
+                    msg.attach(MIMEText(mail_content.decode('utf-8')))
+                except UnicodeEncodeError as e:
+                    print(type(e))
+                    print('gerer cette erreur')
+                    msg.attach(MIMEText(mail_content.encode('utf-8')))
+                except UnicodeDecodeError as e:
+                    print(type(e))
+                    print('gerer cette erreur')
+                    msg.attach(MIMEText(mail_content))
+                print("creation mail")
                 # Création de l'objet mail
                 mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
                 mail.ehlo() # protocole pour SMTP étendu
@@ -107,8 +565,10 @@ def signmein(query_components):
                 mail.sendmail(email_smtp, email_destinataire, msg.as_string())
                 mail.close()
                 Program.set_url("/confirm-otp")
-                confirmotp(data_string)
+                print("cnofirm to otp")
+                confirmotp(force_to_unicode(data_string))
                 Program.set_redirect("/confirm-otp")
+                Program.set_json(None)
     except Exception as e:
         print("erreur sign me in",e)
 global insertburger
@@ -134,7 +594,7 @@ def insertburger(query_components):
             print("ok") 
             print("yeah")
             Program.set_content(mycontent)
-            render_figure("index.html")
+            return render_figure("index.html")
         except Exception as e:
             print("erreur",e)
         print("okokokok")
@@ -191,7 +651,7 @@ def displaythisburger(burger,catname,catid):
         text+=mycard(burger[1],str(burger[4])+"€","min "+str(burger[5])+" cal")
         Program.set_path("./burgers")
         Program.set_content(text)
-        render_figure(str(burger[0])+".html")
+        return render_figure(str(burger[0])+".html")
     except Exception as e: 
         print('erreur display burger',e)
 def card(title,description,button):
@@ -233,173 +693,145 @@ def mycard(title,description,content):
         print("erreur card",e)
         return ""
 
-def bootstrapjs():
+def bootstrapjs(params = None):
     h="""  """
     return h
 
-def bootstrapcss():
+def bootstrapcss(params = None):
     h="""  """
     return h
-def header():
-    h=open(path1+"/mespages/header.html","r")
-    return h.read()
-def footer():
-    h=open(path1+"/mespages/footer.html","r")
-    return h.read()    
-def copy():
+    
+def render_pages(params = None):
+    home()
+    menu()
+    signup()
+    signin()
+    erreur404()
+    myaccountinfo()
+def copy(params = None):
+    os.system("cp "+path1+"/mespages/js.js "+path1+"/js")
     os.system("cp "+path1+"/mespages/css/css.css "+path1+"/css/css.css")
     os.system("cp "+path1+"/mespages/css/signin.css "+path1+"/css/signin.css")
+    os.system("cp "+path1+"/mespages/css/*.css "+path1+"/css")
+    os.system("cp "+path1+"/mespages/*.js "+path1+"/js")
     os.system("cp "+path1+"/mespages/userconnecte.js "+path1+"/js")
     os.system("cp "+path1+"/mespages/signin.js "+path1+"/js")
-class directory(object):
-    def __init__(self,title):
-        self.title = title
-        self.js=""
-        self.url=""
-        self.redirect=False
-        self.email=""
-        self.css=""
-        h=header
-        i=footer
-        self.header=h()
-        self.path=""
-        self.footer=i()
-    def get_email(self):
-        return self.email
-    def set_email(self,email):
-        self.email=email
-    def get_redirect(self):
-        return self.redirect
-    def set_redirect(self,redirect):
-        self.redirect=redirect
-    def get_url(self):
-        return self.url
-    def set_url(self,url):
-        self.url=url
-    def get_content(self):
-        return self.content
-    def set_content(self,content):
-        self.content=content
-    def get_header(self):
-        return self.header
-    def set_header(self,myheader):
-        self.header=myheader
-    def get_footer(self):
-        return self.footer
-    def set_footer(self,myfooter):
-        self.footer=myfooter
-    def set_filename(self,name):  
-        self.filename=name
-    def title(self,title):
-        self.title = title
-    def get_title(self):
-        return self.title
-    def get_js(self):
-        return self.js
-    def set_js(self,js):
-        self.js=js
-    def add_js(self,js):
-        self.js+="<script type=\"text/javascript\" src=\""+js+"\"></script>"
-    def add_css(self,css):
-        self.css+="<link rel=\"stylesheet\" href=\""+css+"\"/>"
-    def get_css(self):
-        return self.css
-    def set_css(self,css):
-        self.css=css
-    def get_path(self):
-        return self.path
-    def get_filename(self):
-        return self.filename
-    def set_path(self,mypath):
-        self.path=path1+mypath.replace("./","/")
-    def path(self,path):
-        self.path = path1+path.replace("./","/")
 
-def render_figure(pathname):
-    try:
-        Program.set_filename(pathname)
-
-        print("render figure")
-        print('ok')
-        p1=Program.get_path
-        p2=Program.get_filename
-        print("okdac")
-        print(p1())
-        print("okokdac")
-        print(p2())
-        print(p1()+p2())
-        print('dac')
-        title=Program.get_title
-        header=Program.get_header
-        content=Program.get_content
-        footer=Program.get_footer
-        html="<!doctype html>"
-        html+="<html>"
-        html+="<head>"
-        html+="<meta charset=\"UTF-8\">"
-        html+="<title>"
-        print("title")
-        html+=title()
-        html+="</title>"
-        html+="<link rel=\"stylesheet\" href=\"/css/css.css\"/>"
-        html+=Program.get_css()
-        html+="</head>"
-        html+="<body>"
-        print("header")
-        html+=header()
-        print("content")
-        html+=myparams(content())
-        print("footer")
-        print("type footer")
-        print(type(footer()))
-        html+=unicode(footer(),'utf-8')
-        html+=Program.get_js()
-        html+="</body>"
-        html+="</html>"
-        #print(html)
-
-        result = re.search('<li class=\"mycat\">(.*?)</li>', html)
-        #print(result.group(1))
-        __words__ = result.group(1) if result is not None else ''
-        print("===words")
-        #print(__words__)
-        mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
-        print(mychemin)
-        #try:
-        #    s1=(html)
-        #except Exception as e:
-        #    print(e)
-        #    s1=(html)
-        #    print(type(s1))
-        #s1=(html).encode("ascii", "ignore")
-        print(type(html))
-        if isinstance(html,str):
-            s1=html
-        else:    
-            s1=html.encode('utf-8')
-        
-        f=codecs.open(mychemin,'w')
-        print(type(s1))
-        f.write(s1)
-        f.close()
-        #if (__words__).rstrip() == "Full Menu":
-        print(Program.get_path())
-        if Program.get_path()+"/"+Program.get_filename() == path1+"/code/index.html":
-            if len(argv) == 2:
-                run(port=int(argv[1]))
-            else:
-                run()    
-    except Exception as e:
-        print(e,'erreru')
 Program=directory("Burger King")
 #Program.path("./")
-class Page:
-    global home
-    def home():
+class Header:
+    global set_my_header
+    global set_my_footer
+
+    def set_my_header(headername):
         try:
-            print("home")
-            j=codecs.open(path1+"/mespages/index.html")
+            Program.set_path("./mespages")
+            fff=get_file(headername+".html")
+            myheader=fff.read()
+            Program.set_header(myheader)
+        except IOError:
+            Program.set_header("")
+            
+    def set_my_footer(headername):
+        try:
+            Program.set_path("./mespages")
+            fff=get_file(headername+".html")
+            myfooter=fff.read()
+            Program.set_footer(myfooter)
+        except IOError:
+            Program.set_footer("")
+
+class Page:
+    global erreur404
+    def erreur404(params = None):
+        try:
+            print("erreur 202")
+            Program.set_path("./mespages")
+            j=get_file("404.html")
+            print("my file")
             text=j.read()
+            Program.set_path("./css")
+            Program.add_css("404.css")
+
+            Program.edit_title("Page non trouvée")
+            Program.set_content(text)
+            print("my path")
+            set_my_header("")
+            print("my footer")
+            set_my_footer("")
+            print("my path1")
+            Program.set_path("./erreur")
+            print("my path")
+            return render_figure("404.html")
+
+        except Exception as e:
+            print("errur my 404",e)
+
+    global myaccountinfo
+    def myaccountinfo(params = None):
+        try:
+            Program.set_path("./accountinfo")
+            j=codecs.open(Program.get_filename_path("accountinfo.html"))
+            text=j.read()
+            Program.set_css("")
+            Program.set_path("./css")    
+            Program.add_css("account.css")
+            Program.add_css("signin.css")
+            Program.set_path("./js")
+            Program.add_js("saveinfo.js")
+            Program.edit_title("Account Details")
+            try:
+                if session.current_user is not None:
+                    for a in range(len(session.current_user)):
+                        try:
+                            if session.current_user[a] is not None:
+                                idstring="id=\""+force_to_unicode(table_users[a][1])+"\""
+                                print(idstring)
+                                idvaluestring=(idstring+" value=\""+str(session.current_user[a])+"\" ")
+                                if force_to_unicode(table_users[a][1]) == u'offres':
+                                    text=text.replace("value=\"1\"","value=\"1\" checked=\"checked\"")
+                                text=force_to_unicode(text).replace(idstring,idvaluestring)
+                                
+                                if force_to_unicode(table_users[a][1]) == u'dateofbirth':
+                                    date=session.current_user[a].split(" ")[0]
+                                    print("date : "+date)
+                                    idstring="id=\""+"yy"+"\""
+                                    idvaluestring=(idstring+" value=\""+date.split("-")[0]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
+                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
+                                    idstring="id=\""+"mm"+"\""
+                                    idvaluestring=(idstring+" value=\""+date.split("-")[1]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
+                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
+                                    idstring="id=\""+"dd"+"\""
+                                    idvaluestring=(idstring+" value=\""+date.split("-")[2]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
+                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
+
+                        except Exception as e:
+                            print("mon texte erreur",e)
+            except:
+                print("erreur afficher le formulaire")
+            Program.set_content(text)
+            Program.set_path("./accountinfo")
+            set_my_header("headersignin")
+            set_my_footer("footer")
+            return render_figure("index.html")
+
+        except Exception as e:
+            print("erreur my account info page",e)
+    global home
+    def home(params = None):
+        try:
+            Program.set_path("./")
+            print("home")
+            Program.set_title("Burger King")
+            print("burger ing")
+            Program.set_path("./mespages")
+            print('hi')
+            Program.set_header_with_path("header.html")
+            Program.set_footer_with_path("footer.html")
+
+            j=codecs.open(Program.get_filename_path("index.html"))
+            text=j.read()
+            print("my text")
             result = re.search("<div class=\"burgers-list\">(.*)</div>",text)
             #print(result.group(1))
             crsr.execute("SELECT * FROM burgers")
@@ -429,21 +861,23 @@ class Page:
             result = re.search("<div class=\"mycards\">(.*)</div>",text)
             if result is not None:
                 print(result)
-                if result.group(1):
-                    print(result.group(1))
-                    if len(result.group(1)) > 0:
-                        text=text.replace(result.group(1),mycontent)
+                print(result.group(1))
+                if len(result.group(1)) > 0:
+                    text=text.replace(result.group(1),mycontent)
             Program.set_path("./")
             Program.set_content(text)
             
             text=(text)
-            render_figure("index.html")
+            print("render figure home")
+            return render_figure("index.html")
         except Exception as e:
             print("erreur 1",e)
     global menu        
-    def menu():
+    def menu(params = None):
         try:
-            j=codecs.open(path1+"/mespages/menu.html")
+            Program.set_title("Burger King")
+            Program.set_path("./mespages")
+            j=codecs.open(Program.get_filename_path("menu.html"))
             text=j.read()
             result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
             #print(result.group(1))
@@ -481,109 +915,131 @@ class Page:
                 Program.set_path("./menu")
                 Program.set_content(text)
                 page=str(myburger[0] if myburger[0] > 1 else 'index')
-                render_figure(page+".html")
+                return render_figure(page+".html")
         except Exception as e:
             print("erreur menu",e)
     global confirmotp        
-    def confirmotp(email):
+    def confirmotp(email=None):
         try:
-            print("confirm otp")
-            f=open(path1+"/mespages/userconnecte.js")
-            js=f.read()
-            fff=open(path1+"/mespages/headersignin.html")
-            myheader=fff.read()
-            Program.set_email(email)
-            ff=open(path1+"/mespages/confirmotp.html")
-            text=ff.read()
-            Program.set_js("")
-            Program.set_header(myheader)
-            Program.add_css("/css/signin.css")
-            Program.add_js("/js/signin.js")
-            Program.set_footer("")
-            Program.set_path("./signup")
-            Program.set_content(unicode(text,'utf-8'))
-            render_figure("confirm-otp.html")
+            if email is not None:
+                Program.set_title("Burger King")
+                Program.set_path("./mespages")
+                print("confirm otp")
+                f=open(Program.get_filename_path("userconnecte.js"))
+                js=f.read()
+                print("user connectes")
+                Program.set_email(email)
+                print("email")
+                ff=open(Program.get_filename_path("confirmotp.html"))
+                text=ff.read()
+                Program.set_js("")
+                fff=open(Program.get_filename_path("headersignin.html"))
+                myheader=fff.read()
+                print("header")
+                Program.set_header(myheader)
+                Program.set_path("./css")
+                Program.add_css("signin.css")
+                Program.set_path("./js")
+                Program.add_js("signin.js")
+                Program.set_footer("")
+                Program.set_path("./signup")
+                Program.set_content(unicode(text,'utf-8'))
+                return Program
         except Exception as e:
             print("erreur confirm otp",e)
     global signup        
-    def signup():
+    def signup(params = None):
         try:
             print("sign up")
-            f=open(path1+"/mespages/userconnecte.js")
+            Program.set_path("./mespages")
+            
+            f=open(Program.get_filename_path("userconnecte.js"))
             js=f.read()
-            fff=open(path1+"/mespages/headersignin.html")
+            fff=open(Program.get_filename_path("headersignin.html"))
             myheader=fff.read()
 
-            ff=open(path1+"/mespages/signup.html")
+            ff=open(Program.get_filename_path("/signup.html"))
             text=ff.read()
+            Program.set_title("Burger King")
             Program.set_js("")
             Program.set_header(myheader)
-            Program.add_css("/css/signin.css")
-            Program.add_js("/js/signin.js")
+            Program.set_path("./css")
+            Program.add_css("signin.css")
+            Program.set_path("./js")
+            Program.add_js("signin.js")
             Program.set_footer("")
             Program.set_path("./signup")
             Program.set_content(unicode(text,'utf-8'))
-            render_figure("index.html")
+            return render_figure("index.html")
         except Exception as e:
             print("erreur sign in",e)
     global signin        
-    def signin():
+    def signin(params = None):
         try:
             print("sign in")
-            f=open(path1+"/mespages/userconnecte.js")
+            Program.set_path("./mespages")
+            f=open(Program.get_filename_path("userconnecte.js"))
             js=f.read()
-            fff=open(path1+"/mespages/headersignin.html")
+            fff=open(Program.get_filename_path("headersignin.html"))
             myheader=fff.read()
+            Program.set_title("Burger King")
 
-            ff=open(path1+"/mespages/signin.html")
+            ff=open(Program.get_filename_path("signin.html"))
             text=ff.read()
             Program.set_js("")
             Program.set_header(myheader)
-            Program.add_css("/css/signin.css")
-            Program.add_js("/js/signin.js")
+            Program.set_path("./css")
+            Program.add_css("signin.css")
+            Program.set_path("./js")
+            Program.add_js("signin.js")
             Program.set_footer("")
             Program.set_path("./signin")
             Program.set_content(text)
-            render_figure("index.html")
+            return render_figure("index.html")
             Program.set_css("")
             Program.set_js("")
         except Exception as e:
             print("erreur sign in",e)
     global code        
-    def code():
+    def code(params = None):
         try:
             print("code")
-            f=open(path1+"/mespages/userconnecte.js",'r')
+            Program.set_path("./mespages")
+            f=open(Program.get_filename_path("userconnecte.js"),'r')
             js=f.read()
+            Program.set_title("Burger King")
 
-            ff=open(path1+"/mespages/code.html",'r')
+            ff=open(Program.get_filename_path("code.html"),'r')
             text=ff.read()
-            Program.add_js("/js/userconnecte.js")
-            Program.set_header(header())
-            Program.set_footer(footer())
+            Program.set_path("./js")
+            Program.add_js("userconnecte.js")
+            Program.set_header(Program.get_header())
+            Program.set_footer(Program.get_footer())
             Program.set_path("./code")
-            Program.set_content(text)
-            render_figure("index.html")
+            Program.set_content(unicode(text,'utf-8'))
+            return render_figure("index.html")
         except Exception as e:
             print("erreur 3",e)
     global offers        
-    def offers():
+    def offers(params = None):
         try:
             print("offers")
-            Program.set_header(header())
-            Program.set_footer(footer())
+            Program.set_header(Program.get_header())
+            Program.set_footer(Program.get_footer())
             Program.set_path("./offers")
             Program.set_content("")
-            render_figure("index.html")
+            return render_figure("index.html")
         except:
             print("erreur 4")
     global rewards        
-    def rewards():
+    def rewards(params = None):
         try:
+            Program.set_title("Burger King")
+
             print("rewards")
             Program.set_path("./rewards")
             Program.set_content("")
-            render_figure("index.html")
+            return render_figure("index.html")
         except:
             print("erreur 5")
 class S(BaseHTTPRequestHandler):
@@ -593,112 +1049,192 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        
-        #Program.path("./")
-        Program.set_url(self.path)
-        urlpath=Program.get_url()
+        print("=========new route GET====================")
 
-        #f = open("index.html", "r")
-        query_components = parse_qs(urlparse(urlpath).query)
-        #print(query_components)
         try:
-            insertburger(query_components)
-        except KeyError:
-            print("erreur 6")
-        urlpath=Program.get_url()
-        #self.data_string = params
-        #os.system("echo \""+urlpath+"\"")
-        patha=path1+urlpath.split("?")[0].replace(".html","")+".html"
-        pathd=path1+urlpath.split("?")[0].replace(".html","")
-        pathb=path1+urlpath.split("?")[0]+"index.html"
-        pathc=path1+urlpath.split("?")[0]+"/index.html"
-        pathe=path1+str(myroutes.get(urlpath.split("?")[0]))+".html"
-        copy()
-        if exists(patha):
-            f=codecs.open(patha,'r')
-            mytype=patha.split(".")[-1]
-        elif exists(pathb):
-            f=codecs.open(pathb,'r')
-            mytype=pathb.split(".")[-1]
-        elif exists(pathc):
-            f=codecs.open(pathc,'r')
-            mytype=pathc.split(".")[-1]
-        elif exists(pathd):
-            f=codecs.open(pathd,'r')
-            mytype=pathd.split(".")[-1]
-        elif exists(pathe):
-            f=codecs.open(pathe,'r')
-            mytype=pathe.split(".")[-1]
-        switcher={
-        'html':'text/html',
-        'css':'text/css',
-        'js':'text/javascript'
-        }
-        print(mytype)
-        self._set_headers(switcher.get(mytype))    
-        self.wfile.write(f.read())
-            
+            Program=directory("Burger King")
+            #Program.path("./")
+            Program.set_url(self.path)
+            urlpath=Program.get_url()
+
+            #f = open("index.html", "r")
+            query_components = parse_qs(urlparse(urlpath).query)
+            #print(query_components)
+            try:
+                insertburger(query_components)
+            except KeyError:
+                print("erreur 6")
+            myurlpath=urlpath.split("?")[0]
+            print(myurlpath)
+            try:
+                print(" route_post={")
+                print('my path')
+                print(myurlpath)
+                if myroutes.get(myurlpath) is not None:
+                    codehtml=myroutes.get(myurlpath)(query_components)
+
+            except KeyError:
+                print("erreur 6")
+            #try:
+                #x=myroutes.get(urlpath.split("?")[0])
+                #if x is not None:
+                #    Program.set_url(x)
+            #except:
+            #    print("pas d'autre route")
+            urlpath=Program.get_url()
+            print(urlpath)
+            print('my url get')
+            #self.data_string = params
+            #os.system("echo \""+urlpath+"\"")
+            copy()
+            #render_pages()
+            #myaccountinfo()
+            #home()
+            mytype=urlpath.split(".")[-1] 
+
+            print(mytype)
+
+
+
+            print("Program.get json")
+            print(Program.get_json() is None)
+            if myroutes.get(urlpath) is not None: 
+                print("code html pour"+urlpath)
+                codehtml=force_to_unicode(myroutes.get(urlpath)())
+            print("mytype")
+            print(mytype)
+            print(switcher.get(mytype))
+            print(myroutes.get(urlpath))
+            if switcher.get(mytype) is None:
+                mytype="html"
+            print("rendere") 
+            print("get reidret "+str(Program.get_redirect()))
+            if str(Program.get_redirect()) == 'None':
+                if mytype != "html":
+                    if switcher.get(mytype) is not None:
+                        print("trouver fichier")
+                        self._set_headers(switcher.get(mytype))    
+                        self.wfile.write(Program.trouver_fichier(urlpath,myroutes).read())
+                elif route_post.get(urlpath) and Program.get_json() != "null":
+                    print("return json")
+                    x=Program.get_json()
+                    Program.set_json(None)
+
+                    self._set_headers(switcher.get("json"))    
+                    self.wfile.write(x)
+                else:
+                    print(mytype)
+                    self._set_headers(switcher.get(mytype))    
+                    codehtml=decode_any_string(force_to_unicode(codehtml))
+                    try:
+                        code=(codehtml.decode("utf-8"))
+                    except UnicodeEncodeError as e:
+                        print(type(e))
+                        print('gerer cette erreur')
+                        code=(codehtml.encode('utf-8'))
+                    except UnicodeDecodeError as e:
+                        print(type(e))
+                        print('gerer cette erreur')
+                        code=(codehtml)
+                    self.wfile.write(code)    
+            else:
+                print("reirect is not none") 
+                self.send_response(301)
+                self.send_header('Location',Program.get_redirect())
+                Program.set_redirect(None)
+            self.end_headers()
+
+            Program.set_js("")
+        except UnboundLocalError as e:
+            print("erreur get",e)
+            k=get_file_dir("404.html","./erreur")
+            self._set_headers(switcher.get("html"))    
+            self.wfile.write(k.read())
     def do_HEAD(self):
         self._set_headers()
-
     def do_POST(self):
-        Program.set_url(self.path)
-        urlpath=Program.get_url()
+        print("=========new route POST====================")
 
-        query_components = parse_qs(urlparse(urlpath).query)
-
-        print "in post method"
-        self.data_string = self.rfile.read(int(self.headers['Content-Length']))
-        fields = parse_qs(self.data_string)
         try:
-            signmein(fields)
-        except KeyError:
-            print("erreur 6")
+            Program=directory("Burger King")
+            Program.set_url(self.path)
+            urlpath=Program.get_url()
+
+            query_components = parse_qs(urlparse(urlpath).query)
+
+            print "in post method"
+            self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+            fields = parse_qs(self.data_string)
+            myurlpath=urlpath.split("?")[0]
+            try:
+                print('my path')
+                print(myurlpath)
+                print(route_post.get(myurlpath))
+                if route_post.get(myurlpath) is not None: 
+                    print("route trouve")
+                    print(fields)
+                    res=route_post.get(myurlpath)(fields)
+                    if isinstance(res,str):
+                        codehtml = res
+                        print(codehtml)
+                    elif isinstance(res,object):
+                        print("is object")
+                        print(res)
+                        Program.dict2class(res.__dict__)
+            except KeyError:
+                print("erreur 6")
 
 
-        query_components = parse_qs(urlparse(urlpath).query)
-        #self.data_string = params
-        urlpath=Program.get_url()
-        patha=path1+urlpath.split("?")[0].replace(".html","")+".html"
-        pathb=path1+urlpath.split("?")[0]+"index.html"
-        pathc=path1+urlpath.split("?")[0]+"/index.html"
-        pathd=path1+urlpath.split("?")[0].replace(".html","")
-        pathe=path1+str(myroutes.get(urlpath.split("?")[0]))+".html"
+            query_components = parse_qs(urlparse(urlpath).query)
+            #self.data_string = params
+            urlpath=Program.get_url()
 
-        copy()
-        if exists(patha):
-            f=codecs.open(patha,'r')
-            mytype=patha.split(".")[-1]
-        elif exists(pathb):
-            f=codecs.open(pathb,'r')
-            mytype=pathb.split(".")[-1]
-        elif exists(pathc):
-            f=codecs.open(pathc,'r')
-            mytype=pathc.split(".")[-1]
-        elif exists(pathd):
-            f=codecs.open(pathd,'r')
-            mytype=pathd.split(".")[-1]
-        elif exists(pathe):
-            f=codecs.open(pathe,'r')
-            mytype=pathe.split(".")[-1]
-        switcher={
-        'html':'text/html',
-        'css':'text/css',
-        'js':'text/javascript'
-        }
-        
-        if Program.get_redirect():
-            Program.set_redirect(False)
-            self.send_response(301)
-            self.send_header('Location',Program.get_url())
-            self.end_headers()
-        else:
+            copy()
+            #render_pages()
+            #myaccountinfo()
+            #home()
+            mytype=self.path.split(".")[-1]
+            print(urlpath)
+            print("my type")
             print(mytype)
-            self._set_headers(switcher.get(mytype))    
-            self.send_response(200)
+            print("Program.get json")
+            print(Program.get_json() is not None)
+            print(Program.get_json())
+            print(route_post.get(myurlpath))
+            if switcher.get(mytype) is None:
+                mytype="html"
+            print("redirect")
+            print(Program.get_redirect())
+            print(str(Program.get_redirect()) != 'None')
+            if str(Program.get_redirect()) != 'None':
+                self.send_response(301)
+                myred=Program.get_redirect()
+                self.send_header('Location',myred)
+                Program.set_redirect(None)
+                
+
+            elif mytype == "json":
+                print("return json")
+                data=Program.get_json()
+                Program.set_json(None)
+
+                self._set_headers(switcher.get("json"))    
+                self.wfile.write(str(data).replace("'",'"'))
+            elif mytype != "html":
+                if switcher.get(mytype) is not None: 
+                    if myroutes.get(urlpath) is not None:
+                        self._set_headers(switcher.get(mytype))    
+                        self.wfile.write(codehtml)
+            else:
+                print(mytype)
+                self._set_headers(switcher.get(mytype))    
+                self.wfile.write(codehtml)
             self.end_headers()
-        
-            self.wfile.write(f.read())
+        except UnboundLocalError:
+            print("erreur post")
+            k=get_file_dir("404.html","./erreur")
+            self._set_headers(switcher.get("html"))    
+            self.wfile.write(k.read())
 
         return
 
@@ -716,14 +1252,34 @@ def run(server_class=HTTPServer, handler_class=S, port=8000):
 
 if __name__ == "__main__":
     from sys import argv
-home()
-menu()
-signup()
-signin()
-
-code()
+render_pages() 
 #rewards()
 #offers()
 print((__words__).rstrip())
 
+myroutes = {"/":home,
+"/":home,"/signin":signin,
+            "/signup": signup,
+            "/rewards": rewards,
+'/account/info': myaccountinfo,
+'/confirm-otp': confirmotp,
+"/confirm-jwt": confirmjwt,
+"/setcookie": setcookie,
 
+'/confirm-jwt': confirmjwt
+}
+global route_post
+route_post={
+    "/signup": signup_user,
+    "/signin": signmein,
+    "/saveinfo": savemyinfo,
+    "/aftersignup": aftersignup,
+    "/confirm-otp": confirmotp,
+    "/checkemail": checkemail,
+    "/checkuser.json": checkuser,
+    "/validatecode": validatecode
+}
+if len(argv) == 2:
+    run(port=int(argv[1]))
+else:
+    run()    

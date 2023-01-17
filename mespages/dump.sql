@@ -23,12 +23,14 @@ image VARCHAR(200)
 );
 CREATE TABLE IF NOT EXISTS users (
 user_number INTEGER PRIMARY KEY,
-prenom VARCHAR(255) unique,
+prenom VARCHAR(255),
 email VARCHAR(255) unique,
 code VARCHAR(255) unique,
+tel varchar(255),
+zip varchar(255),
 dateofbirth date,
-confidentialite integer,
-offres integer
+offres integer,
+token text
 );
 INSERT or ignore INTO users (email,prenom,code) VALUES ('cleo@gmail.com','cleo jeanne','098790');
 INSERT or ignore INTO burgers (name) VALUES ('big mac');

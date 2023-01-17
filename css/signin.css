@@ -8,7 +8,12 @@ label {
   transition: all 500ms;
   touch-action: manipulation;
 }
-
+form {
+    margin-bottom:200px;
+}
+.datenaissance, .datenaissance table {
+    float:left;
+}
 form input {
   border: none;
   border-bottom: 1px solid #ddd;
@@ -29,11 +34,11 @@ form input:focus {
   border-bottom: 1px solid #5fa8d3;
 }
 
-form input:focus+label {
+form input:focus+label, form input:not([value='']):not(input[type=checkbox])+label {
   transform: translate(0, -3.4em);
 }
 
-form input[filled="true"]+label {
+form input[filled="true"]+label,  form input:not([value='']):not(input[type=checkbox])+label {
   transform: translate(0, -3.4em);
 }
 .fields, .tabs {
@@ -148,4 +153,7 @@ transform-origin: left bottom;
 .autreschamps input[filled="true"]+label {
   transform-origin: left bottom;
   transform: translate(1.5em, -2em);
+}
+.renvoyer a {
+    text-decoration:revert;
 }

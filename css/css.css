@@ -4,18 +4,47 @@
     float:left;
     padding-left:0;
 }
+main {
+    top:70px;
+    position:relative;
+}
 header {
-    top:0;
+   
     width:100%;
-    float:left;
-    padding-left:0;
-    height:100px;
+   
+   
+    height:70px;
+    text-align:center; 
+           background:white; 
+      position:fixed;
+      vertical-align: middle;
+      z-index:5;
 }
-.menu-nav li {
+header * {
     float:left;
-    list-style-type:none;    
-    width:20%;
+     vertical-align: middle; 
 }
+header .menu {
+    left:0;
+    text-align: left;
+    padding:10px;
+    font-size:20px;
+    cursor:pointer;
+}
+header .logo {
+    width:50px;
+    height:50px;
+    text-align:center;
+    float:initial;
+    padding:10px;
+}
+header .signup {
+    right:0;
+    float:right;
+    text-align: right;
+    padding:10px;
+}
+
 .card {
     width:300px;
     float:left;
@@ -50,10 +79,86 @@ h1 {
 footer {
 	width: 100%;
 	bottom: 0;
-	position: absolute;
-        background:white;    
+        background:white; 
+      position:fixed;
+}
+.menu-nav {
+      display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.menu-nav li {
+    float:left;
+    list-style-type:none;    
+
 }
 body {
 	padding: 0;
 	margin: 0;
+}
+#menu {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+#text{
+	position: absolute;
+	top: 70px;
+	left: 0%;
+	font-size: 15px;
+	color: black;
+	/* transform: translate(-50%,1%); */
+	-ms-transform: translate(-50%,-50%);
+	background: white;
+	overflow-y: scroll;
+	max-height: calc(100vh - 70px);
+}
+svg {width:20px;
+     float:right;
+    
+}
+#text a {
+    width:100%;
+    float:left; 
+}
+.kqtNrT { 
+    border-top:0.1px solid black;
+    padding-top:20px;
+    padding-bottom:20px;
+    
+}
+.dHeovc {
+	right: 0;
+	position: relative;
+	float: right;
+	clear: both;
+}
+[data-testid="bk-rewards-logo"] {
+    width:70%;
+}
+[data-testid="loyalty-link"] {
+    display:flex;
+}
+.rewards-linkstyleddefault__PointsContainer-sc-20tczh-5 {
+
+    text-align:center;
+}
+.rewards-linkstyleddefault__LinkContainer-sc-20tczh-0.ljfoKM {
+width:95%;  
+display:flex;
+justify-content:space-between;
+
+}
+
+#myform {
+    padding-bottom:500px;
 }

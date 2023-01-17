@@ -12,10 +12,18 @@
                     <b>Vérifier avec le code</b>
 
                     <p>Nous avons envoyé un email à monemailici avec les instructions de connexion</p>                 
-<form action="/confirm-otp" method="post" class="login-form" id="myform">
+<form hidden="true" action="/signin" method="post" class="login-form" id="myform1">
 
-  <input type="text" name="code" id="code" autocomplete="none" onkeyup="validatecode();return false;" required />
+  <input type="text" value="monemailici" name="email" id="email" autocomplete="none" required />
+  <label for="email">Email:</label>
+</form>
+                    <form action="/confirm-otp" method="post" class="login-form" id="myform">
+
+  <input data-userid="monuseridici" type="text" name="code" id="code" autocomplete="none" onkeyup="validatecode(event);return false;" required />
   <label for="code">Code de vérification</label>
-</form>        </div>
+   <p class="error code-error"></p>
+                    </form>        
+                    <div class="renvoyer">Vous n'avez pas reçu de code ? <a href="" onclick="myform1.submit();return false;">Renvoyer le code</a></div>
+                </div>
     </div>
 </main>
