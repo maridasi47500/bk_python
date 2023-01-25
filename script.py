@@ -24,8 +24,8 @@ switcher={
 }
 
 
-connection = sqlite3.connect("data_base_burger.db")
- 
+connection = sqlite3.connect("data_base_burger23456.db")
+
 # cursor
 global crsr
 crsr = connection.cursor()
@@ -88,6 +88,53 @@ import random
 
 # connecting to the database
 
+def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
+    idprecedent=0
+    print(sql,sqlargs,templatename,errormessage,tablename)
+    crsr.execute("PRAGMA table_info(["+tablename+"])")
+    connection.commit()
+    matable=crsr.fetchall()
+    Program.set_path("./mespages")
+    h=get_file(templatename+".html")
+    template=force_to_unicode(h.read())
+    crsr.execute(sql % sqlargs)
+    connection.commit()
+    res=crsr.fetchall()
+    myfigure=""
+    x=0
+    mytemplate=""
+    if len(res) > 0:
+        print("plusieurs "+tablename)
+
+        for re in res:
+            paspremier = false
+            mytemplate=template
+            for x in range(len(re)):
+                print(x)
+                strrep="(%s)" % (matable[x][1])
+                print(strrep)
+                mytemplate=mytemplate.replace(strrep, force_to_unicode(str(re[x])))
+                if matable[x][1] == sortby:
+                    if idprecedent != 0:
+                        if re[x] != idprecedent:
+                            if paspremier:
+                                myfigure+="</div>"
+                                paspremier = True
+                            Program.set_path("./mespages")
+                            kk=get_file(templatesortby)
+                            kk=kk.read()
+                            y=0
+                            for y in range(len(re)):
+                                mystrrep="(%s)" % (matable[y][1])
+                                kk=kk.replace(mystrrep, force_to_unicode(str(re[y])))
+                            myfigure += kk
+                    idprecedent=re[x]
+
+            myfigure+=mytemplate
+            myfigure+="</div>"
+        return myfigure
+    else:
+        return force_to_unicode("<p>"+errormessage+"</p>")
 
 global __words__
 __words__ = ""
@@ -96,7 +143,6 @@ def render_figure(pathname):
         global path1
         path1=os.getcwd()
         Program.set_filename(pathname)
-
         print("render figure")
         print('ok')
         p1=Program.get_path
@@ -119,64 +165,93 @@ def render_figure(pathname):
         header=Program.get_header
         content=Program.get_content
         footer=Program.get_footer
-        html="<!doctype html>"
-        html+="<html>"
-        html+="<head>"
-        html+="<meta charset=\"UTF-8\">"
-        html+="<title>"
-        print("title")
-        html+=title()
-        html+="</title>"
-        html+="<link rel=\"icon\" href=\"/images/logo.png\">"
-        html+="<link rel=\"stylesheet\" href=\"/css/css.css\"/>"
-        html+=Program.get_css()
-        html+="</head>"
-        html+="<body>"
-        print("header")
-        html+=decode_any_string(header())
-        html+="<main>"
-        print("content")
-        try:
-            html+=decode_any_string(myparams(content()))
-        except Exception as e: 
-            html+=myparams(content().encode("utf-8"))
-        print("footer")
-        print("type footer")
-        
-        print(type(force_to_unicode(footer())))
-        
-        try:
-            html+=decode_any_string(footer())
-        except UnicodeEncodeError as e:
-            print(type(e))
-            print('gerer cette erreur')
-            html+=footer().encode('utf-8')
-        except UnicodeDecodeError as e:
-            print(type(e))
-            print('gerer cette erreur')
-            html+=footer()
-        print("footer ajouté")    
-        html+="</main>"  
-        print("type menu")
-        print(type(Program.get_menu()))
-        try:
-            html+=force_to_unicode(Program.get_menu())
-        except UnicodeEncodeError as e:
-            print(type(e))
-            print('gerer cette erreur')
-            html+=Program.get_menu().encode('utf-8')
-        except UnicodeDecodeError as e:
-            print(type(e))
-            print('gerer cette erreur')
-            html+=Program.get_menu()
-        print("meu ajouté") 
-        html+="<script src=\"/js/jquery.js\"></script>"
-        html+="<script src=\"/js/js.js\"></script>"
-        html+=Program.get_js()
-        html+="</body>"
-        html+="</html>"
-        #print(html)
-        print("fin balise")
+        layout=Program.get_layout()
+        if layout == False:
+            print("content")
+            try:
+                html=decode_any_string(myparams(content()))
+            except UnicodeEncodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html=myparams(content()).encode('utf-8')
+            except UnicodeDecodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html=myparams(content())
+        else:
+            html="<!doctype html>"
+            html+="<html>"
+            html+="<head>"
+            html+="<meta charset=\"UTF-8\">"
+            html+="<title>"
+            print("title")
+            html+=title()
+            html+="</title>"
+            html+="<link rel=\"icon\" href=\"/images/logo.png\">"
+            html+="<link rel=\"stylesheet\" href=\"/css/css.css\"/>"
+            html+=Program.get_css()
+            html+="</head>"
+            html+="<body>"
+            print("header")
+            try:
+                html+=decode_any_string(header())
+            except UnicodeEncodeError as e:
+                print(type(e))
+                print('header gerer cette erreur')
+                html+=header().encode('utf-8')
+            except UnicodeDecodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=header()
+            html+="<main>"
+            print("content")
+            try:
+                html+=decode_any_string(myparams(content()))
+            except UnicodeEncodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=myparams(content()).encode('utf-8')
+            except UnicodeDecodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=myparams(content())
+            print("footer")
+            print("type footer")
+
+            print(type(force_to_unicode(footer())))
+
+            try:
+                html+=decode_any_string(footer())
+            except UnicodeEncodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=footer().encode('utf-8')
+            except UnicodeDecodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=footer()
+            print("footer ajouté")
+            html+="</main>"
+            print("type menu")
+            print(type(Program.get_menu()))
+            try:
+                html+=force_to_unicode(Program.get_menu())
+            except UnicodeEncodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=Program.get_menu().encode('utf-8')
+            except UnicodeDecodeError as e:
+                print(type(e))
+                print('gerer cette erreur')
+                html+=Program.get_menu()
+            print("meu ajouté")
+            html+="<script src=\"/js/jquery.js\"></script>"
+            html+="<script src=\"/js/js.js\"></script>"
+            html+=Program.get_js()
+            html+="</body>"
+            html+="</html>"
+            #print(html)
+            print("fin balise")
         result = re.search('<li class=\"mycat\">(.*?)</li>', html)
         #print(result.group(1))
         __words__ = result.group(1) if result is not None else ''
@@ -194,11 +269,11 @@ def render_figure(pathname):
         print(type(html))
         if isinstance(html,str):
             s1=html
-        else:    
+        else:
             s1=html.encode('utf-8')
         return s1
         #f=codecs.open(mychemin,'w')
-        
+
         #print(type(s1))
         #f.write(s1)
         #f.close()
@@ -225,6 +300,17 @@ f=codecs.open(path1+"/mespages/dump.sql")
 sql_command = f.read()
 global myroutes
 
+def afficher_modepaiement(text,usernumber):
+    sql="select * from payments where user_id = "+str(usernumber)
+    print(sql)
+    crsr.execute(sql)
+    connection.commit()
+    res=crsr.fetchall()
+    if len(res) > 0:
+        html=""
+        return html
+    else:
+        return text.replace('ici le mode de paiement',"<p>Vous n'avez actuellement aucun mode de paiement enregistré</p>"),
 
 
 def myparams(x):
@@ -238,10 +324,99 @@ def myparams(x):
 global accountinfo
 def accountinfo(query_components):
     try:
-        
+
         myaccountinfo()
     except Exception as e:
         print("erreur account info",e)
+global signinuser
+def signinuser(params):
+    try:
+        if params.get("user_number"):
+
+
+            user_number=params.get("user_number")[0]
+            code=params.get("bkcode")[0]
+            sql="select * from users where user_number = "+str(user_number)+" and code = '"+code+"';"
+            print(sql)
+            crsr.execute(sql)
+            connection.commit()
+            users=crsr.fetchall()
+
+            print(users)
+            if len(users) > 0:
+                #bkcode=rand.randint(100000,999999)
+                #sql="UPDATE users SET code = '" + str(bkcode) + "' WHERE user_number = "+user_number+""
+                #print(sql)
+                #crsr.execute(sql)
+                #connection.commit()
+                #users=crsr.fetchall()
+                #print(users)
+                #sql="select * from users where user_number = "+str(user_number)+";"
+                #print(sql)
+                #crsr.execute(sql)
+                #connection.commit()
+                user=users[0]
+                session.current_user=user
+                print(session.current_user)
+                Program.set_current_user(user)
+                Program.set_redirect("/confirm-otp")
+            return Program
+    except Exception as e:
+        print("erreur: sign in user ",e)
+global savegiftcard
+def savegiftcard(query_components):
+    try:
+        print("save gift card",query_components["numero"])
+        if query_components.get("numero"):
+            numero=query_components.get("numero")[0]
+            sql="select * from giftcards where numero = '%s'" % (numero)
+            crsr.execute(sql)
+            connection.commit()
+            data=crsr.fetchall()
+            if len(data) > 0:
+                card=data[0]
+                cardid=card[0]
+                userid=session.current_user[0]
+                sql="update giftcards set user_id = '%s' where id = %s" % (userid,cardid)
+                crsr.execute(sql)
+                connection.commit()
+                Program.set_json({"ok":"1"})
+            else:
+                card=None
+                Program.set_json({"ok":"0"})
+            print("save giftcard")
+            Program.set_mimetype("json")
+            return Program
+    except Exeption as e:
+        print("erreur save gift card",e)
+def savepayment(query_components):
+    try:
+        print("save payment method",query_components["nom"])
+        if query_components.get("nom"):
+            print("save payment method")
+            nom=query_components.get("nom")[0]
+            zip=query_components.get("zip")[0]
+            creditcard=query_components.get("creditcard")[0]
+            cvv=query_components.get("cvv")[0]
+            mmyy=query_components.get("date")[0]
+            try:
+                j=mmyy.split("/")
+                annee=int("20"+str(j[1]))
+                mois=int(j[0])
+                jour=1
+                date=datetime.datetime(annee,mois,jour)
+            except:
+                print("erreur cvv")
+            sql="insert into creditcards (nom,zip,creditcard,cvv,datecard,user_id) values ('%s', '%s', '%s', '%s', '%s','%s')" % (nom,zip,creditcard,cvv,mmyy,session.current_user[0])
+            crsr.execute(sql)
+            connection.commit()
+            Program.set_json({"ok":"1"})
+        else:
+            Program.set_json({"ok":"0"})
+        Program.set_mimetype("json")
+        return Program
+    except Exception as e:
+        print("erreur save payment method",e)
 global savemyinfo
 def savemyinfo(query_components):
     try:
@@ -258,7 +433,7 @@ def savemyinfo(query_components):
                     jour=int(query_components.get("dd")[0])
                     print(jour)
                     w=datetime.datetime(annee,mois,jour)
-                    print(w) 
+                    print(w)
                     date=str(w)
                 except:
                     date=""
@@ -283,16 +458,22 @@ def savemyinfo(query_components):
                     offres=query_components.get("offres")[0]
                 except:
                     print("erreur recevoir offres")
-                crsr.execute("update users set dateofbirth = '"+date+"', prenom = '"+prenom+"',offres='"+offres+"', zip = '"+zip+"', tel = '"+tel+"' where user_number = " + str(id) + "")
+                sql="update users set dateofbirth = '"+date+"', prenom = '"+prenom+"',offres='"+offres+"', zip = '"+zip+"', tel = '"+tel+"' where user_number = " + str(id) + ""
+                print(sql)
+                crsr.execute(sql)
                 connection.commit()
                 crsr.execute("select * from users where user_number = " + str(id) + "")
+                connection.commit()
                 ant=crsr.fetchall()
                 session.current_user=ant[0]
+                Program.set_current_user(ant[0])
                 print("hello")
                 Program.set_json({"sauve":"1"})
             except Exception as e:
                 print("erreur save data",e)
                 Program.set_json({"sauve":"0"})
+            Program.set_mimetype("json")
+            return Program
     except Exception as e:
         print("erreur save data",e)
 global setcookie
@@ -305,8 +486,8 @@ def setcookie(query_components):
             crsr.execute("select * from users where user_number = '" + str(token) + "'")
             connection.commit()
             user=crsr.fetchall()[0]
-            
-            Program.set_json({})
+
+            return "<html></html>"
 
     except:
         print("erreur set cookie")
@@ -321,13 +502,16 @@ def confirmjwt(query_components):
             crsr.execute("select * from users where token = '" + str(token) + "'")
             connection.commit()
             user=crsr.fetchall()[0]
+            session.current_user=user
+            Program.set_current_user(user)
+            user_number=user[0]
             prenom = user[1]
             email = user[2]
             offres = user[5]
             #user = crsr.fetchall()
             print("envoyer le code bk")
             bkcode=user[3]
-
+            session.current_user=user
 
             # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
             host_smtp = "smtp.gmail.com"
@@ -361,11 +545,14 @@ def confirmjwt(query_components):
             mail.sendmail(email_smtp, email_destinataire, msg.as_string())
             mail.close()
             Program.set_path("./")
-            
+
             Program.set_url("/")
-            Program.set_js("<script>window.onload=function(){$.ajax({type:\"post\",url:\"/aftersignup\",success:function(){window.userconnecte=true;window.location=\"/\";}});}</script>")
-            return confirmotp(email)
-            
+            Program.set_redirect("/")
+            #Program.set_redirect("/signinuser?user_number=" + str(user_number))
+            Program.set_mimetype(None)
+            return Program
+            #return confirmotp(email)
+
     except Exception as e:
         print("erreur confirm jwt",e)
 global signup_user
@@ -374,8 +561,8 @@ def signup_user(query_components):
     try:
         print("sign sign up",query_components["email"])
         if query_components.get("email"):
-            print("data_string = query_components[\"email\"][0]") 
-            data_string = query_components["email"][0] 
+            print("data_string = query_components[\"email\"][0]")
+            data_string = query_components["email"][0]
 
             print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
             mycontent=""
@@ -390,7 +577,7 @@ def signup_user(query_components):
                 jour=int(query_components.get("dd")[0])
                 print(jour)
                 w=datetime.datetime(annee,mois,jour)
-                print(w) 
+                print(w)
                 date=str(w)
             except:
                 print("erreur champ date de naissance")
@@ -411,7 +598,7 @@ def signup_user(query_components):
             session.current_user = ant[0]
             urlconfirmjwt="/confirm-jwt?token="+str(token)
             Program.set_url(urlconfirmjwt)
-            
+
             #confirmotp(data_string)
             print("set redirect ICI")
             Program.set_redirect("/confirm-jwt?token="+str(token))
@@ -429,7 +616,7 @@ def aftersignup(query_components):
         myheader=fff.read()
 
         Program.set_header(myheader)
-        
+
         Program.set_json({"ok":"1"})
     except Exception as e:
         print("erreur after signup",e)
@@ -449,7 +636,7 @@ def checkuser(query_components):
                 Program.set_json({"usernotexist":"1"})
             else:
                 Program.set_json({"usernotexist":"0"})
-            return Program    
+            return Program
     except Exception as e:
         print("erreur validate code",e)
 
@@ -470,6 +657,8 @@ def checkemail(query_components):
             else:
                 Program.set_json({"correctemail":"0"})
                 print(Program.get_json())
+            Program.set_mimetype("json")
+            return Program
     except Exception as e:
         print("erreur validate code",e)
 
@@ -491,6 +680,8 @@ def validatecode(query_components):
             else:
                 Program.set_json({"correcturl":"0","url": "/signin/codeincorrect"})
                 print(Program.get_json())
+            Program.set_mimetype("json")
+            return Program
     except Exception as e:
         print("erreur validate code",e)
 global signmein
@@ -498,8 +689,8 @@ def signmein(query_components):
     try:
         print("sign me in",query_components["email"])
         if query_components.get("email"):
-            print("data_string = query_components[\"email\"][0]") 
-            data_string = query_components["email"][0] 
+            print("data_string = query_components[\"email\"][0]")
+            data_string = query_components["email"][0]
             print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
             crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
             mycontent=""
@@ -512,15 +703,15 @@ def signmein(query_components):
                 crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
                 connection.commit()
                 user = crsr.fetchall()
+                user_number=user[0][0]
                 print("envoyer le code bk")
                 print(user[0])
                 print(user[0][0])
                 Program.set_userid(user[0][0])
-                return render_figure("confirm-otp.html")
                 bkcode=rand.randint(100000,999999)
                 crsr.execute("UPDATE users SET code = '" + str(bkcode) + "' WHERE email = '"+data_string+"'")
                 connection.commit()
-                
+
 
                 # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
                 host_smtp = "smtp.gmail.com"
@@ -564,19 +755,60 @@ def signmein(query_components):
                 mail.login(email_smtp, mdp_smtp)
                 mail.sendmail(email_smtp, email_destinataire, msg.as_string())
                 mail.close()
-                Program.set_url("/confirm-otp")
-                print("cnofirm to otp")
-                confirmotp(force_to_unicode(data_string))
-                Program.set_redirect("/confirm-otp")
+
+                #confirmotp(force_to_unicode(data_string))
+                Program.set_redirect("/signinuser?user_number=" + str(user_number)+"&bkcode="+str(bkcode))
+
                 Program.set_json(None)
+                Program.set_mimetype(None)
+                return Program
     except Exception as e:
         print("erreur sign me in",e)
+global refreshmyorders
+def refreshmyorders(query_components):
+    sql_command = "select burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders where user_id = %s left join orderitems o where o.order_id = orders.id left join burgers on o.burger_id = burgers.id"
+    message_else="Commencez une nouvelle commande maintenant !"
+    tablename="orders"
+    str="okokokokok"
+    str="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order.html", message_else, tablename,"orderid","_orderid.html")+"</div>"
+    try:
+        Program.set_content(force_to_unicode(str))
+        Program.set_mimetype("html")
+        Program.set_layout(False)
+        return Program
+    except Exception as e:
+
+        print("erreur",e)
+    print("okokokok")
+    #connection.commit()
+global myorders
+def myorders(query_components):
+    sql_command = "select burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders where user_id = %s left join orderitems o where o.order_id = orders.id left join burgers on o.burger_id = burgers.id"
+    message_else="Commencez une nouvelle commande maintenant !"
+    tablename="orders"
+    str="okokokokok"
+    str="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order.html", message_else, tablename,"orderid","_orderid.html")+"</div>"
+    try:
+        Program.add_js("orders.js")
+        Program.add_css("orders.css")
+        Program.set_path("./mespages")
+        k=get_file("orders.html")
+        text=force_to_unicode(k.read())
+        text=text.replace("les commandes apparaissent ici",str)
+
+        Program.set_content(text)
+        return Program
+    except Exception as e:
+
+        print("erreur",e)
+    print("okokokok")
+    #connection.commit()
 global insertburger
 def insertburger(query_components):
     if query_components.get("burgername"):
-        data_string = query_components["burgername"][0] 
+        data_string = query_components["burgername"][0]
         sql_command = """INSERT INTO burgers (name) VALUES ('""" + data_string + """');"""
-        print("ok ok") 
+        print("ok ok")
         crsr.execute(sql_command)
         connection.commit()
         try:
@@ -591,7 +823,7 @@ def insertburger(query_components):
             mycontent+="</ul></main>"
             #print(mycontent)
             #Program.path("./")
-            print("ok") 
+            print("ok")
             print("yeah")
             Program.set_content(mycontent)
             return render_figure("index.html")
@@ -612,7 +844,7 @@ def listburger(burger):
         return s
     except Exception as e:
         print("erreur list brger",e)
-        
+
 
 def ajoutlistburger(burger):
     try:
@@ -652,7 +884,7 @@ def displaythisburger(burger,catname,catid):
         Program.set_path("./burgers")
         Program.set_content(text)
         return render_figure(str(burger[0])+".html")
-    except Exception as e: 
+    except Exception as e:
         print('erreur display burger',e)
 def card(title,description,button):
     try:
@@ -700,7 +932,7 @@ def bootstrapjs(params = None):
 def bootstrapcss(params = None):
     h="""  """
     return h
-    
+
 def render_pages(params = None):
     home()
     menu()
@@ -731,7 +963,7 @@ class Header:
             Program.set_header(myheader)
         except IOError:
             Program.set_header("")
-            
+
     def set_my_footer(headername):
         try:
             Program.set_path("./mespages")
@@ -766,15 +998,74 @@ class Page:
 
         except Exception as e:
             print("errur my 404",e)
+    global addgiftcard
+    def addgiftcard(params = None):
+        Program.set_path("./mespages")
+        j=codecs.open(Program.get_filename_path("addgiftcard.html"))
+        Program.add_css("signin.css")
+        Program.add_js("addcard.js")
+        Program.add_css("addgiftcard.css")
+        text=j.read()
+        Program.set_content(force_to_unicode(text))
+        Program.set_path("./mespages")
+        k=codecs.open(Program.get_filename_path("headeroverlay.html"))
+        headertext=k.read()
+        Program.set_header(headertext)
 
+        return render_figure("ma page.html")
+    global addcard
+    def addcard(params = None):
+        try:
+            Program.set_path("./mespages")
+            j=codecs.open(Program.get_filename_path("addcard.html"))
+            Program.set_path("./css")
+            Program.add_css("signin.css")
+            Program.add_css("addcard.css")
+            Program.add_js("addcard.js")
+            text=force_to_unicode(j.read())
+            Program.set_content(text)
+            Program.set_path("./mespages")
+            k=codecs.open(Program.get_filename_path("headeroverlay.html"))
+            headertext=k.read()
+            Program.set_header(headertext)
+
+            return render_figure("ma page.html")
+        except:
+            print("erreur add card")
+    global accountpayment
+    def accountpayment(params = None):
+        try:
+            print("account payment: current user")
+            print(session.current_user)
+            Program.set_path("./mespages")
+            j=codecs.open(Program.get_filename_path("accountpayment.html"))
+            Program.set_path("./css")
+            Program.set_css("")
+            Program.add_css("accountpaiement.css")
+            text=force_to_unicode(j.read())
+            #sql,templatename,errormessage,tablename
+            mysql="select * from creditcards where user_id = %s" % (session.current_user[0])
+            str=display_collection(mysql,(),"_modedepaiement","Aucun mode de paiement n'a été ajouté","creditcards")
+            text=text.replace("ici le mode de paiement",str)
+            Program.set_content(text)
+            Program.set_path("./mespages")
+            k=codecs.open(Program.get_filename_path("headersignin.html"))
+            headertext=k.read()
+            Program.set_header(headertext)
+
+            return render_figure("my page.html")
+        except Exception as e:
+            print("account payment erreur",e)
     global myaccountinfo
     def myaccountinfo(params = None):
         try:
-            Program.set_path("./accountinfo")
+            print("account info: current user")
+            print(session.current_user)
+            Program.set_path("./mespages")
             j=codecs.open(Program.get_filename_path("accountinfo.html"))
             text=j.read()
             Program.set_css("")
-            Program.set_path("./css")    
+            Program.set_path("./css")
             Program.add_css("account.css")
             Program.add_css("signin.css")
             Program.set_path("./js")
@@ -791,7 +1082,7 @@ class Page:
                                 if force_to_unicode(table_users[a][1]) == u'offres':
                                     text=text.replace("value=\"1\"","value=\"1\" checked=\"checked\"")
                                 text=force_to_unicode(text).replace(idstring,idvaluestring)
-                                
+
                                 if force_to_unicode(table_users[a][1]) == u'dateofbirth':
                                     date=session.current_user[a].split(" ")[0]
                                     print("date : "+date)
@@ -847,7 +1138,7 @@ class Page:
             print(mycontent)
             if result is not None and len(result.group(1)) > 0:
                 text=text.replace(result.group(1),mycontent)
-            print("cards1")    
+            print("cards1")
             crsr.execute("SELECT * FROM cards")
             print("cards")
             mycontent=""
@@ -857,7 +1148,7 @@ class Page:
             print("cads")
             for x in ans:
                 mycontent+= card(x[1],x[2],x[3])
-            #print(mycontent)    
+            #print(mycontent)
             result = re.search("<div class=\"mycards\">(.*)</div>",text)
             if result is not None:
                 print(result)
@@ -866,13 +1157,13 @@ class Page:
                     text=text.replace(result.group(1),mycontent)
             Program.set_path("./")
             Program.set_content(text)
-            
+
             text=(text)
             print("render figure home")
             return render_figure("index.html")
         except Exception as e:
             print("erreur 1",e)
-    global menu        
+    global menu
     def menu(params = None):
         try:
             Program.set_title("Burger King")
@@ -906,21 +1197,26 @@ class Page:
                     mesburgers+= listburger(burger)
                     print("erreur")
                 if mesburgers == "":
-                    mesburgers = "mes items ici" 
+                    mesburgers = "mes items ici"
                 if res is not None and len(res.group(1)) > 0:
                     text=text.replace(res.group(1),mesburgers)
                 print("burgervalue")
                 #print(myburger[1])
-                
+
                 Program.set_path("./menu")
                 Program.set_content(text)
                 page=str(myburger[0] if myburger[0] > 1 else 'index')
                 return render_figure(page+".html")
         except Exception as e:
             print("erreur menu",e)
-    global confirmotp        
-    def confirmotp(email=None):
+    global confirmotp
+    def confirmotp(params=None):
         try:
+            print("confirm otp func")
+            print(params)
+            print(session.current_user)
+            email=session.current_user[2]
+            print(email)
             if email is not None:
                 Program.set_title("Burger King")
                 Program.set_path("./mespages")
@@ -932,6 +1228,7 @@ class Page:
                 print("email")
                 ff=open(Program.get_filename_path("confirmotp.html"))
                 text=ff.read()
+                print("text length : "+str(len(text)))
                 Program.set_js("")
                 fff=open(Program.get_filename_path("headersignin.html"))
                 myheader=fff.read()
@@ -943,16 +1240,18 @@ class Page:
                 Program.add_js("signin.js")
                 Program.set_footer("")
                 Program.set_path("./signup")
+                Program.set_mimetype("html")
+                print("confirm otp return program")
                 Program.set_content(unicode(text,'utf-8'))
                 return Program
         except Exception as e:
             print("erreur confirm otp",e)
-    global signup        
+    global signup
     def signup(params = None):
         try:
             print("sign up")
             Program.set_path("./mespages")
-            
+
             f=open(Program.get_filename_path("userconnecte.js"))
             js=f.read()
             fff=open(Program.get_filename_path("headersignin.html"))
@@ -973,7 +1272,7 @@ class Page:
             return render_figure("index.html")
         except Exception as e:
             print("erreur sign in",e)
-    global signin        
+    global signin
     def signin(params = None):
         try:
             print("sign in")
@@ -1000,7 +1299,7 @@ class Page:
             Program.set_js("")
         except Exception as e:
             print("erreur sign in",e)
-    global code        
+    global code
     def code(params = None):
         try:
             print("code")
@@ -1020,7 +1319,7 @@ class Page:
             return render_figure("index.html")
         except Exception as e:
             print("erreur 3",e)
-    global offers        
+    global offers
     def offers(params = None):
         try:
             print("offers")
@@ -1031,7 +1330,7 @@ class Page:
             return render_figure("index.html")
         except:
             print("erreur 4")
-    global rewards        
+    global rewards
     def rewards(params = None):
         try:
             Program.set_title("Burger King")
@@ -1055,7 +1354,7 @@ class S(BaseHTTPRequestHandler):
             Program=directory("Burger King")
             #Program.path("./")
             Program.set_url(self.path)
-            urlpath=Program.get_url()
+            urlpath=self.path
 
             #f = open("index.html", "r")
             query_components = parse_qs(urlparse(urlpath).query)
@@ -1081,7 +1380,6 @@ class S(BaseHTTPRequestHandler):
                 #    Program.set_url(x)
             #except:
             #    print("pas d'autre route")
-            urlpath=Program.get_url()
             print(urlpath)
             print('my url get')
             #self.data_string = params
@@ -1090,57 +1388,78 @@ class S(BaseHTTPRequestHandler):
             #render_pages()
             #myaccountinfo()
             #home()
-            mytype=urlpath.split(".")[-1] 
 
+            print("rendere")
+            if myroutes.get(myurlpath) is not None:
+                print("code html pour"+urlpath)
+                res=myroutes.get(myurlpath)(query_components)
+                if isinstance(res,str):
+                    print('is code html')
+                    codehtml=decode_any_string(force_to_unicode(codehtml))
+                elif isinstance(res,object):
+                    print("is object")
+                    print(res)
+                    Program=res
+                    if Program.get_current_user() is not None:
+                        print("current_user")
+                        print(Program.get_current_user())
+                        session.current_user=Program.get_current_user()
+                    html=render_figure("my file.html")
+                    print(html)
+                    codehtml=decode_any_string(force_to_unicode(html))
+                    print(len(codehtml))
+                try:
+                    code=(codehtml.decode("utf-8"))
+                except UnicodeEncodeError as e:
+                    print(type(e))
+                    print('gerer cette erreur')
+                    code=(codehtml.encode('utf-8'))
+                except UnicodeDecodeError as e:
+                    print(type(e))
+                    print('gerer cette erreur')
+                    code=(codehtml)
+            if Program.get_mimetype() is not None:
+                mytype=Program.get_mimetype()
+            else:
+                mytype=urlpath.split(".")[-1]
             print(mytype)
 
 
 
             print("Program.get json")
             print(Program.get_json() is None)
-            if myroutes.get(urlpath) is not None: 
-                print("code html pour"+urlpath)
-                codehtml=force_to_unicode(myroutes.get(urlpath)())
             print("mytype")
             print(mytype)
             print(switcher.get(mytype))
             print(myroutes.get(urlpath))
             if switcher.get(mytype) is None:
                 mytype="html"
-            print("rendere") 
-            print("get reidret "+str(Program.get_redirect()))
+            print("get redirect "+str(Program.get_redirect()))
             if str(Program.get_redirect()) == 'None':
                 if mytype != "html":
                     if switcher.get(mytype) is not None:
                         print("trouver fichier")
-                        self._set_headers(switcher.get(mytype))    
+                        self._set_headers(switcher.get(mytype))
                         self.wfile.write(Program.trouver_fichier(urlpath,myroutes).read())
                 elif route_post.get(urlpath) and Program.get_json() != "null":
                     print("return json")
                     x=Program.get_json()
                     Program.set_json(None)
 
-                    self._set_headers(switcher.get("json"))    
+                    self._set_headers(switcher.get("json"))
                     self.wfile.write(x)
                 else:
+                    print("my html page")
                     print(mytype)
-                    self._set_headers(switcher.get(mytype))    
-                    codehtml=decode_any_string(force_to_unicode(codehtml))
-                    try:
-                        code=(codehtml.decode("utf-8"))
-                    except UnicodeEncodeError as e:
-                        print(type(e))
-                        print('gerer cette erreur')
-                        code=(codehtml.encode('utf-8'))
-                    except UnicodeDecodeError as e:
-                        print(type(e))
-                        print('gerer cette erreur')
-                        code=(codehtml)
-                    self.wfile.write(code)    
+
+
+                    self._set_headers(switcher.get(mytype))
+                    self.wfile.write(code)
             else:
-                print("reirect is not none") 
+                print("reirect is not none")
                 self.send_response(301)
-                self.send_header('Location',Program.get_redirect())
+                myred=Program.get_redirect()
+                self.send_header('Location',myred)
                 Program.set_redirect(None)
             self.end_headers()
 
@@ -1148,7 +1467,7 @@ class S(BaseHTTPRequestHandler):
         except UnboundLocalError as e:
             print("erreur get",e)
             k=get_file_dir("404.html","./erreur")
-            self._set_headers(switcher.get("html"))    
+            self._set_headers(switcher.get("html"))
             self.wfile.write(k.read())
     def do_HEAD(self):
         self._set_headers()
@@ -1170,30 +1489,37 @@ class S(BaseHTTPRequestHandler):
                 print('my path')
                 print(myurlpath)
                 print(route_post.get(myurlpath))
-                if route_post.get(myurlpath) is not None: 
+                if route_post.get(myurlpath) is not None:
                     print("route trouve")
                     print(fields)
                     res=route_post.get(myurlpath)(fields)
                     if isinstance(res,str):
                         codehtml = res
-                        print(codehtml)
+                        print("is code HTML")
+                        #print(codehtml)
                     elif isinstance(res,object):
                         print("is object")
                         print(res)
-                        Program.dict2class(res.__dict__)
+                        Program=res
+                        if Program.get_current_user() is not None:
+                            print("current_user")
+                            print(Program.get_current_user())
+                            session.current_user=Program.get_current_user()
+                        #.dict2class(res.__dict__)
             except KeyError:
                 print("erreur 6")
 
 
             query_components = parse_qs(urlparse(urlpath).query)
             #self.data_string = params
-            urlpath=Program.get_url()
-
+            urlpath=self.path
+            print("redirect post:")
+            print(Program.get_redirect())
             copy()
             #render_pages()
             #myaccountinfo()
             #home()
-            mytype=self.path.split(".")[-1]
+            mytype=Program.get_mimetype() or self.path.split(".")[-1]
             print(urlpath)
             print("my type")
             print(mytype)
@@ -1201,8 +1527,6 @@ class S(BaseHTTPRequestHandler):
             print(Program.get_json() is not None)
             print(Program.get_json())
             print(route_post.get(myurlpath))
-            if switcher.get(mytype) is None:
-                mytype="html"
             print("redirect")
             print(Program.get_redirect())
             print(str(Program.get_redirect()) != 'None')
@@ -1211,53 +1535,60 @@ class S(BaseHTTPRequestHandler):
                 myred=Program.get_redirect()
                 self.send_header('Location',myred)
                 Program.set_redirect(None)
-                
+
 
             elif mytype == "json":
                 print("return json")
                 data=Program.get_json()
                 Program.set_json(None)
 
-                self._set_headers(switcher.get("json"))    
+                self._set_headers(switcher.get("json"))
                 self.wfile.write(str(data).replace("'",'"'))
-            elif mytype != "html":
-                if switcher.get(mytype) is not None: 
-                    if myroutes.get(urlpath) is not None:
-                        self._set_headers(switcher.get(mytype))    
-                        self.wfile.write(codehtml)
+            elif mytype is not None:
+                if mytype != "html":
+                    if switcher.get(mytype) is not None:
+                        if myroutes.get(urlpath) is not None:
+                            self._set_headers(switcher.get(mytype))
+                            self.wfile.write(codehtml)
             else:
                 print(mytype)
-                self._set_headers(switcher.get(mytype))    
+                self._set_headers(switcher.get(mytype))
                 self.wfile.write(codehtml)
             self.end_headers()
         except UnboundLocalError:
             print("erreur post")
             k=get_file_dir("404.html","./erreur")
-            self._set_headers(switcher.get("html"))    
+            self._set_headers(switcher.get("html"))
             self.wfile.write(k.read())
 
         return
 
 
-def run(server_class=HTTPServer, handler_class=S, port=8000):
+def run(server_class=HTTPServer, handler_class=S, port=8000,host="localhost"):
     server_address = ('', port)
     print("run erver")
     httpd = server_class(server_address, handler_class)
     #print 'http://localhost:8000'
     if len(argv) == 2:
-        print 'http://localhost:'+argv[1]
+        print 'http://'+host+':'+argv[1]
     else:
-        print 'http://localhost:8000'
+        print 'http://'+host+':'+str(port)
     httpd.serve_forever()
 
 if __name__ == "__main__":
     from sys import argv
-render_pages() 
+render_pages()
 #rewards()
 #offers()
 print((__words__).rstrip())
 
-myroutes = {"/":home,
+myroutes = {"/orders/refresh":refreshmyorders,
+"/account/orders":myorders,
+"/account/payment":accountpayment,
+"/account/payment/add-card":addcard,
+"/account/payment/add-gift-card":addgiftcard,
+"/signinuser": signinuser,
+"/":home,
 "/":home,"/signin":signin,
             "/signup": signup,
             "/rewards": rewards,
@@ -1270,6 +1601,8 @@ myroutes = {"/":home,
 }
 global route_post
 route_post={
+    "/savegiftcard": savegiftcard,
+    "/savepayment": savepayment,
     "/signup": signup_user,
     "/signin": signmein,
     "/saveinfo": savemyinfo,
@@ -1279,7 +1612,9 @@ route_post={
     "/checkuser.json": checkuser,
     "/validatecode": validatecode
 }
-if len(argv) == 2:
+if len(argv) == 3:
+    run(port=int(argv[1]),host=argv[2])
+elif len(argv) == 2:
     run(port=int(argv[1]))
 else:
-    run()    
+    run()

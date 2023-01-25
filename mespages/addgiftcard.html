@@ -1,0 +1,23 @@
+<h1>Ajouter une carte-cadeau</h1>
+<img src="/images/cartecadeau.png" />
+<p>Tous les fonds seront transférés et ajoutés à votre compte pour être utilisés avec l'application. Le montant sur votre carte physique sera de 0,00 $.</p>
+<form action="/signup" method="post" class="login-form" onsubmit="myfuncaddgiftcard();return false;" name="sign-up-form" id="myform">
+  <input type="text" name="numero" id="numero" autocomplete="none" required />
+  <label for="numero">numéro de carte Couronne</label>
+
+
+<a href="" class="mybtn" onclick="myfuncaddgiftcard();return false;">Enregistrer & continuer</a>
+</form>
+
+<div id="messageaddgiftcard">La carte a été enregistrée.</div>
+
+<div id="overlay">
+  <div id="text">
+Une erreur s'est produite durant la sauvegarde de la carte veuillez réessayer ultérieurement.
+    <div onclick="off()">
+    ok
+  </div>
+
+
+</div>
+</div>

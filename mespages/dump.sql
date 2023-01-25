@@ -8,16 +8,42 @@ mincal float,
 maxcal float,
 cat_id integer
 );
+CREATE TABLE IF NOT EXISTS giftcards (
+id INTEGER PRIMARY KEY,
+numero integer,
+user_id integer);
+
+CREATE TABLE IF NOT EXISTS creditcards (
+id INTEGER PRIMARY KEY,
+nom varchar(100),
+zip varchar(20),
+creditcard varchar(100),
+cvv varchar(100),
+datecard date,
+user_id integer not null);
+
+CREATE TABLE IF NOT EXISTS orders (
+id INTEGER PRIMARY KEY,
+creditcard_id integer,
+dateorder date,
+user_id integer not null);
+CREATE TABLE IF NOT EXISTS orderitems (
+id INTEGER PRIMARY KEY,
+burger_id integer not null,
+qty integer,
+order_id integer not null);
+
 CREATE TABLE IF NOT EXISTS cards (
 id INTEGER PRIMARY KEY,
-mytitle text unique not null,     
+mytitle text unique not null,
 mydescription text unique not null,
 mybutton TEXT,
 url VARCHAR(200),
 image VARCHAR(200));
+
 CREATE TABLE IF NOT EXISTS cats (
 id INTEGER PRIMARY KEY,
-name VARCHAR(200) unique,     
+name VARCHAR(200) unique,
 url VARCHAR(200),
 image VARCHAR(200)
 );
@@ -46,4 +72,3 @@ INSERT or ignore INTO burgers (name,prix,mincal,cat_id) VALUES ("Triple Whopper"
 INSERT or ignore INTO cards (mytitle,mydescription,mybutton) VALUES ("Now extended through 6/30/23!","You don't want to miss this! Join Royal Perks now to get your 🍟 every week, with any purchase, now through June 30, 2023.","Sign Up to Redeem");
 INSERT or ignore INTO cards (mytitle,mydescription,mybutton) VALUES ("Get rewarded like Royalty","Join Royal Perks to earn Crowns, redeem for BK® food and upsize a side or drink for free daily.","Sign Up to Redeem");
 INSERT or ignore INTO cards (mytitle,mydescription,mybutton) VALUES ("Free* Whopper, Croissan'wich, or Original Chicken Sandwich on your first digital order","Only on the BK® App and bk.com. Available on delivery. *Min $3+ Purch. req'd.","Sign Up to Redeem");
-

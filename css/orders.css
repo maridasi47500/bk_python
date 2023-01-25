@@ -1,0 +1,22 @@
+.mybtn {
+  border-radius:777777px;
+  color:white;
+  background-color:red;
+  margin:10px;
+  padding:10px;
+  float:left;
+  display:block;
+  clear:both;
+}
+
+.refreshbutton {
+  border-radius:777777px;
+  color:red;
+  border:1px solid red;
+  background-color:white;
+  margin:10px;
+  padding:10px;
+  float:left;
+  display:block;
+  clear:both;
+}

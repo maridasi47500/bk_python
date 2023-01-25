@@ -1,0 +1,53 @@
+<h1>Ajouter une méthode de paiement</h1>
+
+<form action="/signup" method="post" class="login-form" onsubmit="myfuncaddcard();return false;" name="sign-up-form" id="myform">
+  <input type="text" name="nom" value="" id="nom" autocomplete="none" required />
+  <label for="nom">Nom sur la carte</label>
+
+  <input type="text" name="creditcard" value="" id="creditcard" autocomplete="none" required />
+  <label for="creditcard">Numéro de Carte de Crédit</label>
+  <p class="error creditcard-error"></p>
+<div class="">
+
+    <table>
+        <tr>
+
+       <td>
+        <input type="text" name="date" value="" id="date" autocomplete="none" />
+          <label for="date">MM/YY *</label>
+
+            </td>
+              <td>
+        <input type="text" name="cvv" value="" id="cvv" autocomplete="none" />
+          <label for="cvv">CVV *</label>
+            </td>
+
+        </tr>
+    </table>
+
+</div>
+    <input type="text" name="zip" value="" id="zip" autocomplete="none" required />
+  <label for="zip">Code postal *</label>
+
+  <div class="autreschamps">
+<input type="checkbox" name="savecard" id="savecard" autocomplete="none" required />
+
+<label for="savecard">
+Enregistrer la carte, en enregistrant votre carte, vous consentez à ce que votre carte soit stockée et utilisée pour des achats.
+</label>
+<p class="error confidentialite-error"></p>
+  </div>
+<a href="" class="mybtn" onclick="myfuncaddcard();return false;">Enregistrer & continuer</a>
+</form>
+<div id="messageaddcard">La carte a été enregistrée.</div>
+
+<div id="overlay">
+  <div id="text">
+Une erreur s'est produite durant la sauvegarde de la carte veuillez réessayer ultérieurement.
+    <div onclick="off()">
+    ok
+  </div>
+
+
+</div>
+</div>
