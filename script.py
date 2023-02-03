@@ -24,7 +24,7 @@ switcher={
 }
 
 
-connection = sqlite3.connect("data_base_burger23456.db")
+connection = sqlite3.connect("db_burger090ERYYTHYYY7.db")
 
 # cursor
 global crsr
@@ -87,9 +87,16 @@ import SocketServer
 import random
 
 # connecting to the database
-
+global infotable
+def infotable(tablename):
+    crsr.execute("PRAGMA table_info(["+tablename+"])")
+    connection.commit()
+    matable=crsr.fetchall()
+    return matable
 def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
     idprecedent=0
+    print(sqlargs)
+    print(len(sqlargs))
     print(sql,sqlargs,templatename,errormessage,tablename)
     crsr.execute("PRAGMA table_info(["+tablename+"])")
     connection.commit()
@@ -97,7 +104,9 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
     Program.set_path("./mespages")
     h=get_file(templatename+".html")
     template=force_to_unicode(h.read())
-    crsr.execute(sql % sqlargs)
+    mysql=sql % sqlargs
+    print(mysql)
+    crsr.execute(mysql)
     connection.commit()
     res=crsr.fetchall()
     myfigure=""
@@ -107,13 +116,18 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         print("plusieurs "+tablename)
 
         for re in res:
-            paspremier = false
-            mytemplate=template
+            paspremier = False
+            mytemplate=force_to_unicode(template)
             for x in range(len(re)):
                 print(x)
-                strrep="(%s)" % (matable[x][1])
+                print(re[x])
+                z=re[x]
+                strrep=force_to_unicode("(%s)" % (matable[x][1]))
                 print(strrep)
-                mytemplate=mytemplate.replace(strrep, force_to_unicode(str(re[x])))
+                if type(z) == int or type(z) == float:
+                    z=str(z)
+                if z is not None:
+                    mytemplate=mytemplate.replace(strrep, force_to_unicode(z))
                 if matable[x][1] == sortby:
                     if idprecedent != 0:
                         if re[x] != idprecedent:
@@ -135,7 +149,46 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         return myfigure
     else:
         return force_to_unicode("<p>"+errormessage+"</p>")
+global searchmyparams
+def searchmyparams(query_components,myurlpath):
+    print("search for my params")
+    mysql="select * from burgercats"
+    crsr.execute(mysql)
+    connection.commit()
+    res=crsr.fetchall()
+    mysql="select * from burgers order by burger_number desc"
+    crsr.execute(mysql)
+    connection.commit()
+    res2=crsr.fetchall()
 
+
+    dic={"/menu/recents":"recents","/menu/favorites":"favorites","/menu":"fullmenu"}
+    print(myurlpath,";;this url path ::",dic)
+    mytab1=dic.get(myurlpath)
+    if mytab1 is not None:
+
+        myurlpath = "/menu"
+        query_components["mytab"]=[mytab1]
+        print("url",myurlpath,"my tab",query_components.get("mytab"))
+
+    else:
+        spliturl=myurlpath.split("/")
+        if spliturl[-1] == "menu" or spliturl [-2] == "menu":
+            print("url: ",myurlpath)
+
+            for r in res:
+                print(r[0],r[1],r[2])
+                if "/"+r[2] in myurlpath:
+                    myurlpath=myurlpath.replace("/"+r[2], "")
+                    query_components["catid"]=[r[0]]
+                    print("category",r[1])
+            for r in res2:
+                print(r[0],r[1],r[2])
+                if "/menu/"+str(r[0]) in myurlpath:
+                    myurlpath=myurlpath.replace("/menu/"+str(r[0]), "/burger")
+                    query_components["burgerid"]=[r[0]]
+            print(myurlpath)
+    return [myurlpath,query_components]
 global __words__
 __words__ = ""
 def render_figure(pathname):
@@ -766,15 +819,150 @@ def signmein(query_components):
         print("erreur sign me in",e)
 global refreshmyorders
 def refreshmyorders(query_components):
-    sql_command = "select burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders where user_id = %s left join orderitems o where o.order_id = orders.id left join burgers on o.burger_id = burgers.id"
+    sql_command = "select  orders.user_id as userid, burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders left join orderitems o on o.order_id = orders.id left join burgers on o.burger_id = burgers.burger_number where orders.user_id = %s"
     message_else="Commencez une nouvelle commande maintenant !"
     tablename="orders"
-    str="okokokokok"
-    str="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order.html", message_else, tablename,"orderid","_orderid.html")+"</div>"
+    mystr="okokokokok"
+    mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid.html")+"</div>"
     try:
-        Program.set_content(force_to_unicode(str))
+        Program.set_content(force_to_unicode(mystr))
         Program.set_mimetype("html")
         Program.set_layout(False)
+        return Program
+    except Exception as e:
+
+        print("erreur",e)
+    print("okokokok")
+global showburger
+def showburger(query_components):
+    print("show menu",query_components)
+    dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger","3":"burger=burger","4":"burger=side","5":"burger=drink","6":"burger=sweet","7":"burger=burger&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy"}
+    Program.set_title("Burger King")
+    print("burger king")
+    Program.add_css("burger.css")
+    Program.add_js("burger.js")
+    Program.set_path("./mespages")
+
+    print('hi')
+    Program.set_header_with_path("headersignin.html")
+    Program.set_header(Program.get_header().replace("\"/\"","\"/menu\""))
+    Program.set_footer_with_path("footer.html")
+    burgerid=str(query_components.get("burgerid")[0])
+    sql_command = "select * from burgers where burger_number = %s" % (burgerid)
+    crsr.execute(sql_command)
+    connection.commit()
+    res=crsr.fetchall()
+    message_else=""
+    tablename="burgers"
+    Program.set_path("./mespages")
+    matable=infotable(tablename)
+    contentpage=force_to_unicode(get_file("burger.html").read())
+    contentpage=contentpage.replace("<!-- myparams -->",dataparams[res[0][7]]+"&burgerid="+str(res[0][0]))
+    sql_command = "select * from nutinfos where burger_id = %s" % (burgerid)
+    tablename="nutinfos"
+    message_else="Aucune information n'est disponible."
+    collectionstr= display_collection(sql_command, (), "_infonutrition", message_else, tablename)
+
+    contentpage=contentpage.replace("info nutritionnelle ici",collectionstr)
+    sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("2","3",burgerid)
+    tablename="burgers"
+    message_else=""
+    collectionstr= display_collection(sql_command, (), "_combosize", message_else, tablename)
+    contentpage=contentpage.replace("<!-- size combo here -->",collectionstr)
+
+    sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("4","5",burgerid)
+    collectionstr= display_collection(sql_command, (), "_valuesize", message_else, tablename)
+    contentpage=contentpage.replace("<!-- size item here -->",collectionstr)
+    sql_command = "select burgers.* from burgers where burger_number = %s and burgers.burgercat_id = %s" % (burgerid,1)
+    collectionstr= display_collection(sql_command, (), "_customizeburger", message_else, tablename)
+    contentpage=contentpage.replace("<!-- personnaliser votre burger -->",collectionstr)
+
+
+    if len(res) > 0:
+        for re in res:
+            paspremier = False
+            contentpage=force_to_unicode(contentpage)
+            for x in range(len(re)):
+                print(x)
+                print(re[x])
+                z=re[x]
+                strrep=force_to_unicode("(%s)" % (matable[x][1]))
+                print(strrep)
+                if type(z) == int or type(z) == float:
+                    z=str(z)
+                if z is not None:
+                    contentpage=contentpage.replace(strrep, force_to_unicode(z))
+    Program.set_content(contentpage)
+    #=======
+    return Program
+
+    #connection.commit()
+global showmenu
+def showmenu(query_components):
+    print("show menu",query_components)
+    Program.set_title("Burger King")
+    print("burger king")
+    Program.set_path("./mespages")
+    print('hi')
+    Program.set_header_with_path("header.html")
+    Program.set_footer_with_path("footer.html")
+    sql_command = "select * from burgercats"
+    message_else=""
+    tablename="burgercats"
+    Program.set_path("./mespages")
+
+    contentpage=force_to_unicode(get_file("menu.html").read())
+    mytabs=display_collection(sql_command, (), "_burgercat", message_else, tablename)
+    #=======
+    if query_components.get("mytab") is not None:
+        x=query_components.get("mytab")[0]
+    else:
+        x=""
+    print("")
+    print("my tab name:",x)
+    if x == "fullmenu":
+        sql_command = "select * from burgercats"
+        message_else="Il n'y a aucune catégorie"
+        tablename="burgercats"
+        myitems=display_collection(sql_command, (), "_myburgercat", message_else, tablename)
+        contentpage=contentpage.replace("my items here",myitems)
+    elif x == "recents" and query_components.get("userid") is not None:
+        sql_command = "select * from burgers left join user_recents u on u.burger_id = burgers.id group by burgers.id having u.user_id = %s"
+        message_else="commencez une commande pour voir les items ici<a href=\"/store-locator\">commencez à commander</a>"
+        tablename="burgers"
+        myarguments=(str(query_components.get("userid")[0]))
+        myitems=display_collection(sql_command, myarguments, "_burger", message_else, tablename)
+        contentpage=contentpage.replace("my items here",myitems)
+    elif x == "recents":
+        myitems="<h2>Sign In to Save Recents</h2><h3>Sign up or sign in to save your recents.</h3><a href=\"/signin\">Sign in</a>"
+        contentpage=contentpage.replace("my items here",myitems)
+    elif x == "favorites" and query_components.get("userid") is not None:
+        sql_command = "select * from burgers left join user_favs u on u.burger_id = burgers.id group by burgers.id having u.user_id = %s"
+        message_else="Favorisez un article de votre panier ou des articles récents pour l'enregistrer en tant que favori."
+        tablename="burgers"
+        myarguments=(str(query_components.get("userid")[0]))
+        myitems=display_collection(sql_command, myarguments, "_burger", message_else, tablename)
+        contentpage=contentpage.replace("my items here",myitems)
+    elif x == "favorites":
+        myitems="<h2>Sign In to Save Favorites</h2><h3>Sign up or sign in to save your favorites.</h3><a href=\"/signin\">Sign in</a>"
+        contentpage=contentpage.replace("my items here",myitems)
+
+    elif query_components.get("catid") is not None:
+        sql_command = "select * from burgers where burgercat_id = %s"
+        message_else="Il n'y a aucun item < a href=\"/menu\">Retour au menu</a>"
+        tablename="burgers"
+        myitems=display_collection(sql_command, (str(query_components.get("catid")[0])), "_burger", message_else, tablename)
+        contentpage=contentpage.replace("my items here",myitems)
+
+    #=======
+
+    contentpage=contentpage.replace("my tabs here",mytabs)
+
+    try:
+        Program.set_content(force_to_unicode(contentpage))
+        Program.set_mimetype("html")
+        Program.set_footer("")
+        Program.add_css("mymenu.css")
         return Program
     except Exception as e:
 
@@ -783,18 +971,18 @@ def refreshmyorders(query_components):
     #connection.commit()
 global myorders
 def myorders(query_components):
-    sql_command = "select burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders where user_id = %s left join orderitems o where o.order_id = orders.id left join burgers on o.burger_id = burgers.id"
+    sql_command = "select orders.user_id as userid, burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders left join orderitems o on o.order_id = orders.id left join burgers on o.burger_id = burgers.burger_number where orders.user_id = %s"
     message_else="Commencez une nouvelle commande maintenant !"
     tablename="orders"
-    str="okokokokok"
-    str="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order.html", message_else, tablename,"orderid","_orderid.html")+"</div>"
+
+    mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid")+"</div>"
     try:
         Program.add_js("orders.js")
         Program.add_css("orders.css")
         Program.set_path("./mespages")
         k=get_file("orders.html")
         text=force_to_unicode(k.read())
-        text=text.replace("les commandes apparaissent ici",str)
+        text=text.replace("les commandes apparaissent ici",mystr)
 
         Program.set_content(text)
         return Program
@@ -857,7 +1045,11 @@ def ajoutlistburger(burger):
 # execute the statement
 for sql in sql_command.split(";"):
     print(sql)
-    crsr.execute(sql)
+    try:
+        crsr.execute(sql)
+    except Exception as e:
+        print(e)
+
 connection.commit()
 for cat in menuburger:
     crsr.execute(""" insert or ignore into cats (name,url) values ('"""+cat['title']+ """','"""+cat['url']+ """');""")
@@ -1044,7 +1236,7 @@ class Page:
             Program.add_css("accountpaiement.css")
             text=force_to_unicode(j.read())
             #sql,templatename,errormessage,tablename
-            mysql="select * from creditcards where user_id = %s" % (session.current_user[0])
+            mysql="select * from creditcards where orders.user_id = %s" % (session.current_user[0])
             str=display_collection(mysql,(),"_modedepaiement","Aucun mode de paiement n'a été ajouté","creditcards")
             text=text.replace("ici le mode de paiement",str)
             Program.set_content(text)
@@ -1355,15 +1547,26 @@ class S(BaseHTTPRequestHandler):
             #Program.path("./")
             Program.set_url(self.path)
             urlpath=self.path
+            myurlpath=urlpath.split("?")[0]
 
             #f = open("index.html", "r")
             query_components = parse_qs(urlparse(urlpath).query)
+            print(query_components,"what params")
+            x=searchmyparams(query_components,myurlpath)
+            if x:
+                print(x)
+                query_components=x[1]
+                myurlpath=x[0]
+
+            try:
+                query_components["userid"]=[session.current_user[0]]
+            except:
+                print("aucun user connecté")
             #print(query_components)
             try:
                 insertburger(query_components)
             except KeyError:
                 print("erreur 6")
-            myurlpath=urlpath.split("?")[0]
             print(myurlpath)
             try:
                 print(" route_post={")
@@ -1390,6 +1593,7 @@ class S(BaseHTTPRequestHandler):
             #home()
 
             print("rendere")
+
             if myroutes.get(myurlpath) is not None:
                 print("code html pour"+urlpath)
                 res=myroutes.get(myurlpath)(query_components)
@@ -1431,6 +1635,8 @@ class S(BaseHTTPRequestHandler):
             print("mytype")
             print(mytype)
             print(switcher.get(mytype))
+
+
             print(myroutes.get(urlpath))
             if switcher.get(mytype) is None:
                 mytype="html"
@@ -1480,7 +1686,15 @@ class S(BaseHTTPRequestHandler):
             urlpath=Program.get_url()
 
             query_components = parse_qs(urlparse(urlpath).query)
-
+            x=searchmyparams(query_components,urlpath)
+            if x:
+                print(x)
+                query_components=x[1]
+                urlpath=x[0]
+            try:
+                query_components["userid"]=[session.current_user[0]]
+            except:
+                print("aucun user connecté")
             print "in post method"
             self.data_string = self.rfile.read(int(self.headers['Content-Length']))
             fields = parse_qs(self.data_string)
@@ -1510,8 +1724,7 @@ class S(BaseHTTPRequestHandler):
                 print("erreur 6")
 
 
-            query_components = parse_qs(urlparse(urlpath).query)
-            #self.data_string = params
+        #self.data_string = params
             urlpath=self.path
             print("redirect post:")
             print(Program.get_redirect())
@@ -1547,6 +1760,8 @@ class S(BaseHTTPRequestHandler):
             elif mytype is not None:
                 if mytype != "html":
                     if switcher.get(mytype) is not None:
+
+
                         if myroutes.get(urlpath) is not None:
                             self._set_headers(switcher.get(mytype))
                             self.wfile.write(codehtml)
@@ -1582,7 +1797,8 @@ render_pages()
 #offers()
 print((__words__).rstrip())
 
-myroutes = {"/orders/refresh":refreshmyorders,
+myroutes = {"/customizemenu":customizemymenu,"/burger": showburger,"/menu": showmenu,
+"/orders/refresh":refreshmyorders,
 "/account/orders":myorders,
 "/account/payment":accountpayment,
 "/account/payment/add-card":addcard,
