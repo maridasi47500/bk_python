@@ -149,6 +149,46 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         return myfigure
     else:
         return force_to_unicode("<p>"+errormessage+"</p>")
+global customizemymenu
+def customizemymenu(query_components):
+    try:
+        Program.set_layout(false)
+        Program.set_mimetype("html")
+        print("hllo")
+        code=""
+        burgerid=query_components["burgerid"][0]
+        Program.set_path("./mespages/custom")
+        dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger","3":"burger=burger","4":"burger=side","5":"burger=drink","6":"burger=sweet","7":"burger=burger&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy"}
+        for myvalues in dataparams.values():
+            othervalues=map(splitparams,myvalues.split("&"))
+            if all(query_components[param][0] == item[1] for item in othervalues):
+                for param, value in othervalues:
+                    print("hello")
+                    if value=="burger":
+                        tablename="burgers"
+                        sql="select * from burgers where id = %s"
+                        values=(burgerid)
+                        code+=display_collection(sql,values,tablename,"_"+param)
+                    elif value=="burger" or value=="sandwich":
+                        tablename="burgers"
+                        sql="select * from burgers where id = %s"
+                        values=(burgerid)
+                        code+=display_collection(sql,values,tablename,"_"+param)
+                    elif value=="sweet":
+                        tablename="burgers"
+                        sql="select * from burgers where id = %s"
+                        values=(burgerid)
+                        code+=display_collection(sql,values,tablename,"_"+value)
+                    elif param in ["drink","drink1","drink2","side1","side2","side"]:
+                        tablename="burgers"
+                        sql="select * from burgers where id = %s"
+                        values=(burgerid)
+                        code+=display_collection(sql,values,tablename,"_"+param)
+                        #replace size with value
+                break
+        return Program
+    except:
+        print("my errooor")
 global searchmyparams
 def searchmyparams(query_components,myurlpath):
     print("search for my params")
@@ -365,7 +405,9 @@ def afficher_modepaiement(text,usernumber):
     else:
         return text.replace('ici le mode de paiement',"<p>Vous n'avez actuellement aucun mode de paiement enregistré</p>"),
 
-
+global splitparams
+def splitparams(x):
+    return x.split("=")
 def myparams(x):
     myvar={
     'monemailici': Program.get_email(),
@@ -833,6 +875,7 @@ def refreshmyorders(query_components):
 
         print("erreur",e)
     print("okokokok")
+
 global showburger
 def showburger(query_components):
     print("show menu",query_components)
