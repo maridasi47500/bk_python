@@ -13,3 +13,11 @@ function onburger() {
 function offburger() {
   document.getElementById("customizeburger").style.display = "none";
 }
+window.onload=function(){
+  $.ajax({
+    url:"/customizemenu?"+myparams.innerHTML,
+    success:function(data){
+      personnaliser_commande.innerHTML=data;
+    }
+  });
+}

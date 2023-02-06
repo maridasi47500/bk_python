@@ -24,3 +24,10 @@
   height:250px;
   -ms-transform: translate(-50%,-50%);
 }
+
+.item {
+  text-align:center;
+}
+.item img {
+  margin-bottom:50px;
+}
