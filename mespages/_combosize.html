@@ -1,13 +1,20 @@
 <h2>combo size</h2>
-<input id="entree" type="radio" value="entree" name="combosize"/>
-<label  for="entree">seulement le sandwich</label>
+<input id="entree" data-params="burger=value" type="radio" value="entree" name="combosize" onchange="loadburger(myparams.innerHTML+'&'+this.dataset.params);return false;"/>
+<label  for="entree">seulement le sandwich<br>
+l'entrée seulement
+</label>
 
-<input data-params="burger=entree&drink=small&side=small" id="small" type="radio" value="small" name="combosize"/>
-<label  for="small">small</label>
+<input data-params="burger=entree&drink=small&side=small" id="small" type="radio" value="small" name="combosize" onchange="loadburger(myparams.innerHTML+'&'+this.dataset.params);return false;"/>
+<label  for="small">small<br>
+petite boisson et petit accompagnement compris 
+</label>
 
 
-<input data-params="burger=entree&drink=medium&side=medium" id="medium" type="radio" value="medium" name="combosize"/>
-<label  for="medium">medium</label>
+<input data-params="burger=entree&drink=medium&side=medium" id="medium" type="radio" value="medium" name="combosize" onchange="loadburger(myparams.innerHTML+'&'+this.dataset.params);return false;"/>
+<label  for="medium">medium<br>
+boisson taille moyenne et accompagnement taille moyenne compris</label>
 
-<input data-params="burger=entree&drink=large&side=large" id="large" type="radio" value="big" name="combosize"/>
-<label  for="large">large</label>
+<input data-params="burger=entree&drink=large&side=large" id="large" type="radio" value="big" name="combosize" onchange="loadburger(myparams.innerHTML+'&'+this.dataset.params);return false;"/>
+<label  for="large">large<br>
+grosse boisson et gros accompagnement compris
+</label>

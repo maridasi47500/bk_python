@@ -1,0 +1,65 @@
+global confirmjwt
+import directory
+def confirmjwt(query_components):
+    try:
+        Program=directory("bk")
+        print("sign sign up",query_components["token"])
+        if query_components.get("token"):
+            token=query_components.get("token")[0]
+
+            crsr.execute("select * from users where token = '" + str(token) + "'")
+            connection.commit()
+            user=crsr.fetchall()[0]
+            session.current_user=user
+            Program.set_current_user(user)
+            user_number=user[0]
+            prenom = user[1]
+            email = user[2]
+            offres = user[5]
+            #user = crsr.fetchall()
+            print("envoyer le code bk")
+            bkcode=user[3]
+            session.current_user=user
+
+            # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
+            host_smtp = "smtp.gmail.com"
+            port_smtp = 587
+            email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
+            mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
+
+            # Configuration du mail
+            Program.set_path("./mespages")
+            m=get_file("inscription.txt")
+            n=m.read()
+            print("mail")
+            mail_content = n
+            print("mail")
+            mail_content+="\n http://localhost:8000/confirm-jwt?token="+str()
+            print("dest")
+            email_destinataire = "cleo.ordioni@gmail.com"
+            formule_p = "Inscription à Burger King"
+            msg = MIMEMultipart()
+            msg['From'] = email_smtp
+            msg['To'] = email_destinataire
+            msg['Subject'] = formule_p
+            print("message")
+            msg.attach(MIMEText(str(mail_content)))
+            # Création de l'objet mail
+            mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
+            mail.ehlo() # protocole pour SMTP étendu
+            mail.starttls() # email crypté
+            mail.login(email_smtp, mdp_smtp)
+            print("envoyer message")
+            mail.sendmail(email_smtp, email_destinataire, msg.as_string())
+            mail.close()
+            Program.set_path("./")
+
+            Program.set_url("/")
+            Program.set_redirect("/")
+            #Program.set_redirect("/signinuser?user_number=" + str(user_number))
+            Program.set_mimetype(None)
+            return Program
+            #return confirmotp(email)
+
+    except Exception as e:
+        print("erreur confirm jwt",e)

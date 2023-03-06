@@ -20,4 +20,13 @@ window.onload=function(){
       personnaliser_commande.innerHTML=data;
     }
   });
-}
+};
+function loadburger(params){
+  $.ajax({
+    url:"/customizemenu?"+params,
+    success:function(data){
+      personnaliser_commande.innerHTML=data;
+    }
+  });
+  return false;
+  }

@@ -9,12 +9,9 @@ class directory(object):
         path1=os.getcwd()
         self.path1=os.getcwd()
         self.title = title
-        self.layout = "ok"
         self.mytitle = title
         self.js=""
         self.url=""
-        self.current_user=()
-        self.mimetype=None
         self.json=None
         self.userid=""
         self.redirect=None
@@ -28,44 +25,12 @@ class directory(object):
         self.header=header1.read()
         self.path=""
         self.footer=footer1.read()
-        self.parameters={}
-
-    def switcher(self,extension):
-        return {
-        'html':'text/html',
-        'css':'text/css',
-        'json':'application/json',
-        'js':'text/javascript',
-        'png':"image/png",
-        'ico':'image/vnd.microsoft.icon'
-        }[extension]
-    def parameters(self):
-        return self.parameters
-    def run(self,redirect):
-        self.parameters={codereponse:301,location:redirect}
-    def file(self,mime,location,content):
-        self.parameters={mime:self.switcher(mime),codereponse:200,location:location,content:content}
-    def dict2class(self, my_dict):
-        for key in my_dict:
-            setattr(self, key, my_dict[key])
-    def set_header_with_path(self,header):
+    def set_header_with_path(self,header): 
         header1=self.get_file_with_path(header)
         self.header=header1.read()
-    def set_current_user(self,user):
-        self.current_user=user
-    def get_current_user(self):
-        return self.current_user
-    def set_footer_with_path(self,footer):
+    def set_footer_with_path(self,footer):   
         footer1=self.get_file_with_path(footer)
         self.footer=footer1.read()
-    def set_layout(self,type):
-        self.layout=type
-    def get_layout(self):
-        return self.layout
-    def set_mimetype(self,type):
-        self.mimetype=type
-    def get_mimetype(self):
-        return self.mimetype
     def edit_title(self,str):
         self.title = str+ " - "+self.mytitle
     def set_title(self,str):
@@ -78,7 +43,7 @@ class directory(object):
         self.email=email
     def get_json(self):
         return json.dumps(self.json, ensure_ascii=False).replace("'",'"')
-
+        
     def set_json(self,json):
         self.json=json
     def get_redirect(self):
@@ -104,12 +69,12 @@ class directory(object):
     def get_header(self):
         return self.header
     def set_header(self,myheader):
-        self.header=myheader
+        self.header=myheader   
     def get_footer(self):
         return self.footer
     def set_footer(self,myfooter):
         self.footer=myfooter
-    def set_filename(self,name):
+    def set_filename(self,name):  
         self.filename=name
     def title(self,title):
         self.title = title
@@ -120,7 +85,6 @@ class directory(object):
     def set_js(self,js):
         self.js=js
     def add_js(self,js):
-        self.set_path("./js")
         self.js+="<script type=\"text/javascript\" src=\""+self.get_htmlpath()+"/"+js+"\"></script>"
     def get_htmlpath(self):
         return self.htmlpath
@@ -139,15 +103,14 @@ class directory(object):
                     file=self.get_file(i)
             except:
                 print("erreur")
-        return file
+        return file        
     def get_file(self,file):
-
+        
         return open(file,'r')
     def get_file_with_path(self,file):
-
+        
         return open(self.path+"/"+file,'r')
     def add_css(self,css):
-        self.set_path("./css")
         self.css+="<link rel=\"stylesheet\" href=\""+self.get_htmlpath()+"/"+css+"\"/>"
     def get_css(self):
         return self.css
@@ -163,11 +126,11 @@ class directory(object):
     def get_filename_path(self,file):
         return self.path+"/"+file
     def get_css_dir_path(self):
-        return "./css/"
+        return "./css/" 
     def get_js_dir_path(self):
-        return "./js/"
+        return "./js/" 
     def get_image_dir_path(self):
-        return "./images/"
+        return "./images/" 
     def path(self,path):
         try:
             self.path = self.path1+path.replace("./","/")

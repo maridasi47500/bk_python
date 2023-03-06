@@ -9,6 +9,15 @@ maxcal float,
 burgercat_id integer,
 mytype varchar(100)
 );
+CREATE TABLE IF NOT EXISTS ingredients (
+id INTEGER PRIMARY KEY,
+name VARCHAR(200) unique,
+image VARCHAR(50),
+description text,
+prix float,
+mincal float,
+maxcal float,
+);
 CREATE TABLE IF NOT EXISTS nutinfos (
 burger_id INTEGER PRIMARY KEY,
 calories float,
@@ -124,28 +133,37 @@ INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUE
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('big mac francais',20.00,1300,1800,2,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('big mac americain',25.00,1300,1900,2,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('big mac allemand',30.00,1100,1800,2,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('american original chicken sandwich',20.00,1000,2000,3,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('italian original chicken sandwich',20.00,1000,2000,3,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('mexican original chicken sandwich',20.00,1000,2000,3,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('bk royal crispy chicken',20.00,1000,2000,3,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('big mac first',20.00,1000,2000,3,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('frites',20.00,1000,2000,4,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ('calamar',20.00,1000,2000,4,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ("coca cola",'14.00','1540','2750',5,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ("sprite",'14.00','1540','2750',5,"burger.png");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ("ice tea",'14.00','1540','2750',5,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,burgercat_id,image) VALUES ("Mix n' Match Meals",'14.00','1540','2750',5,"burger.png");
 
 INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("Whopper","6.89","670",6,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("cheeseburger","6.89","670",7,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("Double Whopper®","7.29","919",6,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("Triple Whopper","7.59","1169",6,"burger.png");
-INSERT or ignore INTO burgers (name) VALUES ('mayo');
-INSERT or ignore INTO burgers (name) VALUES ('bacon');
-INSERT or ignore INTO burgers (name) VALUES ('stacker sauce');
-INSERT or ignore INTO burgers (name) VALUES ('ketchup');
-INSERT or ignore INTO burgers (name) VALUES ('moutarde');
-INSERT or ignore INTO burgers (name) VALUES ('lettuce');
-INSERT or ignore INTO burgers (name) VALUES ('onion');
-INSERT or ignore INTO burgers (name) VALUES ('pickle');
-INSERT or ignore INTO burgers (name) VALUES ('BBQ sauce');
-INSERT or ignore INTO burgers (name,mincal) VALUES ('american cheese',124);
-
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('fries',20.00,300,800,"burger.png","jrsides");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('apple juice',20.00,300,800,"burger.png","jrdrinks");
+
+
+INSERT or ignore INTO ingredients (name) VALUES ('mayo');
+INSERT or ignore INTO ingredients (name) VALUES ('bacon');
+INSERT or ignore INTO ingredients (name) VALUES ('stacker sauce');
+INSERT or ignore INTO ingredients (name) VALUES ('ketchup');
+INSERT or ignore INTO ingredients (name) VALUES ('moutarde');
+INSERT or ignore INTO ingredients (name) VALUES ('lettuce');
+INSERT or ignore INTO ingredients (name) VALUES ('onion');
+INSERT or ignore INTO ingredients (name) VALUES ('pickle');
+INSERT or ignore INTO ingredients (name) VALUES ('BBQ sauce');
+INSERT or ignore INTO ingredients (name,mincal) VALUES ('american cheese',124);
+
 
 
 INSERT or ignore INTO cards (mytitle,mydescription,mybutton) VALUES ("Now extended through 6/30/23!","You don't want to miss this! Join Royal Perks now to get your 🍟 every week, with any purchase, now through June 30, 2023.","Sign Up to Redeem");

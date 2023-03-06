@@ -13,7 +13,31 @@ global render_pages
 global connection
 global get_file
 global switcher
-
+import customizemymenu
+import showburger
+import directory
+import afficher_modepaiement
+import check_email
+import code
+import signin
+import addcard
+import signup_user
+import refreshmyorders
+import myaccountinfo
+import home
+import confirmotp
+import menu
+import signup
+import showmenu
+import insertburger
+import checkuser
+import myorders
+import displaythisburger
+import signinuser
+import signmein
+import accountpayment
+import savemyinfo
+import savegiftcard
 switcher={
 'html':'text/html',
 'css':'text/css',
@@ -24,7 +48,7 @@ switcher={
 }
 
 
-connection = sqlite3.connect("db_burger090ERjhYYTHYYYh7.db")
+connection = sqlite3.connect("desburgers.db")
 
 # cursor
 global crsr
@@ -63,7 +87,6 @@ from myfunc import *
 from pagehtml import *
 import codecs
 import re
-
 
 global Program
 global get_file
@@ -149,72 +172,7 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         return myfigure
     else:
         return force_to_unicode("<p>"+errormessage+"</p>")
-global customizemymenu
-def customizemymenu(query_components):
-    try:
-        print("customize my burger (=)")
-        Program.set_layout(False)
-        Program.set_mimetype("html")
-        print("hllo")
 
-        code=""
-        burgerid=query_components["burgerid"][0]
-        Program.set_path("./mespages/custom")
-        dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger","4":"burger=sideonly","5":"burger=drinkonly","6":"burger=sweet","7":"burger=burgerjr&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy"}
-        for myvalues in dataparams.values():
-            othervalues=map(splitparams,myvalues.split("&"))
-            try:
-                print(othervalues)
-                print(all(query_components.get(item[0])[0] == item[1] for item in othervalues))
-                if all( query_components[item[0]][0] == item[1] for item in othervalues):
-                    try:
-
-                        for param1, value in othervalues:
-                            print("hello")
-                            Program.set_path("./mespages/custom")
-                            erreurmsg=""
-                            if value in ["burgerjr","burger","sandwich"]:
-                                tablename="burgers"
-                                sql="select * from burgers where burger_number = %s"
-                                values=(burgerid)
-                                code+=display_collection(sql,values,"/custom/_"+param1,erreurmsg,tablename)
-                            elif value in ["sweet","sideonly","drinkonly"]:
-                                tablename="burgers"
-                                sql="select * from burgers where burger_number = %s"
-                                values=(burgerid)
-                                code+=display_collection(sql,values,"/custom/_"+value,erreurmsg,tablename)
-                            elif param1 in ["drink","drink1","drink2"]:
-                                tablename="burgers"
-                                sql="select * from burgers where burgercat_id = %s"
-                                values=("5")
-                                code+=display_collection(sql,values,"custom/_"+param1,erreurmsg,tablename)
-                                #replace size with value
-                            elif param1 in ["side1","side2","side"]:
-                                tablename="burgers"
-                                sql="select * from burgers where burgercat_id = %s limit 1"
-                                values=("4")
-                                code+=display_collection(sql,values,"custom/_"+param1,erreurmsg,tablename)
-                                #replace size with value
-                            elif param1 in ["jrsides","jrdrinks"]:
-                                tablename="burgers"
-                                sql="select * from burgers where mytype = '%s' limit 1"
-                                values=(value)
-                                code+=display_collection(sql,values,"custom/_"+param1,erreurmsg,tablename)
-                                #replace size with value
-                            elif param1 in ["jrtreats"]:
-                                tablename="burgers"
-                                sql="select * from burgers where burger_number = %s limit 1"
-                                values=(burgerid)
-                                code+=display_collection(sql,values,"custom/_"+param1,erreurmsg,tablename)
-                                #replace size with value
-                    except Exception as e:
-                        print("erreur azertyu",e)
-            except Exception as e:
-                print("next params",e)
-        Program.set_content(force_to_unicode(code))
-        return Program
-    except Exception as e:
-        print("my errooor (=)",e)
 global searchmyparams
 def searchmyparams(query_components,myurlpath):
     print("search for my params")
@@ -255,8 +213,7 @@ def searchmyparams(query_components,myurlpath):
                     query_components["burgerid"]=[r[0]]
             print(myurlpath)
     return [myurlpath,query_components]
-global __words__
-__words__ = ""
+
 def render_figure(pathname):
     try:
         global path1
@@ -298,106 +255,78 @@ def render_figure(pathname):
                 print('gerer cette erreur')
                 html=myparams(content())
         else:
-            html="<!doctype html>"
-            html+="<html>"
-            html+="<head>"
-            html+="<meta charset=\"UTF-8\">"
-            html+="<title>"
-            print("title")
-            html+=title()
-            html+="</title>"
-            html+="<link rel=\"icon\" href=\"/images/logo.png\">"
-            html+="<link rel=\"stylesheet\" href=\"/css/css.css\"/>"
-            html+=Program.get_css()
-            html+="</head>"
-            html+="<body>"
+            title=title()
+            css=Program.get_css()
+            body=""
+            js=""
             print("header")
             try:
-                html+=decode_any_string(header())
+                body+=decode_any_string(header())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('header gerer cette erreur')
-                html+=header().encode('utf-8')
+                body+=header().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=header()
-            html+="<main>"
+                body+=header()
             print("content")
             try:
-                html+=decode_any_string(myparams(content()))
+                body+=decode_any_string(myparams(content()))
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=myparams(content()).encode('utf-8')
+                body+=myparams(content()).encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=myparams(content())
+                body+=myparams(content())
             print("footer")
             print("type footer")
 
             print(type(force_to_unicode(footer())))
 
             try:
-                html+=decode_any_string(footer())
+                body+=decode_any_string(footer())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=footer().encode('utf-8')
+                body+=footer().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=footer()
+                body+=footer()
             print("footer ajouté")
-            html+="</main>"
             print("type menu")
             print(type(Program.get_menu()))
             try:
-                html+=force_to_unicode(Program.get_menu())
+                body+=force_to_unicode(Program.get_menu())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=Program.get_menu().encode('utf-8')
+                body+=Program.get_menu().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html+=Program.get_menu()
+                body+=Program.get_menu()
             print("meu ajouté")
-            html+="<script src=\"/js/jquery.js\"></script>"
-            html+="<script src=\"/js/js.js\"></script>"
-            html+=Program.get_js()
-            html+="</body>"
-            html+="</html>"
+            j=open(path1+"/mespages/jstag.html").read()    
+            js+=j % ("/js/jquery.js",)
+            js+=j % ("/js/js.js",)
+            js+=Program.get_js()
+
+            j=open(path1+"/myapppage.html","r").read()
+            html=j % (title,css,body,js)
             #print(html)
             print("fin balise")
-        result = re.search('<li class=\"mycat\">(.*?)</li>', html)
-        #print(result.group(1))
-        __words__ = result.group(1) if result is not None else ''
-        print("===words")
-        #print(__words__)
         mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
         print(mychemin)
-        #try:
-        #    s1=(html)
-        #except Exception as e:
-        #    print(e)
-        #    s1=(html)
-        #    print(type(s1))
-        #s1=(html).encode("ascii", "ignore")
         print(type(html))
         if isinstance(html,str):
             s1=html
         else:
             s1=html.encode('utf-8')
         return s1
-        #f=codecs.open(mychemin,'w')
-
-        #print(type(s1))
-        #f.write(s1)
-        #f.close()
-        #if (__words__).rstrip() == "Full Menu":
-        #print(Program.get_path())
     except Exception as e:
         print(e,'erreru')
 menuburger=[
@@ -419,18 +348,6 @@ f=codecs.open(path1+"/mespages/dump.sql")
 sql_command = f.read()
 global myroutes
 
-def afficher_modepaiement(text,usernumber):
-    sql="select * from payments where user_id = "+str(usernumber)
-    print(sql)
-    crsr.execute(sql)
-    connection.commit()
-    res=crsr.fetchall()
-    if len(res) > 0:
-        html=""
-        return html
-    else:
-        return text.replace('ici le mode de paiement',"<p>Vous n'avez actuellement aucun mode de paiement enregistré</p>"),
-
 global splitparams
 def splitparams(x):
     return x.split("=")
@@ -449,67 +366,8 @@ def accountinfo(query_components):
         myaccountinfo()
     except Exception as e:
         print("erreur account info",e)
-global signinuser
-def signinuser(params):
-    try:
-        if params.get("user_number"):
 
 
-            user_number=params.get("user_number")[0]
-            code=params.get("bkcode")[0]
-            sql="select * from users where user_number = "+str(user_number)+" and code = '"+code+"';"
-            print(sql)
-            crsr.execute(sql)
-            connection.commit()
-            users=crsr.fetchall()
-
-            print(users)
-            if len(users) > 0:
-                #bkcode=rand.randint(100000,999999)
-                #sql="UPDATE users SET code = '" + str(bkcode) + "' WHERE user_number = "+user_number+""
-                #print(sql)
-                #crsr.execute(sql)
-                #connection.commit()
-                #users=crsr.fetchall()
-                #print(users)
-                #sql="select * from users where user_number = "+str(user_number)+";"
-                #print(sql)
-                #crsr.execute(sql)
-                #connection.commit()
-                user=users[0]
-                session.current_user=user
-                print(session.current_user)
-                Program.set_current_user(user)
-                Program.set_redirect("/confirm-otp")
-            return Program
-    except Exception as e:
-        print("erreur: sign in user ",e)
-global savegiftcard
-def savegiftcard(query_components):
-    try:
-        print("save gift card",query_components["numero"])
-        if query_components.get("numero"):
-            numero=query_components.get("numero")[0]
-            sql="select * from giftcards where numero = '%s'" % (numero)
-            crsr.execute(sql)
-            connection.commit()
-            data=crsr.fetchall()
-            if len(data) > 0:
-                card=data[0]
-                cardid=card[0]
-                userid=session.current_user[0]
-                sql="update giftcards set user_id = '%s' where id = %s" % (userid,cardid)
-                crsr.execute(sql)
-                connection.commit()
-                Program.set_json({"ok":"1"})
-            else:
-                card=None
-                Program.set_json({"ok":"0"})
-            print("save giftcard")
-            Program.set_mimetype("json")
-            return Program
-    except Exeption as e:
-        print("erreur save gift card",e)
 def savepayment(query_components):
     try:
         print("save payment method",query_components["nom"])
@@ -528,8 +386,10 @@ def savepayment(query_components):
                 date=datetime.datetime(annee,mois,jour)
             except:
                 print("erreur cvv")
-            sql="insert into creditcards (nom,zip,creditcard,cvv,datecard,user_id) values ('%s', '%s', '%s', '%s', '%s','%s')" % (nom,zip,creditcard,cvv,mmyy,session.current_user[0])
-            crsr.execute(sql)
+            sql="insert into creditcards (nom,zip,creditcard,cvv,datecard,user_id) values (?, ?, ?, ?, ?,?)"  
+            values=(nom,zip,creditcard,cvv,mmyy,session.current_user[0])
+            
+            crsr.execute(sql,values)
             connection.commit()
             Program.set_json({"ok":"1"})
         else:
@@ -538,65 +398,7 @@ def savepayment(query_components):
         return Program
     except Exception as e:
         print("erreur save payment method",e)
-global savemyinfo
-def savemyinfo(query_components):
-    try:
-        print("save my info",query_components["user_number"])
-        if query_components.get("user_number"):
-            try:
-                id=query_components.get("user_number")[0]
-                try:
-                    print("date de naisance===")
-                    annee=int(query_components.get("yy")[0])
-                    print(annee)
-                    mois=int(query_components.get("mm")[0])
-                    print(mois)
-                    jour=int(query_components.get("dd")[0])
-                    print(jour)
-                    w=datetime.datetime(annee,mois,jour)
-                    print(w)
-                    date=str(w)
-                except:
-                    date=""
-                print(date)
-                print(query_components)
-                try:
-                    tel=query_components.get("tel")[0]
-                except:
-                    tel=""
-                print(tel)
-                try:
-                    zip=query_components.get("zip")[0]
-                except:
-                    zip=""
-                try:
-                    prenom=query_components.get("prenom")[0]
-                except:
-                    prenom=""
-                offres="0"
-                print(offres)
-                try:
-                    offres=query_components.get("offres")[0]
-                except:
-                    print("erreur recevoir offres")
-                sql="update users set dateofbirth = '"+date+"', prenom = '"+prenom+"',offres='"+offres+"', zip = '"+zip+"', tel = '"+tel+"' where user_number = " + str(id) + ""
-                print(sql)
-                crsr.execute(sql)
-                connection.commit()
-                crsr.execute("select * from users where user_number = " + str(id) + "")
-                connection.commit()
-                ant=crsr.fetchall()
-                session.current_user=ant[0]
-                Program.set_current_user(ant[0])
-                print("hello")
-                Program.set_json({"sauve":"1"})
-            except Exception as e:
-                print("erreur save data",e)
-                Program.set_json({"sauve":"0"})
-            Program.set_mimetype("json")
-            return Program
-    except Exception as e:
-        print("erreur save data",e)
+
 global setcookie
 def setcookie(query_components):
     try:
@@ -608,124 +410,13 @@ def setcookie(query_components):
             connection.commit()
             user=crsr.fetchall()[0]
 
-            return "<html></html>"
+            return ""
 
     except:
         print("erreur set cookie")
 
-global confirmjwt
-def confirmjwt(query_components):
-    try:
-        print("sign sign up",query_components["token"])
-        if query_components.get("token"):
-            token=query_components.get("token")[0]
 
-            crsr.execute("select * from users where token = '" + str(token) + "'")
-            connection.commit()
-            user=crsr.fetchall()[0]
-            session.current_user=user
-            Program.set_current_user(user)
-            user_number=user[0]
-            prenom = user[1]
-            email = user[2]
-            offres = user[5]
-            #user = crsr.fetchall()
-            print("envoyer le code bk")
-            bkcode=user[3]
-            session.current_user=user
 
-            # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
-            host_smtp = "smtp.gmail.com"
-            port_smtp = 587
-            email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
-            mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
-
-            # Configuration du mail
-            Program.set_path("./mespages")
-            m=get_file("inscription.txt")
-            n=m.read()
-            print("mail")
-            mail_content = n
-            print("mail")
-            mail_content+="\n http://localhost:8000/confirm-jwt?token="+str()
-            print("dest")
-            email_destinataire = "cleo.ordioni@gmail.com"
-            formule_p = "Inscription à Burger King"
-            msg = MIMEMultipart()
-            msg['From'] = email_smtp
-            msg['To'] = email_destinataire
-            msg['Subject'] = formule_p
-            print("message")
-            msg.attach(MIMEText(str(mail_content)))
-            # Création de l'objet mail
-            mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
-            mail.ehlo() # protocole pour SMTP étendu
-            mail.starttls() # email crypté
-            mail.login(email_smtp, mdp_smtp)
-            print("envoyer message")
-            mail.sendmail(email_smtp, email_destinataire, msg.as_string())
-            mail.close()
-            Program.set_path("./")
-
-            Program.set_url("/")
-            Program.set_redirect("/")
-            #Program.set_redirect("/signinuser?user_number=" + str(user_number))
-            Program.set_mimetype(None)
-            return Program
-            #return confirmotp(email)
-
-    except Exception as e:
-        print("erreur confirm jwt",e)
-global signup_user
-def signup_user(query_components):
-    global Program
-    try:
-        print("sign sign up",query_components["email"])
-        if query_components.get("email"):
-            print("data_string = query_components[\"email\"][0]")
-            data_string = query_components["email"][0]
-
-            print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
-            mycontent=""
-            # store all the fetched data in the ans variable
-            date=""
-            try:
-                print("date de naisance===")
-                annee=int(query_components.get("yy")[0])
-                print(annee)
-                mois=int(query_components.get("mm")[0])
-                print(mois)
-                jour=int(query_components.get("dd")[0])
-                print(jour)
-                w=datetime.datetime(annee,mois,jour)
-                print(w)
-                date=str(w)
-            except:
-                print("erreur champ date de naissance")
-            prenom = query_components.get("prenom")[0]
-            email = query_components.get("email")[0]
-            offreparam=query_components.get("offres")
-            offres = offreparam[0] if offreparam == ["1"] else "0"
-            #user = crsr.fetchall()
-            print("envoyer le code bk")
-            bkcode=rand.randint(100000,999999)
-            token=binascii.b2a_hex(os.urandom(159))
-
-            crsr.execute("insert into users (prenom,email,code,token,dateofbirth) values ('" + str(prenom) + "','" + str(email) + "','"+str(bkcode)+"','" + str(token) + "','" + str(date) + "')")
-            connection.commit()
-            crsr.execute("select * from users where email = '"+email+"'")
-            connection.commit()
-            ant=crsr.fetchall()
-            session.current_user = ant[0]
-            urlconfirmjwt="/confirm-jwt?token="+str(token)
-            Program.set_url(urlconfirmjwt)
-
-            #confirmotp(data_string)
-            print("set redirect ICI")
-            Program.set_redirect("/confirm-jwt?token="+str(token))
-            return Program
-    except Exception as e:
-        print("erreur sign up",e)
 global aftersignup
 def aftersignup(query_components):
     try:
@@ -743,351 +434,14 @@ def aftersignup(query_components):
         print("erreur after signup",e)
 
 global checkuser
-def checkuser(query_components):
-    try:
-        print(query_components)
-        print("validate code",query_components.get("email"))
-        if query_components.get("email"):
-            email=query_components.get("email")[0]
-            crsr.execute("SELECT * FROM users where email = '"+str(email)+"'")
-            connection.commit()
-            users=crsr.fetchall()
-            mytype="json"
-            if len(users) == 0:
-                Program.set_json({"usernotexist":"1"})
-            else:
-                Program.set_json({"usernotexist":"0"})
-            return Program
-    except Exception as e:
-        print("erreur validate code",e)
-
-global checkemail
-
-def checkemail(query_components):
-    try:
-        print(query_components)
-        print("validate code",query_components.get("email"))
-        if query_components.get("email"):
-            email=query_components.get("email")[0]
-            crsr.execute("SELECT * FROM users where email = '"+str(email)+"'")
-            connection.commit()
-            users=crsr.fetchall()
-            if len(users) > 0:
-                Program.set_json({"correctemail":"1"})
-                print(Program.get_json())
-            else:
-                Program.set_json({"correctemail":"0"})
-                print(Program.get_json())
-            Program.set_mimetype("json")
-            return Program
-    except Exception as e:
-        print("erreur validate code",e)
-
-global validatecode
-def validatecode(query_components):
-    try:
-        print(query_components)
-        print("validate code",query_components.get("code"))
-        if query_components.get("code"):
-            code=query_components.get("code")[0]
-            userid=query_components.get("userid")[0]
-            crsr.execute("SELECT * FROM users where code = '"+str(code)+"' and user_number = '"+str(userid)+"'")
-            connection.commit()
-            users=crsr.fetchall()
-            if len(users) > 0:
-                session.current_user=users[0]
-                Program.set_json({"id":users[0][0],"correcturl":"1","url": "/store-locator"})
-                print(Program.get_json())
-            else:
-                Program.set_json({"correcturl":"0","url": "/signin/codeincorrect"})
-                print(Program.get_json())
-            Program.set_mimetype("json")
-            return Program
-    except Exception as e:
-        print("erreur validate code",e)
-global signmein
-def signmein(query_components):
-    try:
-        print("sign me in",query_components["email"])
-        if query_components.get("email"):
-            print("data_string = query_components[\"email\"][0]")
-            data_string = query_components["email"][0]
-            print("crsr.execute(\"SELECT * FROM users where email = '\"+data_string+\"'\")")
-            crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
-            mycontent=""
-            # store all the fetched data in the ans variable
-            connection.commit()
-            ans = crsr.fetchall()
-            if len(ans) == 0:
-                print("no user")
-            else:
-                crsr.execute("SELECT * FROM users where email = '"+data_string+"'")
-                connection.commit()
-                user = crsr.fetchall()
-                user_number=user[0][0]
-                print("envoyer le code bk")
-                print(user[0])
-                print(user[0][0])
-                Program.set_userid(user[0][0])
-                bkcode=rand.randint(100000,999999)
-                crsr.execute("UPDATE users SET code = '" + str(bkcode) + "' WHERE email = '"+data_string+"'")
-                connection.commit()
 
 
-                # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
-                host_smtp = "smtp.gmail.com"
-                port_smtp = 587
-                email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
-                mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
-
-                # Configuration du mail
-                prenom = "cleo jeanne"
-                print(prenom)
-                print("prenom")
-                mail_content = force_to_unicode("Prêt pour les hamburgers ? !\nVous trouverez ci-dessous le code de connexion sécurisé que vous avez demandé pour vous connecter à Burger King. Entrez simplement ceci dans l'application et nous vous connecterons immédiatement.\n ") + force_to_unicode(str(bkcode))
-                print("mail_content")
-                email_destinataire = "cleo.ordioni@gmail.com"
-                print(email_destinataire)
-                formule_p = force_to_unicode(str(bkcode))+" est votre code de connexion de burger king"
-                print(formule_p)
-                msg = MIMEMultipart()
-                print("from")
-                msg['From'] = email_smtp
-                print("to")
-                msg['To'] = email_destinataire
-                print("subject")
-                msg['Subject'] = formule_p
-                print("formule")
-                try:
-                    msg.attach(MIMEText(mail_content.decode('utf-8')))
-                except UnicodeEncodeError as e:
-                    print(type(e))
-                    print('gerer cette erreur')
-                    msg.attach(MIMEText(mail_content.encode('utf-8')))
-                except UnicodeDecodeError as e:
-                    print(type(e))
-                    print('gerer cette erreur')
-                    msg.attach(MIMEText(mail_content))
-                print("creation mail")
-                # Création de l'objet mail
-                mail = smtplib.SMTP(host_smtp, port_smtp) # cette configuration fonctionne pour gmail
-                mail.ehlo() # protocole pour SMTP étendu
-                mail.starttls() # email crypté
-                mail.login(email_smtp, mdp_smtp)
-                mail.sendmail(email_smtp, email_destinataire, msg.as_string())
-                mail.close()
-
-                #confirmotp(force_to_unicode(data_string))
-                Program.set_redirect("/signinuser?user_number=" + str(user_number)+"&bkcode="+str(bkcode))
-
-                Program.set_json(None)
-                Program.set_mimetype(None)
-                return Program
-    except Exception as e:
-        print("erreur sign me in",e)
-global refreshmyorders
-def refreshmyorders(query_components):
-    sql_command = "select  orders.user_id as userid, burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders left join orderitems o on o.order_id = orders.id left join burgers on o.burger_id = burgers.burger_number where orders.user_id = %s"
-    message_else="Commencez une nouvelle commande maintenant !"
-    tablename="orders"
-    mystr="okokokokok"
-    mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid.html")+"</div>"
-    try:
-        Program.set_content(force_to_unicode(mystr))
-        Program.set_mimetype("html")
-        Program.set_layout(False)
-        return Program
-    except Exception as e:
-
-        print("erreur",e)
-    print("okokokok")
-
-global showburger
-def showburger(query_components):
-    print("show menu",query_components)
-    dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger","3":"burger=burger","4":"burger=side","5":"burger=drink","6":"burger=sweet","7":"burger=burgerjr&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy"}
-    Program.set_title("Burger King")
-    print("burger king")
-    Program.add_css("burger.css")
-    Program.add_js("burger.js")
-    Program.set_path("./mespages")
-
-    print('hi')
-    Program.set_header_with_path("headersignin.html")
-    Program.set_header(Program.get_header().replace("\"/\"","\"/menu\""))
-    Program.set_footer_with_path("footer.html")
-    burgerid=str(query_components.get("burgerid")[0])
-    sql_command = "select * from burgers where burger_number = %s" % (burgerid)
-    crsr.execute(sql_command)
-    connection.commit()
-    res=crsr.fetchall()
-    message_else=""
-    tablename="burgers"
-    Program.set_path("./mespages")
-    matable=infotable(tablename)
-    contentpage=force_to_unicode(get_file("burger.html").read())
-    contentpage=contentpage.replace("<!-- myparams -->",dataparams[str(res[0][7])]+"&burgerid="+str(res[0][0]))
-    sql_command = "select * from nutinfos where burger_id = %s" % (burgerid)
-    tablename="nutinfos"
-    message_else="Aucune information n'est disponible."
-    collectionstr= display_collection(sql_command, (), "_infonutrition", message_else, tablename)
-
-    contentpage=contentpage.replace("info nutritionnelle ici",collectionstr)
-    sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("2","3",burgerid)
-    tablename="burgers"
-    message_else=""
-    collectionstr= display_collection(sql_command, (), "_combosize", message_else, tablename)
-    contentpage=contentpage.replace("<!-- size combo here -->",collectionstr)
-
-    sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("4","5",burgerid)
-    collectionstr= display_collection(sql_command, (), "_valuesize", message_else, tablename)
-    contentpage=contentpage.replace("<!-- size item here -->",collectionstr)
-    sql_command = "select burgers.* from burgers where burger_number = %s and burgers.burgercat_id = %s" % (burgerid,1)
-    collectionstr= display_collection(sql_command, (), "_customizeburger", message_else, tablename)
-    contentpage=contentpage.replace("<!-- personnaliser votre burger -->",collectionstr)
 
 
-    if len(res) > 0:
-        for re in res:
-            paspremier = False
-            contentpage=force_to_unicode(contentpage)
-            for x in range(len(re)):
-                print(x)
-                print(re[x])
-                z=re[x]
-                strrep=force_to_unicode("(%s)" % (matable[x][1]))
-                print(strrep)
-                if type(z) == int or type(z) == float:
-                    z=str(z)
-                if z is not None:
-                    contentpage=contentpage.replace(strrep, force_to_unicode(z))
-    Program.set_content(contentpage)
-    #=======
-    return Program
 
-    #connection.commit()
-global showmenu
-def showmenu(query_components):
-    print("show menu",query_components)
-    Program.set_title("Burger King")
-    print("burger king")
-    Program.set_path("./mespages")
-    print('hi')
-    Program.set_header_with_path("header.html")
-    Program.set_footer_with_path("footer.html")
-    sql_command = "select * from burgercats"
-    message_else=""
-    tablename="burgercats"
-    Program.set_path("./mespages")
 
-    contentpage=force_to_unicode(get_file("menu.html").read())
-    mytabs=display_collection(sql_command, (), "_burgercat", message_else, tablename)
-    #=======
-    if query_components.get("mytab") is not None:
-        x=query_components.get("mytab")[0]
-    else:
-        x=""
-    print("")
-    print("my tab name:",x)
-    if x == "fullmenu":
-        sql_command = "select * from burgercats"
-        message_else="Il n'y a aucune catégorie"
-        tablename="burgercats"
-        myitems=display_collection(sql_command, (), "_myburgercat", message_else, tablename)
-        contentpage=contentpage.replace("my items here",myitems)
-    elif x == "recents" and query_components.get("userid") is not None:
-        sql_command = "select * from burgers left join user_recents u on u.burger_id = burgers.id group by burgers.id having u.user_id = %s"
-        message_else="commencez une commande pour voir les items ici<a href=\"/store-locator\">commencez à commander</a>"
-        tablename="burgers"
-        myarguments=(str(query_components.get("userid")[0]))
-        myitems=display_collection(sql_command, myarguments, "_burger", message_else, tablename)
-        contentpage=contentpage.replace("my items here",myitems)
-    elif x == "recents":
-        myitems="<h2>Sign In to Save Recents</h2><h3>Sign up or sign in to save your recents.</h3><a href=\"/signin\">Sign in</a>"
-        contentpage=contentpage.replace("my items here",myitems)
-    elif x == "favorites" and query_components.get("userid") is not None:
-        sql_command = "select * from burgers left join user_favs u on u.burger_id = burgers.id group by burgers.id having u.user_id = %s"
-        message_else="Favorisez un article de votre panier ou des articles récents pour l'enregistrer en tant que favori."
-        tablename="burgers"
-        myarguments=(str(query_components.get("userid")[0]))
-        myitems=display_collection(sql_command, myarguments, "_burger", message_else, tablename)
-        contentpage=contentpage.replace("my items here",myitems)
-    elif x == "favorites":
-        myitems="<h2>Sign In to Save Favorites</h2><h3>Sign up or sign in to save your favorites.</h3><a href=\"/signin\">Sign in</a>"
-        contentpage=contentpage.replace("my items here",myitems)
 
-    elif query_components.get("catid") is not None:
-        sql_command = "select * from burgers where burgercat_id = %s"
-        message_else="Il n'y a aucun item < a href=\"/menu\">Retour au menu</a>"
-        tablename="burgers"
-        myitems=display_collection(sql_command, (str(query_components.get("catid")[0])), "_burger", message_else, tablename)
-        contentpage=contentpage.replace("my items here",myitems)
 
-    #=======
-
-    contentpage=contentpage.replace("my tabs here",mytabs)
-
-    try:
-        Program.set_content(force_to_unicode(contentpage))
-        Program.set_mimetype("html")
-        Program.set_footer("")
-        Program.add_css("mymenu.css")
-        return Program
-    except Exception as e:
-
-        print("erreur",e)
-    print("okokokok")
-    #connection.commit()
-global myorders
-def myorders(query_components):
-    sql_command = "select orders.user_id as userid, burgers.name as itemname, orders.id as orderno, burgers.image as burgerimage, burgers.prix as burgerprice, (o.qty*burgers.prix) as price, o.qty as qte, orders.dateorder as dateorder from orders left join orderitems o on o.order_id = orders.id left join burgers on o.burger_id = burgers.burger_number where orders.user_id = %s"
-    message_else="Commencez une nouvelle commande maintenant !"
-    tablename="orders"
-
-    mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid")+"</div>"
-    try:
-        Program.add_js("orders.js")
-        Program.add_css("orders.css")
-        Program.set_path("./mespages")
-        k=get_file("orders.html")
-        text=force_to_unicode(k.read())
-        text=text.replace("les commandes apparaissent ici",mystr)
-
-        Program.set_content(text)
-        return Program
-    except Exception as e:
-
-        print("erreur",e)
-    print("okokokok")
-    #connection.commit()
-global insertburger
-def insertburger(query_components):
-    if query_components.get("burgername"):
-        data_string = query_components["burgername"][0]
-        sql_command = """INSERT INTO burgers (name) VALUES ('""" + data_string + """');"""
-        print("ok ok")
-        crsr.execute(sql_command)
-        connection.commit()
-        try:
-            print("jom")
-            crsr.execute("SELECT * FROM burgers")
-            mycontent="<main><ul>"
-            # store all the fetched data in the ans variable
-            ans = crsr.fetchall()
-
-            for myburger,name1,image1,description1,prix1 in ans:
-                mycontent+= "<li>"+name1+"</li>"
-            mycontent+="</ul></main>"
-            #print(mycontent)
-            #Program.path("./")
-            print("ok")
-            print("yeah")
-            Program.set_content(mycontent)
-            return render_figure("index.html")
-        except Exception as e:
-            print("erreur",e)
-        print("okokokok")
-        #connection.commit()
 
 global listburger
 def listburger(burger):
@@ -1096,7 +450,8 @@ def listburger(burger):
         print(type(burger[0]))
         print(type(burger[1]))
         print(type(burger[1].encode("utf-8")))
-        s= "<li><a href=\"/burgers/"+str(burger[0])+"\">"+(burger[1].encode('utf-8'))+"</a></li>"
+        j=open(path1+"/listburger/_modelburger.html")
+        s= j % (str(burger[0]),(burger[1].encode('utf-8')))
         print(type(s))
         return s
     except Exception as e:
@@ -1128,37 +483,13 @@ for cat in menuburger:
 #s = 'asdf=5;iwantthis123jasd'
 #result = re.search('asdf=5;(.*)123jasd', s)
 #print(result.group(1))
-global displaythisburger
-def displaythisburger(burger,catname,catid):
-    try:
-        print("display this burger")
-        print(type(catid))
-        print(type(catname))
-        print(type(burger[0]))
-        print(type(burger[1]))
-        print(type(burger[2]))
-        print(type(burger[3]))
-        print(type(burger[4]))
-        print(type(burger[5]))
-        text="<a href=\"/menu/"+repr(catid)+"\">retour au menu "+catname+"</a>"
-        text+=mycard(burger[1],str(burger[4])+"€","min "+str(burger[5])+" cal")
-        Program.set_path("./burgers")
-        Program.set_content(text)
-        return render_figure(str(burger[0])+".html")
-    except Exception as e:
-        print('erreur display burger',e)
+
 def card(title,description,button):
     try:
         f=codecs.open(path1+"/mespages/card.html")
         s=f.read()
-        result = re.search('<h3 class="title">(.*)</h3>', s)
-        montitre=(result.group(1) if result is not None else "")
-        result = re.search('<p class="subtitle">(.*)</p>', s)
-        mysubtitle=(result.group(1) if result is not None else "")
-        result = re.search('<a href="">(.*)</a>', s)
-        mylink=result.group(1) if result is not None else ""
 
-        html=s.replace(montitre,title).replace(mysubtitle,description).replace(mylink,button)
+        html=s % (title,description,button)
         return html
     except Exception as e:
         print("erreur card",e)
@@ -1167,20 +498,7 @@ def mycard(title,description,content):
     try:
         f=codecs.open(path1+"/mespages/card.html")
         s=f.read()
-        result = re.search('<h3 class="title">(.*)</h3>', s)
-        montitre=(result.group(1) if result is not None else "")
-        result = re.search('<p class="subtitle">(.*)</p>', s)
-        mysubtitle=(result.group(1) if result is not None else "")
-        result = re.search('<p class="text">(.*)</p>', s)
-        mylink=result.group(1) if result is not None else ""
-        print(montitre+" "+mysubtitle+" "+mylink)
-        print(title)
-        print(description)
-        print(content)
-        #print(title+" "+description+" "+content)
-        html=(s).replace(montitre,(title))
-        #html=(s).replace(montitre,(title)).replace(mysubtitle,(description)).replace(mylink,(content))
-        print(type(html))
+        html = s % (title,description,content)
         return html
     except Exception as e:
         print("erreur card",e)
@@ -1274,312 +592,11 @@ class Page:
         Program.set_header(headertext)
 
         return render_figure("ma page.html")
-    global addcard
-    def addcard(params = None):
-        try:
-            Program.set_path("./mespages")
-            j=codecs.open(Program.get_filename_path("addcard.html"))
-            Program.set_path("./css")
-            Program.add_css("signin.css")
-            Program.add_css("addcard.css")
-            Program.add_js("addcard.js")
-            text=force_to_unicode(j.read())
-            Program.set_content(text)
-            Program.set_path("./mespages")
-            k=codecs.open(Program.get_filename_path("headeroverlay.html"))
-            headertext=k.read()
-            Program.set_header(headertext)
 
-            return render_figure("ma page.html")
-        except:
-            print("erreur add card")
-    global accountpayment
-    def accountpayment(params = None):
-        try:
-            print("account payment: current user")
-            print(session.current_user)
-            Program.set_path("./mespages")
-            j=codecs.open(Program.get_filename_path("accountpayment.html"))
-            Program.set_path("./css")
-            Program.set_css("")
-            Program.add_css("accountpaiement.css")
-            text=force_to_unicode(j.read())
-            #sql,templatename,errormessage,tablename
-            mysql="select * from creditcards where orders.user_id = %s" % (session.current_user[0])
-            str=display_collection(mysql,(),"_modedepaiement","Aucun mode de paiement n'a été ajouté","creditcards")
-            text=text.replace("ici le mode de paiement",str)
-            Program.set_content(text)
-            Program.set_path("./mespages")
-            k=codecs.open(Program.get_filename_path("headersignin.html"))
-            headertext=k.read()
-            Program.set_header(headertext)
 
-            return render_figure("my page.html")
-        except Exception as e:
-            print("account payment erreur",e)
-    global myaccountinfo
-    def myaccountinfo(params = None):
-        try:
-            print("account info: current user")
-            print(session.current_user)
-            Program.set_path("./mespages")
-            j=codecs.open(Program.get_filename_path("accountinfo.html"))
-            text=j.read()
-            Program.set_css("")
-            Program.set_path("./css")
-            Program.add_css("account.css")
-            Program.add_css("signin.css")
-            Program.set_path("./js")
-            Program.add_js("saveinfo.js")
-            Program.edit_title("Account Details")
-            try:
-                if session.current_user is not None:
-                    for a in range(len(session.current_user)):
-                        try:
-                            if session.current_user[a] is not None:
-                                idstring="id=\""+force_to_unicode(table_users[a][1])+"\""
-                                print(idstring)
-                                idvaluestring=(idstring+" value=\""+str(session.current_user[a])+"\" ")
-                                if force_to_unicode(table_users[a][1]) == u'offres':
-                                    text=text.replace("value=\"1\"","value=\"1\" checked=\"checked\"")
-                                text=force_to_unicode(text).replace(idstring,idvaluestring)
 
-                                if force_to_unicode(table_users[a][1]) == u'dateofbirth':
-                                    date=session.current_user[a].split(" ")[0]
-                                    print("date : "+date)
-                                    idstring="id=\""+"yy"+"\""
-                                    idvaluestring=(idstring+" value=\""+date.split("-")[0]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
-                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
-                                    idstring="id=\""+"mm"+"\""
-                                    idvaluestring=(idstring+" value=\""+date.split("-")[1]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
-                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
-                                    idstring="id=\""+"dd"+"\""
-                                    idvaluestring=(idstring+" value=\""+date.split("-")[2]+"\" ").replace("value=\"1\"","value=\"1\" checked=\"checked\"")
-                                    text=force_to_unicode(text).replace(idstring,idvaluestring)
 
-                        except Exception as e:
-                            print("mon texte erreur",e)
-            except:
-                print("erreur afficher le formulaire")
-            Program.set_content(text)
-            Program.set_path("./accountinfo")
-            set_my_header("headersignin")
-            set_my_footer("footer")
-            return render_figure("index.html")
 
-        except Exception as e:
-            print("erreur my account info page",e)
-    global home
-    def home(params = None):
-        try:
-            Program.set_path("./")
-            print("home")
-            Program.set_title("Burger King")
-            print("burger ing")
-            Program.set_path("./mespages")
-            print('hi')
-            Program.set_header_with_path("header.html")
-            Program.set_footer_with_path("footer.html")
-
-            j=codecs.open(Program.get_filename_path("index.html"))
-            text=j.read()
-            print("my text")
-            result = re.search("<div class=\"burgers-list\">(.*)</div>",text)
-            #print(result.group(1))
-            crsr.execute("SELECT * FROM burgers")
-            mycontent="<ul>"
-            # store all the fetched data in the ans variable
-            print("burgersok")
-            ans = crsr.fetchall()
-            print("burgers")
-            for myburger in ans:
-                mycontent+= ajoutlistburger(myburger)
-            print("burgervalue")
-            mycontent+="</ul>"
-            print(mycontent)
-            if result is not None and len(result.group(1)) > 0:
-                text=text.replace(result.group(1),mycontent)
-            print("cards1")
-            crsr.execute("SELECT * FROM cards")
-            print("cards")
-            mycontent=""
-            # store all the fetched data in the ans variable
-            ans = crsr.fetchall()
-            print("allcards")
-            print("cads")
-            for x in ans:
-                mycontent+= card(x[1],x[2],x[3])
-            #print(mycontent)
-            result = re.search("<div class=\"mycards\">(.*)</div>",text)
-            if result is not None:
-                print(result)
-                print(result.group(1))
-                if len(result.group(1)) > 0:
-                    text=text.replace(result.group(1),mycontent)
-            Program.set_path("./")
-            Program.set_content(text)
-
-            text=(text)
-            print("render figure home")
-            return render_figure("index.html")
-        except Exception as e:
-            print("erreur 1",e)
-    global menu
-    def menu(params = None):
-        try:
-            Program.set_title("Burger King")
-            Program.set_path("./mespages")
-            j=codecs.open(Program.get_filename_path("menu.html"))
-            text=j.read()
-            result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
-            #print(result.group(1))
-            crsr.execute("SELECT * FROM cats")
-            mycontent=""
-            # store all the fetched data in the ans variable
-            print("burgersok")
-            ans = crsr.fetchall()
-            print("burgers")
-            for myburger in ans:
-                #print("burger",myburger[1],mycontent)
-                mycontent+= "<li class=\"mycat\"><a href=\"/menu/"+repr(myburger[0] if myburger[0] > 1 else '')+"\">"+(myburger[1]).encode('utf-8')+"</a></li>"
-            if result is not None and len(result.group(1)) > 0:
-                text=text.replace(result.group(1),mycontent)
-            for myburger in ans:
-                mesburgers=""
-                print("burger?!%*#")
-                crsr.execute("SELECT * FROM burgers where cat_id = '"+repr(myburger[0])+"'")
-                res=re.search("<div class=\"myitems\"><ul>(.*?)</ul></div>",text)
-                ans1 = crsr.fetchall()
-                for burger in ans1:
-                    #print("burger",burger[1])
-                    print("erreur ici")
-                    displaythisburger(burger,myburger[1],myburger[0])
-                    print("myerreur")
-                    mesburgers+= listburger(burger)
-                    print("erreur")
-                if mesburgers == "":
-                    mesburgers = "mes items ici"
-                if res is not None and len(res.group(1)) > 0:
-                    text=text.replace(res.group(1),mesburgers)
-                print("burgervalue")
-                #print(myburger[1])
-
-                Program.set_path("./menu")
-                Program.set_content(text)
-                page=str(myburger[0] if myburger[0] > 1 else 'index')
-                return render_figure(page+".html")
-        except Exception as e:
-            print("erreur menu",e)
-    global confirmotp
-    def confirmotp(params=None):
-        try:
-            print("confirm otp func")
-            print(params)
-            print(session.current_user)
-            email=session.current_user[2]
-            print(email)
-            if email is not None:
-                Program.set_title("Burger King")
-                Program.set_path("./mespages")
-                print("confirm otp")
-                f=open(Program.get_filename_path("userconnecte.js"))
-                js=f.read()
-                print("user connectes")
-                Program.set_email(email)
-                print("email")
-                ff=open(Program.get_filename_path("confirmotp.html"))
-                text=ff.read()
-                print("text length : "+str(len(text)))
-                Program.set_js("")
-                fff=open(Program.get_filename_path("headersignin.html"))
-                myheader=fff.read()
-                print("header")
-                Program.set_header(myheader)
-                Program.set_path("./css")
-                Program.add_css("signin.css")
-                Program.set_path("./js")
-                Program.add_js("signin.js")
-                Program.set_footer("")
-                Program.set_path("./signup")
-                Program.set_mimetype("html")
-                print("confirm otp return program")
-                Program.set_content(unicode(text,'utf-8'))
-                return Program
-        except Exception as e:
-            print("erreur confirm otp",e)
-    global signup
-    def signup(params = None):
-        try:
-            print("sign up")
-            Program.set_path("./mespages")
-
-            f=open(Program.get_filename_path("userconnecte.js"))
-            js=f.read()
-            fff=open(Program.get_filename_path("headersignin.html"))
-            myheader=fff.read()
-
-            ff=open(Program.get_filename_path("/signup.html"))
-            text=ff.read()
-            Program.set_title("Burger King")
-            Program.set_js("")
-            Program.set_header(myheader)
-            Program.set_path("./css")
-            Program.add_css("signin.css")
-            Program.set_path("./js")
-            Program.add_js("signin.js")
-            Program.set_footer("")
-            Program.set_path("./signup")
-            Program.set_content(unicode(text,'utf-8'))
-            return render_figure("index.html")
-        except Exception as e:
-            print("erreur sign in",e)
-    global signin
-    def signin(params = None):
-        try:
-            print("sign in")
-            Program.set_path("./mespages")
-            f=open(Program.get_filename_path("userconnecte.js"))
-            js=f.read()
-            fff=open(Program.get_filename_path("headersignin.html"))
-            myheader=fff.read()
-            Program.set_title("Burger King")
-
-            ff=open(Program.get_filename_path("signin.html"))
-            text=ff.read()
-            Program.set_js("")
-            Program.set_header(myheader)
-            Program.set_path("./css")
-            Program.add_css("signin.css")
-            Program.set_path("./js")
-            Program.add_js("signin.js")
-            Program.set_footer("")
-            Program.set_path("./signin")
-            Program.set_content(text)
-            return render_figure("index.html")
-            Program.set_css("")
-            Program.set_js("")
-        except Exception as e:
-            print("erreur sign in",e)
-    global code
-    def code(params = None):
-        try:
-            print("code")
-            Program.set_path("./mespages")
-            f=open(Program.get_filename_path("userconnecte.js"),'r')
-            js=f.read()
-            Program.set_title("Burger King")
-
-            ff=open(Program.get_filename_path("code.html"),'r')
-            text=ff.read()
-            Program.set_path("./js")
-            Program.add_js("userconnecte.js")
-            Program.set_header(Program.get_header())
-            Program.set_footer(Program.get_footer())
-            Program.set_path("./code")
-            Program.set_content(unicode(text,'utf-8'))
-            return render_figure("index.html")
-        except Exception as e:
-            print("erreur 3",e)
     global offers
     def offers(params = None):
         try:
@@ -1864,7 +881,6 @@ if __name__ == "__main__":
 render_pages()
 #rewards()
 #offers()
-print((__words__).rstrip())
 
 myroutes = {"/customizemenu":customizemymenu,"/burger": showburger,"/menu": showmenu,
 "/orders/refresh":refreshmyorders,

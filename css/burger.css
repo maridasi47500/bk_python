@@ -31,3 +31,8 @@
 .item img {
   margin-bottom:50px;
 }
+
+div.meal {
+    display:block;
+    margin-bottom:50px;
+}
