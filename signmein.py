@@ -1,8 +1,14 @@
-import directory
+from directory import directory
 global signmein
-def signmein(query_components):
-    try:
-        Program=directory("bk")
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+global crsr
+
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+crsr = connection.cursor()
+class signmeinpage(directory):
+    def __init__(self,query_components):
         print("sign me in",query_components["email"])
         if query_components.get("email"):
             print("data_string = query_components[\"email\"][0]")
@@ -23,7 +29,7 @@ def signmein(query_components):
                 print("envoyer le code bk")
                 print(user[0])
                 print(user[0][0])
-                Program.set_userid(user[0][0])
+                self.set_userid(user[0][0])
                 bkcode=rand.randint(100000,999999)
                 crsr.execute("UPDATE users SET code = '" + str(bkcode) + "' WHERE email = '"+data_string+"'")
                 connection.commit()
@@ -73,10 +79,7 @@ def signmein(query_components):
                 mail.close()
 
                 #confirmotp(force_to_unicode(data_string))
-                Program.set_redirect("/signinuser?user_number=" + str(user_number)+"&bkcode="+str(bkcode))
+                self.set_redirect("/signinuser?user_number=" + str(user_number)+"&bkcode="+str(bkcode))
 
-                Program.set_json(None)
-                Program.set_mimetype(None)
-                return Program
-    except Exception as e:
-        print("erreur sign me in",e)
+                self.set_json(None)
+                self.set_mimetype(None)

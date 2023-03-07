@@ -15,12 +15,15 @@ global get_file
 global switcher
 import customizemymenu
 import showburger
+from accountpayment import pageaccountpayment
 import directory
+from signup_user import signup_user_page
 import afficher_modepaiement
 import check_email
 import code
-import signin
+from signin import signinpage
 import addcard
+from signup import signuppage
 import signup_user
 import refreshmyorders
 import myaccountinfo
@@ -28,16 +31,18 @@ import home
 import confirmotp
 import menu
 import signup
-import showmenu
+from showmenu import showmenupage
 import insertburger
 import checkuser
 import myorders
-import displaythisburger
-import signinuser
-import signmein
+from displaythisburger import pagedisplaythisburger
+from showburger import showburger
+from signmein import signmeinpage
+from signinuser import pagesigninuser
 import accountpayment
 import savemyinfo
 import savegiftcard
+import savepayment
 switcher={
 'html':'text/html',
 'css':'text/css',
@@ -108,7 +113,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 
 import random
-
+def showburger(query_components):
+    Program=showburger("burger",query_components)
+    Program.set_path(".\showburger")
+    #=======
+    return Program
 # connecting to the database
 global infotable
 def infotable(tablename):
@@ -172,7 +181,19 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         return myfigure
     else:
         return force_to_unicode("<p>"+errormessage+"</p>")
-
+global home
+def home(params = None):
+    try:
+            
+        Program = pagehome("bk")
+        Program.set_path("./")
+        
+        code=render_figure("index.html")
+        Program.run("html","/",code)
+        print("render figure home")
+        return Program
+    except Exception as e:
+        print("erreur 1",e)
 global searchmyparams
 def searchmyparams(query_components,myurlpath):
     print("search for my params")
@@ -259,43 +280,46 @@ def render_figure(pathname):
             css=Program.get_css()
             body=""
             js=""
+            header1=""
+            main1=""
+            footer1=""
             print("header")
             try:
-                body+=decode_any_string(header())
+                body+=decode_any_string(header1())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('header gerer cette erreur')
-                body+=header().encode('utf-8')
+                header1=header().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                body+=header()
+                header1=header()
             print("content")
             try:
-                body+=decode_any_string(myparams(content()))
+                main1=decode_any_string(myparams(content()))
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                body+=myparams(content()).encode('utf-8')
+                main1=myparams(content()).encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                body+=myparams(content())
+                main1=myparams(content())
             print("footer")
             print("type footer")
 
             print(type(force_to_unicode(footer())))
 
             try:
-                body+=decode_any_string(footer())
+                footer1=decode_any_string(footer())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                body+=footer().encode('utf-8')
+                footer1=footer().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                body+=footer()
+                footer1=footer()
             print("footer ajouté")
             print("type menu")
             print(type(Program.get_menu()))
@@ -316,7 +340,7 @@ def render_figure(pathname):
             js+=Program.get_js()
 
             j=open(path1+"/myapppage.html","r").read()
-            html=j % (title,css,body,js)
+            html=j % (title,css,header,main,footer,js)
             #print(html)
             print("fin balise")
         mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
@@ -329,6 +353,16 @@ def render_figure(pathname):
         return s1
     except Exception as e:
         print(e,'erreru')
+def accountpayment(params = None):
+    try:
+        Program=pageaccountpayment("account payment")
+        print("account payment: current user")
+        print(session.current_user)
+        Program.set_path("./mespages")
+
+        return render_figure("my page.html")
+    except Exception as e:
+        print("account payment erreur",e)
 menuburger=[
 {'url':'fullmenu', 'title': "Full Menu",'myurl':"pages/menu/fullmenu.html"},
 {'url':'recents', 'title': "Recents",'myurl':"pages/menu/recents.html"},
@@ -346,8 +380,27 @@ menuburger=[
 # SQL command to create a table in the database
 f=codecs.open(path1+"/mespages/dump.sql")
 sql_command = f.read()
-global myroutes
+def signmein(query_components):
+    try:
+        Program=signmeinpage("bk")
 
+        return Program
+    except Exception as e:
+        print("erreur sign me in",e)
+global myroutes
+def showmenu(query_components):
+    Program=showmenupage("menu de burger king",query_components)
+    Program.set_path("./mespages")
+
+    return Program  
+
+def signup_user(query_components):
+    try:
+        Program=signup_user_page("inscription",query_components)
+
+        return Program
+    except Exception as e:
+        print("erreur sign up",e)
 global splitparams
 def splitparams(x):
     return x.split("=")
@@ -367,37 +420,15 @@ def accountinfo(query_components):
     except Exception as e:
         print("erreur account info",e)
 
-
-def savepayment(query_components):
+def displaythisburger(burger,catname,catid):
     try:
-        print("save payment method",query_components["nom"])
-        if query_components.get("nom"):
-            print("save payment method")
-            nom=query_components.get("nom")[0]
-            zip=query_components.get("zip")[0]
-            creditcard=query_components.get("creditcard")[0]
-            cvv=query_components.get("cvv")[0]
-            mmyy=query_components.get("date")[0]
-            try:
-                j=mmyy.split("/")
-                annee=int("20"+str(j[1]))
-                mois=int(j[0])
-                jour=1
-                date=datetime.datetime(annee,mois,jour)
-            except:
-                print("erreur cvv")
-            sql="insert into creditcards (nom,zip,creditcard,cvv,datecard,user_id) values (?, ?, ?, ?, ?,?)"  
-            values=(nom,zip,creditcard,cvv,mmyy,session.current_user[0])
-            
-            crsr.execute(sql,values)
-            connection.commit()
-            Program.set_json({"ok":"1"})
-        else:
-            Program.set_json({"ok":"0"})
-        Program.set_mimetype("json")
+        Program=pagedisplaythisburger('burger king',burger,catname,catid) 
+        Program.set_path("./burgers")
+        code=render_figure(str(burger[0])+".html")
+        Program.file("html","/burger/"+str(burger[0]),code)
         return Program
     except Exception as e:
-        print("erreur save payment method",e)
+        print('erreur display burger',e)
 
 global setcookie
 def setcookie(query_components):
@@ -415,8 +446,22 @@ def setcookie(query_components):
     except:
         print("erreur set cookie")
 
+def signup(params = None):
+    try:
+        Program=signuppage("inscription")
+        return render_figure("index.html")
+    except Exception as e:
+        print("erreur sign in",e)
+def accountpayment(params = None):
+    try:
+        Program=pageaccountpayment("account payment")
+        print("account payment: current user")
+        print(session.current_user)
+        Program.set_path("./mespages")
 
-
+        return render_figure("my page.html")
+    except Exception as e:
+        print("account payment erreur",e)
 global aftersignup
 def aftersignup(query_components):
     try:
@@ -619,6 +664,21 @@ class Page:
             return render_figure("index.html")
         except:
             print("erreur 5")
+def signin(params = None):
+    try:
+        Program=signinpage("connexion")
+
+        return render_figure("index.html")
+
+    except Exception as e:
+        print("erreur sign in",e)
+global signinuser
+def signinuser(params):
+    try:
+        Program=pagesigninuser('burger king',params) 
+        return Program
+    except Exception as e:
+        print("erreur: sign in user ",e)
 class S(BaseHTTPRequestHandler):
     def _set_headers(self,myheader='text/html'):
         self.send_response(200)

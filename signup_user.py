@@ -1,9 +1,14 @@
 global signup_user
-import directory
-def signup_user(query_components):
-    global Program
-    try:
-        Program=directory("")
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+global crsr
+crsr = connection.cursor()
+
+from directory import directory
+class signup_user_page(directory):
+    def __init__(self,title,query_components):
+        self.title="inscription"
+        
         print("sign sign up",query_components["email"])
         if query_components.get("email"):
             print("data_string = query_components[\"email\"][0]")
@@ -42,11 +47,8 @@ def signup_user(query_components):
             ant=crsr.fetchall()
             session.current_user = ant[0]
             urlconfirmjwt="/confirm-jwt?token="+str(token)
-            Program.set_url(urlconfirmjwt)
+            self.set_url(urlconfirmjwt)
 
             #confirmotp(data_string)
             print("set redirect ICI")
-            Program.set_redirect("/confirm-jwt?token="+str(token))
-            return Program
-    except Exception as e:
-        print("erreur sign up",e)
+            self.set_redirect("/confirm-jwt?token="+str(token))

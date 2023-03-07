@@ -1,10 +1,13 @@
 import directory
-
-global signinuser
-def signinuser(params):
-    try:
-        Program=directory('burger king') 
-
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+# cursor
+global crsr
+crsr = connection.cursor()
+class pagesigninuser(directory):
+    def __init__(self,title,params):
+        print("")
+        self.title=title
         if params.get("user_number"):
 
 
@@ -32,8 +35,6 @@ def signinuser(params):
                 user=users[0]
                 session.current_user=user
                 print(session.current_user)
-                Program.set_current_user(user)
-                Program.set_redirect("/confirm-otp")
-            return Program
-    except Exception as e:
-        print("erreur: sign in user ",e)
+                self.set_current_user(user)
+                self.set_redirect("/confirm-otp")
+
