@@ -8,12 +8,13 @@ import sys
 import requests
 global session
 import sqlite3
+
 global copy
 global render_pages
 global connection
 global get_file
 global switcher
-import customizemymenu
+from customizemymenu import customizemymenupage
 import showburger
 from accountpayment import pageaccountpayment
 import directory
@@ -25,24 +26,26 @@ from signin import signinpage
 import addcard
 from signup import signuppage
 import signup_user
-import refreshmyorders
-import myaccountinfo
+from refreshmyorders import refreshmyorderspage
+from myaccountinfo import myaccountinfopage
+
 import home
-import confirmotp
-import menu
+from confirmotp import confirmotppage
+from menu import menupage
+from confirmjwt import confirmjwtpage
 import signup
 from showmenu import showmenupage
-import insertburger
+from insertburger import insertburgerpage
 import checkuser
-import myorders
+from myorders import myorderspage
 from displaythisburger import pagedisplaythisburger
 from showburger import showburger
 from signmein import signmeinpage
 from signinuser import pagesigninuser
 import accountpayment
-import savemyinfo
-import savegiftcard
-import savepayment
+from savemyinfo import savemyinfopage
+from savegiftcard import savegiftcardpage
+from savepayment import savepaymentpage
 switcher={
 'html':'text/html',
 'css':'text/css',
@@ -125,6 +128,12 @@ def infotable(tablename):
     connection.commit()
     matable=crsr.fetchall()
     return matable
+def savegiftcard(query_components):
+    try:
+        Program=savegiftcardpage("enregistrer des cartes cadeaux")
+        return Program
+    except Exeption as e:
+        print("erreur save gift card",e)
 def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
     idprecedent=0
     print(sqlargs)
@@ -181,6 +190,11 @@ def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = 
         return myfigure
     else:
         return force_to_unicode("<p>"+errormessage+"</p>")
+def myorders(query_components):
+    Program=myorderspage("mes commandes")
+
+    return Program
+    #connection.commit()
 global home
 def home(params = None):
     try:
@@ -194,6 +208,10 @@ def home(params = None):
         return Program
     except Exception as e:
         print("erreur 1",e)
+def refreshmyorders(query_components):
+    Program=refreshmyorderspage("commencez une nouvelle commande")
+
+    return Program
 global searchmyparams
 def searchmyparams(query_components,myurlpath):
     print("search for my params")
@@ -234,7 +252,12 @@ def searchmyparams(query_components,myurlpath):
                     query_components["burgerid"]=[r[0]]
             print(myurlpath)
     return [myurlpath,query_components]
-
+def savemyinfo(query_components):
+    try:
+        Program=savemyinfopage("sauvegarde des infos")
+        return Program
+    except Exception as e:
+        print("erreur save data",e)
 def render_figure(pathname):
     try:
         global path1
@@ -353,6 +376,25 @@ def render_figure(pathname):
         return s1
     except Exception as e:
         print(e,'erreru')
+
+def customizemymenu(query_components):
+    Program=customizemymenupage('personnaliser mon menu') 
+    try:
+        
+
+        return Program
+    except Exception as e:
+        print("my errooor (=)",e)
+def insertburger(query_components):
+    Program=insertburgerpage("bk")
+
+    return render_figure("index.html")
+def menu(params = None):
+    try:
+        Program=menupage("menu")
+        return render_figure(page+".html")
+    except Exception as e:
+        print("erreur menu",e)
 def accountpayment(params = None):
     try:
         Program=pageaccountpayment("account payment")
@@ -429,7 +471,12 @@ def displaythisburger(burger,catname,catid):
         return Program
     except Exception as e:
         print('erreur display burger',e)
-
+def savepayment(query_components):
+    try:
+        Program=savepaymentpage("save payment",query_components)
+        return Program
+    except Exception as e:
+        print("erreur save payment method",e)
 global setcookie
 def setcookie(query_components):
     try:
@@ -445,7 +492,12 @@ def setcookie(query_components):
 
     except:
         print("erreur set cookie")
-
+def confirmotp(params=None):
+    try:
+        Program=confirmotppage("bk")
+        return Program
+    except Exception as e:
+        print("erreur confirm otp",e)
 def signup(params = None):
     try:
         Program=signuppage("inscription")
@@ -556,7 +608,14 @@ def bootstrapjs(params = None):
 def bootstrapcss(params = None):
     h="""  """
     return h
+def confirmjwt(query_components):
+    try:
+        Program=confirmjwtpage("bk")
+        return Program
 
+
+    except Exception as e:
+        print("erreur confirm jwt",e)
 def render_pages(params = None):
     home()
     menu()
@@ -664,6 +723,15 @@ class Page:
             return render_figure("index.html")
         except:
             print("erreur 5")
+def myaccountinfo(params = None):
+    try:
+        Program=myaccountinfopage("infos de mon compte")
+
+        return Program
+
+    except Exception as e:
+        print("erreur my account info page",e)
+
 def signin(params = None):
     try:
         Program=signinpage("connexion")

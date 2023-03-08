@@ -1,8 +1,6 @@
-global savemyinfo
-import directory
-def savemyinfo(query_components):
-    try:
-        Program=directory("bk")
+from directory import directory
+class savemyinfopage(directory):
+    def __init__(self,title,query_components):
         print("save my info",query_components["user_number"])
         if query_components.get("user_number"):
             try:
@@ -49,13 +47,10 @@ def savemyinfo(query_components):
                 connection.commit()
                 ant=crsr.fetchall()
                 session.current_user=ant[0]
-                Program.set_current_user(ant[0])
+                self.set_current_user(ant[0])
                 print("hello")
-                Program.set_json({"sauve":"1"})
+                self.set_json({"sauve":"1"})
             except Exception as e:
                 print("erreur save data",e)
-                Program.set_json({"sauve":"0"})
-            Program.set_mimetype("json")
-            return Program
-    except Exception as e:
-        print("erreur save data",e)
+                self.set_json({"sauve":"0"})
+            self.set_mimetype("json")

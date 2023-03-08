@@ -1,11 +1,11 @@
-import directory
+from directory import directory
 global menu
-def menu(params = None):
-    try:
-        Program=directory("bk")
-        Program.set_title("Burger King")
-        Program.set_path("./mespages")
-        j=codecs.open(Program.get_filename_path("menu.html"))
+class menupage(directory):
+    def __init__(self,title):
+        self.title=title
+        self.set_title("Burger King")
+        self.set_path("./mespages")
+        j=codecs.open(self.get_filename_path("menu.html"))
         text=j.read()
         result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
         #print(result.group(1))
@@ -40,9 +40,7 @@ def menu(params = None):
             print("burgervalue")
             #print(myburger[1])
 
-            Program.set_path("./menu")
-            Program.set_content(text)
+            self.set_path("./menu")
+            self.set_content(text)
             page=str(myburger[0] if myburger[0] > 1 else 'index')
-            return render_figure(page+".html")
-    except Exception as e:
-        print("erreur menu",e)
+

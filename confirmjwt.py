@@ -1,8 +1,16 @@
 global confirmjwt
-import directory
-def confirmjwt(query_components):
-    try:
-        Program=directory("bk")
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+# cursor
+global crsr
+crsr = connection.cursor()
+
+from directory import directory
+class confirmjwtpage(directory):
+    def __init__(self,title):
+        self.title=title
         print("sign sign up",query_components["token"])
         if query_components.get("token"):
             token=query_components.get("token")[0]
@@ -10,8 +18,7 @@ def confirmjwt(query_components):
             crsr.execute("select * from users where token = '" + str(token) + "'")
             connection.commit()
             user=crsr.fetchall()[0]
-            session.current_user=user
-            Program.set_current_user(user)
+            self.set_current_user(user)
             user_number=user[0]
             prenom = user[1]
             email = user[2]
@@ -19,7 +26,6 @@ def confirmjwt(query_components):
             #user = crsr.fetchall()
             print("envoyer le code bk")
             bkcode=user[3]
-            session.current_user=user
 
             # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
             host_smtp = "smtp.gmail.com"
@@ -28,7 +34,7 @@ def confirmjwt(query_components):
             mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
 
             # Configuration du mail
-            Program.set_path("./mespages")
+            self.set_path("./mespages")
             m=get_file("inscription.txt")
             n=m.read()
             print("mail")
@@ -52,14 +58,9 @@ def confirmjwt(query_components):
             print("envoyer message")
             mail.sendmail(email_smtp, email_destinataire, msg.as_string())
             mail.close()
-            Program.set_path("./")
+            self.set_path("./")
 
-            Program.set_url("/")
-            Program.set_redirect("/")
-            #Program.set_redirect("/signinuser?user_number=" + str(user_number))
-            Program.set_mimetype(None)
-            return Program
-            #return confirmotp(email)
-
-    except Exception as e:
-        print("erreur confirm jwt",e)
+            self.set_url("/")
+            self.set_redirect("/")
+            #self.set_redirect("/signinuser?user_number=" + str(user_number))
+            self.set_mimetype(None)

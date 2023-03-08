@@ -1,20 +1,19 @@
-import directory
+from directory import directory
 global myaccountinfo
-def myaccountinfo(params = None):
-    try:
-        Program=directory("")
+class myaccountinfopage(directory):
+    def __init__(self):
         print("account info: current user")
         print(session.current_user)
-        Program.set_path("./mespages")
-        j=codecs.open(Program.get_filename_path("accountinfo.html"))
+        self.set_path("./mespages")
+        j=codecs.open(self.get_filename_path("accountinfo.html"))
         text=j.read()
-        Program.set_css("")
-        Program.set_path("./css")
-        Program.add_css("account.css")
-        Program.add_css("signin.css")
-        Program.set_path("./js")
-        Program.add_js("saveinfo.js")
-        Program.edit_title("Account Details")
+        self.set_css("")
+        self.set_path("./css")
+        self.add_css("account.css")
+        self.add_css("signin.css")
+        self.set_path("./js")
+        self.add_js("saveinfo.js")
+        self.edit_title("Account Details")
         try:
             if session.current_user is not None:
                 for a in range(len(session.current_user)):
@@ -44,12 +43,8 @@ def myaccountinfo(params = None):
                         print("mon texte erreur",e)
         except:
             print("erreur afficher le formulaire")
-        Program.set_content(text)
-        Program.set_path("./accountinfo")
-        set_my_header("headersignin")
-        set_my_footer("footer")
-        return render_figure("index.html")
-
-    except Exception as e:
-        print("erreur my account info page",e)
+        self.set_content(text)
+        self.set_path("./accountinfo")
+        self.set_my_header("headersignin")
+        self.set_my_footer("footer")
 

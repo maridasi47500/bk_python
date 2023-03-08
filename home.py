@@ -1,5 +1,5 @@
 global home
-import directory 
+from directory import directory 
 class pagehome(directory):
     def __init__(self,title):
         self.title=title
@@ -35,8 +35,8 @@ class pagehome(directory):
         #print(mycontent)
         montitreici="mon titre ici"
         text = text % (mycontent,montitreici)
-        Program.set_path("./")
-        Program.set_content(text)
+        self.set_path("./")
+        self.set_content(text)
 
         text=(text)
 

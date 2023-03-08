@@ -1,7 +1,6 @@
-import directory
-def savepayment(query_components):
-    try:
-        Program=directory("")
+from directory import directory
+class savepaymentpage(directory):
+    def __init__(self,title,query_components):
         print("save payment method",query_components["nom"])
         if query_components.get("nom"):
             print("save payment method")
@@ -23,10 +22,9 @@ def savepayment(query_components):
             
             crsr.execute(sql,values)
             connection.commit()
-            Program.set_json({"ok":"1"})
+            self.set_json({"ok":"1"})
         else:
-            Program.set_json({"ok":"0"})
-        Program.set_mimetype("json")
-        return Program
-    except Exception as e:
-        print("erreur save payment method",e)
+            self.set_json({"ok":"0"})
+        self.set_mimetype("json")
+
+

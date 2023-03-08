@@ -1,18 +1,17 @@
-import directory
+from directory import directory
 global customizemymenu
-def customizemymenu(query_components):
-    try:
-        Program=directory('burger king') 
+class customizemymenupage(directory):
+    def __init__(directory):
         print("customize my burger (=)")
-        Program.set_layout(False)
-        Program.set_mimetype("html")
+        self.set_layout(False)
+        self.set_mimetype("html")
         print("hllo")
 	unefois=False
 
         code=""
         burgerid=query_components["burgerid"][0]
 	print("burger jr ici=>")
-        Program.set_path("./mespages/custom")
+        self.set_path("./mespages/custom")
         dataparams={"7":"burger=burgerjr&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy&burgerid=","1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger","4":"burger=sideonly","5":"burger=drinkonly","6":"burger=sweet","8":"burgerid=&burger=&drink=&side=","9":"burgerid=&burger="}
         sql="select * from burgers where burger_number = ?"
 	crsr.execute(sql,(burgerid,))
@@ -108,7 +107,7 @@ def customizemymenu(query_components):
 
                             for param1, value in othervalues:
                                 print("hello")
-                                Program.set_path("./mespages/custom")
+                                self.set_path("./mespages/custom")
                                 erreurmsg=""
                                 if value in ["burger","sandwich"]:
                                     tablename="burgers"
@@ -137,7 +136,4 @@ def customizemymenu(query_components):
                             print("erreur azertyu",e)
                 except Exception as e:
                     print("next params",e)
-        Program.set_content(force_to_unicode(code))
-        return Program
-    except Exception as e:
-        print("my errooor (=)",e)
+        self.set_content(force_to_unicode(code))

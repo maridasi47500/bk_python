@@ -173,3 +173,20 @@ class directory(object):
             self.path = self.path1+path.replace("./","/")
         except Exception as e:
             print(e,"erreur  1111")
+    def set_my_header(headername):
+        try:
+            self.set_path("./mespages")
+            fff=get_file(headername+".html")
+            myheader=fff.read()
+            self.set_header(myheader)
+        except IOError:
+            self.set_header("")
+
+    def set_my_footer(headername):
+        try:
+            self.set_path("./mespages")
+            fff=get_file(headername+".html")
+            myfooter=fff.read()
+            self.set_footer(myfooter)
+        except IOError:
+            self.set_footer("")
