@@ -5,7 +5,8 @@ class signuppage(directory):
         self.title=title
         print("sign up")
         self.set_path("./mespages")
-
+        self.css=""
+        self.js=""
         f=open(self.get_filename_path("userconnecte.js"))
         js=f.read()
         fff=open(self.get_filename_path("headersignin.html"))

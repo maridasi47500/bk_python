@@ -5,7 +5,7 @@ class myaccountinfopage(directory):
         print("account info: current user")
         print(session.current_user)
         self.set_path("./mespages")
-        j=codecs.open(self.get_filename_path("accountinfo.html"))
+        j=open(self.get_filename_path("accountinfo.html"),'rb')
         text=j.read()
         self.set_css("")
         self.set_path("./css")

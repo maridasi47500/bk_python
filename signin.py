@@ -7,6 +7,8 @@ class signinpage(directory):
         self.set_path("./mespages")
         f=open(self.get_filename_path("userconnecte.js"))
         js=f.read()
+        self.css=""
+        self.js=""
         fff=open(self.get_filename_path("headersignin.html"))
         myheader=fff.read()
         self.set_title("Burger King")

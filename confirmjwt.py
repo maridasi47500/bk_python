@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 global confirmjwt
 import sqlite3
 connection = sqlite3.connect("desburgers.db")

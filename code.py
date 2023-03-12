@@ -1,22 +1,18 @@
 global code
-import directory
-def code(params = None):
-    try:
-        Program=directory("")
-        print("code")
-        Program.set_path("./mespages")
-        f=open(Program.get_filename_path("userconnecte.js"),'r')
-        js=f.read()
-        Program.set_title("Burger King")
 
-        ff=open(Program.get_filename_path("code.html"),'r')
+from directory import directory
+class codepage(directory):
+    def __init__(self,title):
+        self.set_title(title)
+        print("code")
+        self.set_path("./mespages")
+        f=open(self.get_filename_path("userconnecte.js"),'r')
+        js=f.read()
+        ff=open(self.get_filename_path("code.html"),'r')
         text=ff.read()
-        Program.set_path("./js")
-        Program.add_js("userconnecte.js")
-        Program.set_header(Program.get_header())
-        Program.set_footer(Program.get_footer())
-        Program.set_path("./code")
-        Program.set_content(unicode(text,'utf-8'))
-        return render_figure("index.html")
-    except Exception as e:
-        print("erreur 3",e)
+        self.set_path("./js")
+        self.add_js("userconnecte.js")
+        self.set_header(self.get_header())
+        self.set_footer(self.get_footer())
+        self.set_path("./code")
+        self.set_content(unicode(text,'utf-8'))

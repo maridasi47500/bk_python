@@ -1,8 +1,18 @@
 import os
 import json
 global path1
+import sqlite3  
+global codecs
+import codecs
+from multipledispatch import dispatch
+connection = sqlite3.connect("desburgers.db")
+# cursor
+global crsr
+crsr = connection.cursor()
 
 class directory(object):
+    
+    path1=os.getcwd()
     def __init__(self,title):
         global path1
         self.htmlpath="/"
@@ -15,6 +25,7 @@ class directory(object):
         self.url=""
         self.current_user=()
         self.mimetype=None
+        self.content=""
         self.json=None
         self.userid=""
         self.redirect=None
@@ -29,7 +40,7 @@ class directory(object):
         self.path=""
         self.footer=footer1.read()
         self.parameters={}
-
+        self.current_user=None
     def switcher(self,extension):
         return {
         'html':'text/html',
@@ -42,9 +53,9 @@ class directory(object):
     def parameters(self):
         return self.parameters
     def run(self,redirect):
-        self.parameters={codereponse:301,location:redirect}
+        self.parameters={"codereponse":301,"location":redirect}
     def file(self,mime,location,content):
-        self.parameters={mime:self.switcher(mime),codereponse:200,location:location,content:content}
+        self.parameters={"mime":self.switcher(mime),"codereponse":200,"location":location,"content":content}
     def dict2class(self, my_dict):
         for key in my_dict:
             setattr(self, key, my_dict[key])
@@ -190,3 +201,59 @@ class directory(object):
             self.set_footer(myfooter)
         except IOError:
             self.set_footer("")
+    def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
+        idprecedent=0
+        print(sqlargs)
+        print(len(sqlargs))
+        print(sql,sqlargs,templatename,errormessage,tablename)
+        crsr.execute("PRAGMA table_info(["+tablename+"])")
+        connection.commit()
+        matable=crsr.fetchall()
+        self.set_path("./mespages")
+        h=get_file(templatename+".html")
+        template=force_to_unicode(h.read())
+        mysql=sql % sqlargs
+        print(mysql)
+        crsr.execute(mysql)
+        connection.commit()
+        res=crsr.fetchall()
+        myfigure=""
+        x=0
+        mytemplate=""
+        if len(res) > 0:
+            print("plusieurs "+tablename)
+
+            for re in res:
+                paspremier = False
+                mytemplate=force_to_unicode(template)
+                for x in range(len(re)):
+                    print(x)
+                    print(re[x])
+                    z=re[x]
+                    strrep=force_to_unicode("(%s)" % (matable[x][1]))
+                    print(strrep)
+                    if type(z) == int or type(z) == float:
+                        z=str(z)
+                    if z is not None:
+                        mytemplate=mytemplate.replace(strrep, force_to_unicode(z))
+                    if matable[x][1] == sortby:
+                        if idprecedent != 0:
+                            if re[x] != idprecedent:
+                                if paspremier:
+                                    myfigure+="</div>"
+                                    paspremier = True
+                                self.set_path("./mespages")
+                                kk=get_file(templatesortby)
+                                kk=kk.read()
+                                y=0
+                                for y in range(len(re)):
+                                    mystrrep="(%s)" % (matable[y][1])
+                                    kk=kk.replace(mystrrep, force_to_unicode(str(re[y])))
+                                myfigure += kk
+                        idprecedent=re[x]
+
+                myfigure+=mytemplate
+                myfigure+="</div>"
+            return myfigure
+        else:
+            return force_to_unicode("<p>"+errormessage+"</p>")

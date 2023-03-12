@@ -8,7 +8,7 @@ import sys
 import requests
 global session
 import sqlite3
-
+from home import pagehome
 global copy
 global render_pages
 global connection
@@ -17,26 +17,28 @@ global switcher
 from customizemymenu import customizemymenupage
 import showburger
 from accountpayment import pageaccountpayment
-import directory
+from directory import directory
 from signup_user import signup_user_page
-import afficher_modepaiement
-import check_email
-import code
+from afficher_modepaiement import afficher_modepaiementpage
+from check_email import checkemailpage
+from code import codepage
 from signin import signinpage
 import addcard
 from signup import signuppage
 import signup_user
+from addcard import addcardpage
 from refreshmyorders import refreshmyorderspage
 from myaccountinfo import myaccountinfopage
-
+from validatecode import validatecodepage
 import home
 from confirmotp import confirmotppage
 from menu import menupage
 from confirmjwt import confirmjwtpage
 import signup
+
 from showmenu import showmenupage
 from insertburger import insertburgerpage
-import checkuser
+from checkuser import checkuserpage
 from myorders import myorderspage
 from displaythisburger import pagedisplaythisburger
 from showburger import showburger
@@ -90,9 +92,9 @@ from urlparse import urlparse, parse_qs
 import os
 global path1
 path1=os.getcwd()
-sys.path.append(os.path.abspath(os.getcwd()+"/pythonfile"))
-from myfunc import *
-from pagehtml import *
+#sys.path.append(os.path.abspath(os.getcwd()+"/pythonfile"))
+#from myfunc import *
+#from pagehtml import *
 import codecs
 import re
 
@@ -134,77 +136,32 @@ def savegiftcard(query_components):
         return Program
     except Exeption as e:
         print("erreur save gift card",e)
-def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
-    idprecedent=0
-    print(sqlargs)
-    print(len(sqlargs))
-    print(sql,sqlargs,templatename,errormessage,tablename)
-    crsr.execute("PRAGMA table_info(["+tablename+"])")
-    connection.commit()
-    matable=crsr.fetchall()
-    Program.set_path("./mespages")
-    h=get_file(templatename+".html")
-    template=force_to_unicode(h.read())
-    mysql=sql % sqlargs
-    print(mysql)
-    crsr.execute(mysql)
-    connection.commit()
-    res=crsr.fetchall()
-    myfigure=""
-    x=0
-    mytemplate=""
-    if len(res) > 0:
-        print("plusieurs "+tablename)
 
-        for re in res:
-            paspremier = False
-            mytemplate=force_to_unicode(template)
-            for x in range(len(re)):
-                print(x)
-                print(re[x])
-                z=re[x]
-                strrep=force_to_unicode("(%s)" % (matable[x][1]))
-                print(strrep)
-                if type(z) == int or type(z) == float:
-                    z=str(z)
-                if z is not None:
-                    mytemplate=mytemplate.replace(strrep, force_to_unicode(z))
-                if matable[x][1] == sortby:
-                    if idprecedent != 0:
-                        if re[x] != idprecedent:
-                            if paspremier:
-                                myfigure+="</div>"
-                                paspremier = True
-                            Program.set_path("./mespages")
-                            kk=get_file(templatesortby)
-                            kk=kk.read()
-                            y=0
-                            for y in range(len(re)):
-                                mystrrep="(%s)" % (matable[y][1])
-                                kk=kk.replace(mystrrep, force_to_unicode(str(re[y])))
-                            myfigure += kk
-                    idprecedent=re[x]
-
-            myfigure+=mytemplate
-            myfigure+="</div>"
-        return myfigure
-    else:
-        return force_to_unicode("<p>"+errormessage+"</p>")
 def myorders(query_components):
     Program=myorderspage("mes commandes")
 
     return Program
     #connection.commit()
+def afficher_modepaiement(text,usernumber):
+    return afficher_modepaiementpage(text,usernumber)
+def addcard(params = None):
+    try:
+        Program=addcardpage("ajouter une carte")
+
+
+        return render_figure("ma page.html")
+    except:
+        print("erreur add card")
 global home
 def home(params = None):
     try:
-            
+        print("render figure home")    
         Program = pagehome("bk")
         Program.set_path("./")
         
         code=render_figure("index.html")
-        Program.run("html","/",code)
-        print("render figure home")
+        Program.file("html","/",code)
+        print("render figure home finish")
         return Program
     except Exception as e:
         print("erreur 1",e)
@@ -308,7 +265,7 @@ def render_figure(pathname):
             footer1=""
             print("header")
             try:
-                body+=decode_any_string(header1())
+                header1+=decode_any_string(header())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('header gerer cette erreur')
@@ -359,16 +316,27 @@ def render_figure(pathname):
             print("meu ajouté")
             j=open(path1+"/mespages/jstag.html").read()    
             js+=j % ("/js/jquery.js",)
+            print(js)
             js+=j % ("/js/js.js",)
-            js+=Program.get_js()
+            print(js)
+            print(Program.get_js(),"=js")
+            js+=Program.get_js().decode('utf-8')
 
-            j=open(path1+"/myapppage.html","r").read()
-            html=j % (title,css,header,main,footer,js)
+            j=open(path1+"/myapppage.html","r").read().decode('utf-8')
+            #print(j)
+            print(title.decode('utf-8'),"=title")
+            print(css.decode('utf-8'),"=css")
+            print(js.decode('utf-8'),"=js")
+            print(header1.decode('utf-8'),"header1")
+            print(main1,"=main1")
+
+            print(footer1,"=footer")
+            html=j % (title.decode('utf-8'),css.decode('utf-8'),header1.decode('utf-8'),main1,footer1,js)
             #print(html)
             print("fin balise")
-        mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
-        print(mychemin)
-        print(type(html))
+        #mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
+        #print(mychemin)
+        #print(type(html))
         if isinstance(html,str):
             s1=html
         else:
@@ -376,7 +344,12 @@ def render_figure(pathname):
         return s1
     except Exception as e:
         print(e,'erreru')
-
+def validatecode(query_components):
+    try:
+        Program=validatecodepage("valider le code",query_components)
+        return Program
+    except Exception as e:
+        print("erreur validate code",e)
 def customizemymenu(query_components):
     Program=customizemymenupage('personnaliser mon menu') 
     try:
@@ -385,8 +358,22 @@ def customizemymenu(query_components):
         return Program
     except Exception as e:
         print("my errooor (=)",e)
+def checkuser(query_components):
+    try:
+        Program=checkuserpage("vérifier l'utilisateur",query_components)
+        return Program
+    except Exception as e:
+        print("erreur validate code",e)
+def checkemail(query_components):
+    try:
+        Program=checkemailpage("vérification de l'email") 
+        return Program
+    except Exception as e:
+        print("erreur validate code",e)
+
+
 def insertburger(query_components):
-    Program=insertburgerpage("bk")
+    Program=insertburgerpage("ajouter des burgers",query_components)
 
     return render_figure("index.html")
 def menu(params = None):
@@ -397,9 +384,13 @@ def menu(params = None):
         print("erreur menu",e)
 def accountpayment(params = None):
     try:
-        Program=pageaccountpayment("account payment")
+        try:
+            userid=params["userid"]
+        except:
+            userid=None
+        Program=pageaccountpayment("account payment", userid)
         print("account payment: current user")
-        print(session.current_user)
+        #print(session.current_user)
         Program.set_path("./mespages")
 
         return render_figure("my page.html")
@@ -420,8 +411,8 @@ menuburger=[
 ]
 
 # SQL command to create a table in the database
-f=codecs.open(path1+"/mespages/dump.sql")
-sql_command = f.read()
+f=open(path1+"/mespages/dump.sql",'rb')
+sql_command = f.read().decode('utf-8')
 def signmein(query_components):
     try:
         Program=signmeinpage("bk")
@@ -498,6 +489,12 @@ def confirmotp(params=None):
         return Program
     except Exception as e:
         print("erreur confirm otp",e)
+def code(params = None):
+    try:
+        Program=codepage("code du coupon")
+        return render_figure("index.html")
+    except Exception as e:
+        print("erreur 3",e)
 def signup(params = None):
     try:
         Program=signuppage("inscription")
@@ -581,25 +578,7 @@ for cat in menuburger:
 #result = re.search('asdf=5;(.*)123jasd', s)
 #print(result.group(1))
 
-def card(title,description,button):
-    try:
-        f=codecs.open(path1+"/mespages/card.html")
-        s=f.read()
 
-        html=s % (title,description,button)
-        return html
-    except Exception as e:
-        print("erreur card",e)
-        return ""
-def mycard(title,description,content):
-    try:
-        f=codecs.open(path1+"/mespages/card.html")
-        s=f.read()
-        html = s % (title,description,content)
-        return html
-    except Exception as e:
-        print("erreur card",e)
-        return ""
 
 def bootstrapjs(params = None):
     h="""  """
@@ -684,15 +663,15 @@ class Page:
     global addgiftcard
     def addgiftcard(params = None):
         Program.set_path("./mespages")
-        j=codecs.open(Program.get_filename_path("addgiftcard.html"))
+        j=open(Program.get_filename_path("addgiftcard.html"),'rb')
         Program.add_css("signin.css")
         Program.add_js("addcard.js")
         Program.add_css("addgiftcard.css")
-        text=j.read()
+        text=j.read().decode('utf-8')
         Program.set_content(force_to_unicode(text))
         Program.set_path("./mespages")
-        k=codecs.open(Program.get_filename_path("headeroverlay.html"))
-        headertext=k.read()
+        k=open(Program.get_filename_path("headeroverlay.html"),'rb')
+        headertext=k.read().decode('utf-8')
         Program.set_header(headertext)
 
         return render_figure("ma page.html")
@@ -888,7 +867,7 @@ class S(BaseHTTPRequestHandler):
             print("erreur get",e)
             k=get_file_dir("404.html","./erreur")
             self._set_headers(switcher.get("html"))
-            self.wfile.write(k.read())
+            self.wfile.write(k.read().decode('utf-8'))
     def do_HEAD(self):
         self._set_headers()
     def do_POST(self):
@@ -988,7 +967,7 @@ class S(BaseHTTPRequestHandler):
             print("erreur post")
             k=get_file_dir("404.html","./erreur")
             self._set_headers(switcher.get("html"))
-            self.wfile.write(k.read())
+            self.wfile.write(k.read().decode('utf-8'))
 
         return
 

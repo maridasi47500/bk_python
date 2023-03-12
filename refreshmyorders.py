@@ -9,7 +9,7 @@ class refreshmyorderspage(directory):
             message_else="Commencez une nouvelle commande maintenant !"
             tablename="orders"
             mystr="okokokokok"
-            mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid.html")+"</div>"
+            mystr="<div id=\"mydiv\">"+self.display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid.html")+"</div>"
 
             self.set_content(force_to_unicode(mystr))
             self.set_mimetype("html")

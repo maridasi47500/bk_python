@@ -1,4 +1,4 @@
-import directory
+from directory import directory
 import sqlite3
 connection = sqlite3.connect("desburgers.db")
 # cursor

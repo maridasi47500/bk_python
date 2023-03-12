@@ -1,7 +1,6 @@
-import directory
-def checkuser(query_components):
-    try:
-        Program=directory("bk")
+from directory import directory
+class checkuserpage(directory):
+    def __init__(self,title,query_components):
         print(query_components)
         print("validate code",query_components.get("email"))
         if query_components.get("email"):
@@ -14,6 +13,3 @@ def checkuser(query_components):
                 Program.set_json({"usernotexist":"1"})
             else:
                 Program.set_json({"usernotexist":"0"})
-            return Program
-    except Exception as e:
-        print("erreur validate code",e)

@@ -1,21 +1,16 @@
 global addcard
-import directory
-def addcard(params = None):
-    try:
-        Program=directory("")
-        Program.set_path("./mespages")
-        j=codecs.open(Program.get_filename_path("addcard.html"))
-        Program.set_path("./css")
-        Program.add_css("signin.css")
-        Program.add_css("addcard.css")
-        Program.add_js("addcard.js")
+from directory import directory
+class addcardpage(directory):
+    def __init__(self):
+        self.set_path("./mespages")
+        j=open(self.get_filename_path("addcard.html"),'rb')
+        self.set_path("./css")
+        self.add_css("signin.css")
+        self.add_css("addcard.css")
+        self.add_js("addcard.js")
         text=force_to_unicode(j.read())
-        Program.set_content(text)
-        Program.set_path("./mespages")
-        k=codecs.open(Program.get_filename_path("headeroverlay.html"))
+        self.set_content(text)
+        self.set_path("./mespages")
+        k=open(self.get_filename_path("headeroverlay.html"),'rb')
         headertext=k.read()
-        Program.set_header(headertext)
-
-        return render_figure("ma page.html")
-    except:
-        print("erreur add card")
+        self.set_header(headertext)

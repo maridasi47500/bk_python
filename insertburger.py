@@ -1,4 +1,9 @@
 global insertburger
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+# cursor
+global crsr
+crsr = connection.cursor()
 from directory import directory
 class insertburgerpage(directory):
     def __init__(self,title,query_components):

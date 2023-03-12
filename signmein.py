@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from directory import directory
 global signmein
 import sqlite3

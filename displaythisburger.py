@@ -1,7 +1,8 @@
-import directory
+# -*- coding: utf-8 -*-
+from directory import directory
 global customizemymenu
 global pagedisplaythisburger
-class pagedisplaythisburger(directory)
+class pagedisplaythisburger(directory):
     def __init__(self,title):
         self.title=title
     def __init__(self,title,burger,catid,catname):

@@ -1,7 +1,9 @@
 from directory import directory
 global customizemymenu
 global showburger
+from multipledispatch import dispatch
 class showburger(directory):
+    @dispatch(str,str)
     def __init__(self,title):
         self.title=title
     def __init__(self,title,query_components):
@@ -32,20 +34,20 @@ class showburger(directory):
         sql_command = "select * from nutinfos where burger_id = %s" % (burgerid)
         tablename="nutinfos"
         message_else="Aucune information n'est disponible."
-        collectionstr= display_collection(sql_command, (), "_infonutrition", message_else, tablename)
+        collectionstr= self.display_collection(sql_command, (), "_infonutrition", message_else, tablename)
 
         contentpage=contentpage.replace("info nutritionnelle ici",collectionstr)
         sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("2","3",burgerid)
         tablename="burgers"
         message_else=""
-        collectionstr= display_collection(sql_command, (), "_combosize", message_else, tablename)
+        collectionstr= self.display_collection(sql_command, (), "_combosize", message_else, tablename)
         contentpage=contentpage.replace("<!-- size combo here -->",collectionstr)
 
         sql_command = "select * from burgers where burgercat_id in (%s,%s) and burger_number = %s" % ("4","5",burgerid)
-        collectionstr= display_collection(sql_command, (), "_valuesize", message_else, tablename)
+        collectionstr= self.display_collection(sql_command, (), "_valuesize", message_else, tablename)
         contentpage=contentpage.replace("<!-- size item here -->",collectionstr)
         sql_command = "select burgers.* from burgers where burger_number = %s and burgers.burgercat_id = %s" % (burgerid,1)
-        collectionstr= display_collection(sql_command, (), "_customizeburger", message_else, tablename)
+        collectionstr= self.display_collection(sql_command, (), "_customizeburger", message_else, tablename)
         contentpage=contentpage.replace("<!-- personnaliser votre burger -->",collectionstr)
 
 
@@ -63,4 +65,4 @@ class showburger(directory):
                         z=str(z)
                     if z is not None:
                         contentpage=contentpage.replace(strrep, force_to_unicode(z))
-    self.set_content(contentpage)    
+        self.set_content(contentpage)    

@@ -6,7 +6,7 @@ class myorderspage(directory):
         message_else="Commencez une nouvelle commande maintenant !"
         tablename="orders"
 
-        mystr="<div id=\"mydiv\">"+display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid")+"</div>"
+        mystr="<div id=\"mydiv\">"+self.display_collection(sql_command, (str(session.current_user[0])), "_order", message_else, tablename,"orderid","_orderid")+"</div>"
         try:
             self.add_js("orders.js")
             self.add_css("orders.css")

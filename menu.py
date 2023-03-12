@@ -1,11 +1,17 @@
 from directory import directory
 global menu
+import re
+import sqlite3
+connection = sqlite3.connect("desburgers.db")
+# cursor
+global crsr
+crsr = connection.cursor()
 class menupage(directory):
     def __init__(self,title):
         self.title=title
         self.set_title("Burger King")
         self.set_path("./mespages")
-        j=codecs.open(self.get_filename_path("menu.html"))
+        j=open(self.get_filename_path("menu.html"),'rb')
         text=j.read()
         result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
         #print(result.group(1))
