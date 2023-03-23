@@ -2,7 +2,7 @@
 from directory import directory
 global signmein
 import sqlite3
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 global crsr
 
 from email.MIMEMultipart import MIMEMultipart

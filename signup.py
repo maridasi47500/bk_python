@@ -4,9 +4,12 @@ class signuppage(directory):
     def __init__(self,title):
         self.title=title
         print("sign up")
-        self.set_path("./mespages")
+        self.set_path("./signup")
         self.css=""
         self.js=""
+        self.layout=""
+        self.mime="html"
+        self.response=""
         f=open(self.get_filename_path("userconnecte.js"))
         js=f.read()
         fff=open(self.get_filename_path("headersignin.html"))

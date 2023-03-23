@@ -5,7 +5,7 @@ import sqlite3
 global codecs
 import codecs
 from multipledispatch import dispatch
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
 crsr = connection.cursor()
@@ -23,9 +23,11 @@ class directory(object):
         self.mytitle = title
         self.js=""
         self.url=""
+        self.html=""
         self.current_user=()
-        self.mimetype=None
+        self.mime=None
         self.content=""
+        self.response=200
         self.json=None
         self.userid=""
         self.redirect=None
@@ -50,12 +52,26 @@ class directory(object):
         'png':"image/png",
         'ico':'image/vnd.microsoft.icon'
         }[extension]
+    def infotable(self,tablename):
+        crsr.execute("PRAGMA table_info(["+tablename+"])")
+        connection.commit()
+        matable=crsr.fetchall()
+        return matable
+
     def parameters(self):
         return self.parameters
+    def work(self,code):
+        self.response=code 
+    def pageok(self):
+        self.response=200        
     def run(self,redirect):
         self.parameters={"codereponse":301,"location":redirect}
-    def file(self,mime,location,content):
-        self.parameters={"mime":self.switcher(mime),"codereponse":200,"location":location,"content":content}
+    def file(self,mime,location):
+        self.parameters={"mime":self.switcher(mime),"codereponse":200,"location":location}
+    def sethtml(self,html):
+        self.html=html
+    def gethtml(self):
+        return self.html
     def dict2class(self, my_dict):
         for key in my_dict:
             setattr(self, key, my_dict[key])
@@ -73,10 +89,14 @@ class directory(object):
         self.layout=type
     def get_layout(self):
         return self.layout
+    def set_response(self,type):
+        self.response=type
+    def get_response(self):
+        return self.response
     def set_mimetype(self,type):
-        self.mimetype=type
+        self.mime=type
     def get_mimetype(self):
-        return self.mimetype
+        return self.switcher(self.mime)
     def edit_title(self,str):
         self.title = str+ " - "+self.mytitle
     def set_title(self,str):
@@ -184,24 +204,35 @@ class directory(object):
             self.path = self.path1+path.replace("./","/")
         except Exception as e:
             print(e,"erreur  1111")
-    def set_my_header(headername):
+    def set_my_header(self,headername):
         try:
-            self.set_path("./mespages")
-            fff=get_file(headername+".html")
+            #self.set_path("./mespages")
+            fff=self.get_file(headername+".html")
             myheader=fff.read()
             self.set_header(myheader)
         except IOError:
             self.set_header("")
+    def force_to_unicode(self,text):
+        "If text is unicode, it is returned as is. If it's str, convert it to Unicode using UTF-8 encoding"
+        return text if isinstance(text, unicode) else text.decode('utf-8')
+    def get_file(self,file):
+        print("get file:")
+        print(self.get_filename_path(file))
+        return open(self.get_filename_path(file),'r')
+    def get_file_dir(self,file,dir):
+        print("get file:"+dir)
+        self.set_path(dir)
+        return open(self.get_path()+"/"+file,'r')
 
-    def set_my_footer(headername):
+    def set_my_footer(self,headername):
         try:
-            self.set_path("./mespages")
-            fff=get_file(headername+".html")
+            #self.set_path("./mespages")
+            fff=self.get_file(headername+".html")
             myfooter=fff.read()
             self.set_footer(myfooter)
         except IOError:
             self.set_footer("")
-    def display_collection(sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
+    def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
         idprecedent=0
         print(sqlargs)
         print(len(sqlargs))
@@ -209,9 +240,9 @@ class directory(object):
         crsr.execute("PRAGMA table_info(["+tablename+"])")
         connection.commit()
         matable=crsr.fetchall()
-        self.set_path("./mespages")
-        h=get_file(templatename+".html")
-        template=force_to_unicode(h.read())
+        #self.set_path("./mespages")
+        h=self.get_file(templatename+".html")
+        template=self.force_to_unicode(h.read())
         mysql=sql % sqlargs
         print(mysql)
         crsr.execute(mysql)
@@ -225,25 +256,80 @@ class directory(object):
 
             for re in res:
                 paspremier = False
-                mytemplate=force_to_unicode(template)
+                mytemplate=self.force_to_unicode(template)
                 for x in range(len(re)):
                     print(x)
                     print(re[x])
                     z=re[x]
-                    strrep=force_to_unicode("(%s)" % (matable[x][1]))
+                    strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
                     print(strrep)
                     if type(z) == int or type(z) == float:
                         z=str(z)
                     if z is not None:
-                        mytemplate=mytemplate.replace(strrep, force_to_unicode(z))
+                        mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
                     if matable[x][1] == sortby:
                         if idprecedent != 0:
                             if re[x] != idprecedent:
                                 if paspremier:
                                     myfigure+="</div>"
                                     paspremier = True
-                                self.set_path("./mespages")
-                                kk=get_file(templatesortby)
+                                #self.set_path("./mespages")
+                                kk=self.get_file(templatesortby)
+                                kk=kk.read()
+                                y=0
+                                for y in range(len(re)):
+                                    mystrrep="(%s)" % (matable[y][1])
+                                    kk=kk.replace(mystrrep, self.force_to_unicode(str(re[y])))
+                                myfigure += kk
+                        idprecedent=re[x]
+
+                myfigure+=mytemplate
+                myfigure+="</div>"
+            return myfigure
+        else:
+            return self.force_to_unicode("<p>"+errormessage+"</p>")
+    def display_collection_sql(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
+        idprecedent=0
+        print(sqlargs)
+        print(len(sqlargs))
+        print(sql,sqlargs,templatename,errormessage,tablename)
+        crsr.execute("PRAGMA table_info(["+tablename+"])")
+        connection.commit()
+        matable=crsr.fetchall()
+        #self.set_path("./mespages")
+        h=self.get_file(templatename+".html")
+        template=self.force_to_unicode(h.read())
+        print(sql,sqlargs)
+        crsr.execute(sql,sqlargs)
+        connection.commit()
+        res=crsr.fetchall()
+        myfigure=""
+        x=0
+        mytemplate=""
+        if len(res) > 0:
+            print("plusieurs ("+str(res)+") "+tablename)
+
+            for re in res:
+                paspremier = False
+                mytemplate=self.force_to_unicode(template)
+                for x in range(len(re)):
+                    print(x)
+                    print(re[x])
+                    z=re[x]
+                    strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
+                    print(strrep)
+                    if type(z) == int or type(z) == float:
+                        z=str(z)
+                    if z is not None:
+                        mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
+                    if matable[x][1] == sortby:
+                        if idprecedent != 0:
+                            if re[x] != idprecedent:
+                                if paspremier:
+                                    myfigure+="</div>"
+                                    paspremier = True
+                                #self.set_path("./mespages")
+                                kk=self.get_file(templatesortby)
                                 kk=kk.read()
                                 y=0
                                 for y in range(len(re)):
@@ -256,4 +342,4 @@ class directory(object):
                 myfigure+="</div>"
             return myfigure
         else:
-            return force_to_unicode("<p>"+errormessage+"</p>")
+            return self.force_to_unicode("<p>"+errormessage+"</p>")

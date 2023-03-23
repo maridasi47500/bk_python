@@ -1,7 +1,7 @@
 import codecs 
 global home
 import sqlite3
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
 crsr = connection.cursor()
@@ -36,7 +36,10 @@ class pagehome(directory):
         self.header=""
         self.footer=""
         self.js=""
-        self.mimetype=200
+        self.html=""
+        self.layout=None
+        self.response=""
+        self.mime="html"
         self.json=None
         self.redirect=None
         self.content=""
@@ -49,7 +52,7 @@ class pagehome(directory):
         
         j=open(self.get_filename_path("index.html"),'rb')
         text=j.read().decode('utf-8')
-        print("my text",text)
+        #print("my text",text)
         #print(result.group(1))
         crsr.execute("SELECT * FROM burgers")
         mycontent="<ul>"
@@ -67,8 +70,8 @@ class pagehome(directory):
         ans = crsr.fetchall()
         print("allcards")
         print("cads")
-        for x in ans:
-            mycontent+= card(x[1],x[2],x[3])
+        #for x in ans:
+        #    mycontent+= card(x[1],x[2],x[3])
         #print(mycontent)
         montitreici="Burger Queen"
         #print(text.decode('utf-8'))    
@@ -77,6 +80,7 @@ class pagehome(directory):
         
         self.set_path("./")
         self.set_content(text)
+        
         print("le texte ok")    
         self.current_user=None
         #text=(text)

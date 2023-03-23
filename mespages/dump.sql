@@ -16,7 +16,7 @@ image VARCHAR(50),
 description text,
 prix float,
 mincal float,
-maxcal float,
+maxcal float
 );
 CREATE TABLE IF NOT EXISTS nutinfos (
 burger_id INTEGER PRIMARY KEY,

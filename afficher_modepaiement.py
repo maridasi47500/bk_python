@@ -2,7 +2,7 @@
 global afficher_modepaiement
 from directory import directory
 import sqlite3
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 
 global crsr
 crsr = connection.cursor()

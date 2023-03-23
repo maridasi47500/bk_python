@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 global confirmjwt
 import sqlite3
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 # cursor

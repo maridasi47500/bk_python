@@ -1,16 +1,17 @@
 from directory import directory
 global menu
 import re
+import os
+from displaythisburger import pagedisplaythisburger
 import sqlite3
-connection = sqlite3.connect("desburgers.db")
+connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
 crsr = connection.cursor()
 class menupage(directory):
     def __init__(self,title):
         self.title=title
-        self.set_title("Burger King")
-        self.set_path("./mespages")
+        self.set_path("./menu")
         j=open(self.get_filename_path("menu.html"),'rb')
         text=j.read()
         result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
@@ -29,15 +30,18 @@ class menupage(directory):
         for myburger in ans:
             mesburgers=""
             print("burger?!%*#")
-            crsr.execute("SELECT * FROM burgers where cat_id = '"+repr(myburger[0])+"'")
+            crsr.execute("SELECT * FROM burgers where burgercat_id = '"+repr(myburger[0])+"'")
             res=re.search("<div class=\"myitems\"><ul>(.*?)</ul></div>",text)
             ans1 = crsr.fetchall()
             for burger in ans1:
                 #print("burger",burger[1])
                 print("erreur ici")
-                displaythisburger(burger,myburger[1],myburger[0])
+                b=pagedisplaythisburger(burger,myburger[1],myburger[0]).get_content()
                 print("myerreur")
-                mesburgers+= listburger(burger)
+                j=open(os.getcwd()+"/listburger/_modelburger.html","rb")
+                s= j.read().decode('utf-8') % (str(burger[0]),(burger[1].encode('utf-8')))
+
+                mesburgers+= s
                 print("erreur")
             if mesburgers == "":
                 mesburgers = "mes items ici"
