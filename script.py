@@ -14,7 +14,7 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/customizemymenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -604,7 +604,7 @@ def customizemymenu(query_components):
     try:
 
 
-        return Program
+        return render_figure("custo.html",Program)
     except Exception as e:
         print("my errooor (=)",e)
 def checkuser(query_components):
@@ -742,6 +742,15 @@ class S(BaseHTTPRequestHandler):
 	print(k)
         self._set_headers(switcher.get("html"))
         self.wfile.write(force_to_unicode(k.decode('utf-8')))
+    def _mon_erreur_text(self,e):
+        print("erreur get",e)
+        file="404.html"
+        dir="./erreur"
+        Program.set_path(dir)
+        k= "mon erreur"
+	print(k)
+        self._set_headers(switcher.get("html"))
+        self.wfile.write(force_to_unicode(k.decode('utf-8')))
 
     def _set_headers(self,myheader='text/html'):
         self.send_response(200)
@@ -752,7 +761,7 @@ class S(BaseHTTPRequestHandler):
         self.send_header('Content-type', myheader)
         self.end_headers()
     def do_GET(self):
-        print("=========new route GET====================")
+        print("=========new route GET=========["+self.path+"]===========")
 
         try:
             copy()
@@ -765,8 +774,8 @@ class S(BaseHTTPRequestHandler):
             #x=searchmyparams(query_components,myurlpath)
             for path in myroutes:
                 #simple=path.split("?")[0]
-                print("le chemin est %s et la route %s" % (myurlpath,path))
-                print("la route a été trouvée ?%r" % (re.match(path, myurlpath) != None))
+                #print("le chemin est %s et la route %s" % (myurlpath,path))
+                #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) != None))
                 mysimplefunc=myroutes[path]
                 kk=re.match(path, myurlpath)
                 if kk:
@@ -778,6 +787,10 @@ class S(BaseHTTPRequestHandler):
                     #code=Program.gethtml()
                     print("le code récupéré")    
                     break
+            if routetrouve:
+                print("La route a été trouvée ? %r, c'est %s" % (routetrouve is not None, routetrouve))
+            else:
+                print("La route n'a pas été trouvée ?  %r" % (routetrouve is None,))
             if myurlpath.split(".")[-1] in ["css","scss"]:
                 print("le mimetype est %s et la réponse est %s" % ("css",200))
                 self._set_headers(switcher["css"])
@@ -815,7 +828,8 @@ class S(BaseHTTPRequestHandler):
                         except:
                             print("la route nest pas html")
                 except Exception as e:
-                        print("les mots ed la page ont été reconnu?faux")
+                        print("les mots ed la page ont été reconnu?faux",code)
+                        self._mon_erreur_text(e)
             else:
                 self._mon_erreur("ni une erreur ni css js ou image")
         except UnboundLocalError as e:

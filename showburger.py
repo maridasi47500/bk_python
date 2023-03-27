@@ -62,7 +62,7 @@ class showburgerpage(directory):
         contentpage=contentpage.replace("<!-- personnaliser votre burger -->",collectionstr)
 	self.set_path("./showburger")
 
-
+        
         if len(res) > 0:
             for resu in res:
                 paspremier = False
@@ -77,4 +77,9 @@ class showburgerpage(directory):
                         z=str(z)
                     if z is not None:
                         contentpage=contentpage.replace(strrep, self.force_to_unicode(z))
+        loggedin=True
+        if loggedin:
+            g=self.get_file("./customize.html").read()
+            contentpage=contentpage.replace("<!-- personnaliser ma commande-->",g)
+            
         self.set_content(contentpage)    
