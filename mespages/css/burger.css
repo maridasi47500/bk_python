@@ -11,20 +11,32 @@
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
 }
-#text,#textburger,#textmenuburger{
+#text,#textburger{
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   font-size: 15px;
   padding:50px 20px 20px 20px;
   margin-top:100px;
   color: white;
-  overflow-y;scroll;
+  overflow-y:scroll;
   transform: translate(-50%,-50%);
   height:250px;
   -ms-transform: translate(-50%,-50%);
 }
-
+#textmenuburger{
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  font-size: 15px;
+  padding:50px 20px 20px 20px;
+  margin-top:100px;
+  color: white;
+  overflow-y:scroll;
+  //transform: translate(-50%,-50%);
+  height:50vh;
+  //-ms-transform: translate(-50%,-50%);
+}
 .item {
   text-align:center;
 }
@@ -35,4 +47,24 @@
 div.meal {
     display:block;
     margin-bottom:50px;
+}
+
+#articlesel {
+	top: 0;
+        left:100px;
+	position: absolute;
+	width: 200px;
+	z-index: 100;
+}
+#dispoptions {
+	width: 200px;
+	overflow-y: scroll;
+	height: 50px;
+}
+
+.ingredients-form {
+	position: absolute;
+	top: 170px;
+	overflow-y: scroll;
+	height: 120px;
 }

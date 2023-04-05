@@ -9,12 +9,14 @@ import requests
 global session
 import sqlite3
 from home import pagehome
+from changeitem import changeitempage
+from ingredients import ingredientpage
 global copy
 global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -665,7 +667,18 @@ def listburger(burger):
     except Exception as e:
         print("erreur list brger",e)
 
-
+def ingredients(burger):
+    try:
+        Program=ingredientpage("./showburger","customize your item",burger)
+        return render_figure("ingredients.html",Program)
+    except Exception as e:
+        print("erreur ajout burger",e)
+def changeitem(burger):
+    try:
+        Program=changeitempage("./showburger","customize your item",burger)
+        return render_figure("changeitem.html",Program)
+    except Exception as e:
+        print("erreur ajout burger",e)
 def ajoutlistburger(burger):
     try:
         print("ajout list brger")
@@ -962,6 +975,8 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+"/updateitem/customize":ingredients,
+"/updateitem/changeitem":changeitem,
 
 r"\/menu\/[0-9]*$(\/)?": showburger,
 r"/menu(/)([a-z]+)(/)?": showmenu,

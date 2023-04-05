@@ -79,25 +79,26 @@ class customizemymenupage(directory):
                 sql="select * from burgers where burger_number = %s"
                 values=(query_components["burgerid"][-1])
                 param1="burger"
-                code+=self.display_collection(sql,values,"/custom/_"+param1,erreurmsg,tablename)
+                code+=self.display_collection(sql,values,"/_"+param1,erreurmsg,tablename)
 
                 tablename="burgers"
                 sql="select * from burgers where mytype = '%s' limit 1"
                 values=(query_components["jrsides"][0])
                 param1="jrsides"
-                code+=self.display_collection(sql,values,"/custom/_"+param1,erreurmsg,tablename)
+                code+=self.display_collection(sql,values,"/_"+param1,erreurmsg,tablename)
                 #replace size with value
                 tablename="burgers"
                 sql="select * from burgers where mytype = '%s' limit 1"
                 values=(query_components["jrdrinks"][0])
                 param1="jrdrinks"
-                code+=self.display_collection(sql,values,"/custom/_"+param1,erreurmsg,tablename)
+                code+=self.display_collection(sql,values,"/_"+param1,erreurmsg,tablename)
                 #replace size with value
                 tablename="burgers"
                 sql="select * from burgers where burger_number = %s limit 1"
                 values=(query_components["jrtreats"][0])
                 param1="jrtreats.html"
-                code+=get_file("custom/_"+param1).read()
+                print(self.get_file("/_"+param1).read())
+                code+=self.get_file("/_"+param1).read()
                 #replace size with value
                 unefois=True
             elif str(burgercatid) == "4":

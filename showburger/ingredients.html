@@ -1,0 +1,108 @@
+
+<form  class="ingredients-form" data-mydiv="{myid}" data-myform="ingredients" onsubmit="off(this);return false;">
+    <div>Customize <input type="reset" onclick="resetform();return false;"/> </div>
+    <div class="fields">
+        <label for="cheese">fromage americain</label>
+        <input id="nocheese" type="hidden" name="cheese" value="no" />
+        <input onchange="displayart(this);" id="cheese" type="checkbox" name="cheese" />
+    </div>
+    <div class="fields">
+        <label for="bacon">bacon</label>
+        <input id="nobacon" type="hidden" name="bacon" value="no" />
+        <input onchange="displayart(this);" id="bacon" type="checkbox" name="bacon" />
+    </div>   
+    
+        <div class="fields">
+        <label>onions</label>
+        <select onchange="displayart(this);" name="onions">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra-0.15">extra ($0.15)</option>
+        </select>
+    </div>
+    <div class="fields">
+        <label>tomate</label>
+        <select onchange="displayart(this);" name="tomato">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular-0.50">regular ($0.50)</option>
+            <option value="extra-0.50">extra ($0.50)</option>
+        </select>
+    </div>
+        <div class="fields">
+        <label>cornichon</label>
+        <select onchange="displayart(this);" name="pickle">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+            <div class="fields">
+        <label>laitue</label>
+        <select onchange="displayart(this);" name="lettuce">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular-0.50">regular ($0.50)</option>
+            <option value="extra-0.50">extra ($0.50)</option>
+        </select>
+    </div>
+            <div class="fields">
+        <label>sauce stacker</label>
+        <select onchange="displayart(this);" name="stacker">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+            <div class="fields">
+        <label>ketchup</label>
+        <select onchange="displayart(this);" name="ketchup">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+        <div class="fields">
+        <label>mayo</label>
+        <select onchange="displayart(this);" name="mayo">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+        <div class="fields">
+        <label>moutarde</label>
+        <select onchange="displayart(this);" name="mustard">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+        <div class="fields">
+        <label>sauce bbq</label>
+        <select onchange="displayart(this);" name="bbq">
+            <option value="no">no</option>
+            <option value="light">light</option>
+            <option value="regular">regular</option>
+            <option value="extra">extra</option>
+        </select>
+    </div>
+        <div class="fields">
+        <label>whopper jr patty</label>
+        <select onchange="displayart(this);" name="biscuit">
+            <option value="no">no</option>
+            <option value="add one-1.00">add one</option>
+        </select>
+    </div>
+
+
+    <div class="actions">
+        <input type="submit" value="modifier l'article"/>
+    </div>
+</form>
