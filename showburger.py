@@ -22,6 +22,7 @@ class showburgerpage(directory):
         print("burger king")
         self.add_css("burger.css")
         self.add_css("customize.css")
+        
         self.add_js("burger.js")
         self.add_js("customize.js")
         

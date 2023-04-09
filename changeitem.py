@@ -4,11 +4,20 @@ class changeitempage(directory):
         self.set_layout(False)
         self.path=path
         self.title=title
+        
         try:
             myid=params["myid"][0]
         except:
             myid=""
-        burgerid=params["id"][0]
+        
+        try:
+            otherburgerid=params["burger"][0]
+            if otherburgerid=="undefined":
+                raise Exception("sorry burger id must be defined")
+
+        except:
+            otherburgerid=None
+        burgerid=otherburgerid or params["id"][0]
         burgercatid=params["catid"][0]
         sqlvalues=(burgercatid,)
         try:
@@ -38,5 +47,5 @@ class changeitempage(directory):
         tablename="burgers"
         message_else=""
         collectionstr= self.display_collection(sql_command, (), "_checkboxburger", message_else, tablename).replace("mataille",taille)
-        form=self.get_file("changeitem.html").read() % (articlesel+collectionstr)
+        form=self.get_file("changeitem.html").read() % (articlesel,collectionstr)
         self.set_content(form.format(myid=myid))

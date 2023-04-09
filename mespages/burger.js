@@ -13,13 +13,21 @@ function off() {
   document.getElementById("overlayburger").style.display = "none";
 }
 function resetform(){
+    var el;
     var myform=$(".ingredients-form")[0];
-    var mydivs=$("[value=\"No\"]");
+    var mydivs=$(".ingredients-form select, .ingredients-form input[type=checkbox]");
     for (var i=0;i<mydivs.length;i++) {
-        $(mydivs[i]).val("no")
+        el=mydivs[i];
+        if (el.tagName === "SELECT") {
+            el.children[0].value="no";
+            el.value="no";
+        } else {
+            el.checked=false;
+        }
     }
-    myform.reset();
+    //myform.reset();
     $("#dispoptions").html("");
+    return false;
 }
 function displayart(myinput = null){
     if (myinput && !myinput.checked && myinput.previousSibling.type==="hidden"){
@@ -34,6 +42,7 @@ function displayart(myinput = null){
         myinput.children[0].value="No";
     }
     var mydiv=$(".ingredients-form")[0];
+    var mydiv2=$(".edititem-form")[0];
     if (mydiv){
             var url=$(mydiv).serialize(),param,val,size,price;
             var lstopt=url.split("&");
@@ -55,7 +64,7 @@ function displayart(myinput = null){
                mystr+=size;
                try{
                    price=parseFloat(val.split('-')[1]);
-                   if (NaN(price)) {
+                   if (isNaN(price)) {
                        throw new Error("price is not a number")
                    }
                }
@@ -110,8 +119,11 @@ function displayart(myinput = null){
             }
         }
             $("#dispoptions").html(toTitleCase(mystr));
+            } else if(mydiv2) {
+                var data=$(mydiv2).serialize();
+                console.log("donnée du form : "+(data));
             }
-            }
+};
 function onburger() {
   document.getElementById("customizeburger").style.display = "block";
 }
@@ -119,8 +131,80 @@ function onburger() {
 function offburger() {
   document.getElementById("customizeburger").style.display = "none";
 }
-function onmenuburger() {
+function loaddatasidedrink(el){
+    var myel;
+     var mydata=$(el)[0].dataset.mydata||"";
+     //alert("load data : "+JSON.stringify(mydata));
+     var mydivvalue=$("[data-mydiv]").data("mydiv");
+     var myitem=$("[data-myid]");
+     var mydiv=$(".edititem-form");
+     var listdata=mydata.split("&"),k,v,input;
+     //alert(JSON.stringify(listdata))
+    if (listdata[0] !== "" ) {
+    for (var i=0;i<listdata.length;i++){
+        k=listdata[i].split("=")[0];
+        v=listdata[i].split("=")[1];
+        if (k==="burger"){
+            input=$("input[type=radio][value="+v+"]")[0];
+            input.checked=true;
+        }
+    }
+    }
+}
+function loaddata(el){
+     var mydata=$(el)[0].dataset.mydata||"";
+     //alert("load data : "+JSON.stringify(mydata));
+     var mydivvalue=$("[data-mydiv]").data("mydiv");
+     var myitem=$("[data-myid]");
+     var mydiv=$(".ingredients-form");
+     var listdata=mydata.split("&"),k,v,input;
+     //alert(JSON.stringify(listdata))
+    if (listdata[0] !== "" ) {
+    for (var i=0;i<listdata.length;i++){
+        try{
+         k=listdata[i].split("=")[0];
+         //alert(k)
+         v=listdata[i].split("=")[1];
+         input=$("select[name="+k+"], [name="+k+"][type=checkbox]")[0];
+         console.log(input.tagName);
+         if (input && v === "on")  {
+             
+             input.checked=true;
+             //alert(input.checked+" "+input.id)
+         } else if (input && v ==="no") {
+            
+             if (input.children[0]) {
+                 input.children[0].value="no";
+                 
+             }
+             if (input.tagName === "SELECT") {
+             input.value=v;
+         }
+             
+         } else if (input && v ==="No") {
+             if (input.children[0]) {
+                 input.children[0].value="No";
+                 
+             }
+             if (input.tagName === "SELECT") {
+             input.value=v;
+            }
+             
+         } else if(input && input.tagName === "SELECT") {
+             input.value=v;
+             console.log(v);
+         }
+     }catch(e){console.log(e)}
+     }
+     }
+     
+}
+function onmenuburger(el = false) {
     displayart();
+    if (el) {
+        //loaddata(el);
+        
+    }
   document.getElementById("customizemenuburger").style.display = "block";
 }
 function displayvalue(el){
@@ -132,15 +216,23 @@ function displayvalue(el){
 }
 function offmenuburger(myform = "mymodal") {
      var mydata=$("[data-mydiv]").serialize();
+     //alert(mydata);
      var mydivvalue=$("[data-mydiv]").data("mydiv");
-     var myitem=$("[data-myid]");
+     var myitem=$("[data-myid="+mydivvalue+"]");
+     //alert(mydata);
      /*alert("kk")
 alert(mydivvalue+"[data-myid=\""+mydivvalue+"\"] .dispoptions");
     */
     var myoptions=$("[data-myid=\""+mydivvalue+"\"] .dispoptions");
     if (myoptions[0]) { 
-            myitem[0].dataset.mydata=mydata;
+            myoptions[0].dataset.mydata=mydata;
           myoptions.html($("#dispoptions").html());
+      } else if(myitem[0]){
+          myitem[0].dataset.mydata=mydata;
+          $("[data-myid="+mydivvalue+"] img").attr("src",$("#articlesel img").attr("src"));
+          $("[data-myid="+mydivvalue+"] b").html($("#articlesel b").html());
+          $("[data-myid="+mydivvalue+"] span").html($("#articlesel span").html());
+          
     }
     
     if (myform !== "mymodal") {

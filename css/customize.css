@@ -3,3 +3,11 @@
 	height: 200px;
         width:90vw;
 }
+.edititem-form {
+	top: 200px;
+	display: block;
+	position: absolute;
+	height: 100px;
+	overflow-y: scroll;
+	width: calc(100vw - 32px);
+}
