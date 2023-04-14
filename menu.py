@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from directory import directory
 global menu
 import re
@@ -9,14 +10,16 @@ connection = sqlite3.connect("mesburgers1.db")
 global crsr
 crsr = connection.cursor()
 class menupage(directory):
-    def __init__(self,title):
+    def __init__(self,title,params):
+        
         self.title=title
         self.set_path("./menu")
+        
         j=open(self.get_filename_path("menu.html"),'rb')
         text=j.read()
         result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
         #print(result.group(1))
-        crsr.execute("SELECT * FROM cats")
+        #crsr.execute("SELECT * FROM cats")
         mycontent=""
         # store all the fetched data in the ans variable
         print("burgersok")
@@ -51,6 +54,14 @@ class menupage(directory):
             #print(myburger[1])
 
             self.set_path("./menu")
+            try:
+                userid=(params["userid"][0],)
+                preorder=crsr.execute("SELECT * FROM preorders where user_id = ?",(userid,))
+                if len(preorder) > 0:
+                    self.add_css("menu.css")
+                    text+=self.get_file("./addmessage.html").read() 
+            except:
+                print("pas de produit ajouté".decode("utf-8"))
             self.set_content(text)
             page=str(myburger[0] if myburger[0] > 1 else 'index')
 

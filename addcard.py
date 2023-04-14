@@ -1,4 +1,9 @@
 global addcard
+import sqlite3
+connection = sqlite3.connect("mesburgers1.db")
+# cursor
+global crsr
+crsr = connection.cursor()
 from directory import directory
 class addcardpage(directory):
     def __init__(self):
@@ -14,3 +19,7 @@ class addcardpage(directory):
         k=open(self.get_filename_path("headeroverlay.html"),'rb')
         headertext=k.read()
         self.set_header(headertext)
+        crsr.execute("SELECT * FROM cards")
+        connection
+        ans = crsr.fetchall()
+

@@ -31,7 +31,6 @@ class showburgerpage(directory):
         self.set_path(path)
         self.set_header_with_path("headersignin.html")
         self.set_header(self.get_header().replace("\"/\"","\"/menu\""))
-        self.set_footer_with_path("footer.html")
         burgerid=re.findall("\d+",str(query_components.get("param0")))[0]
         sql_command = "select * from burgers where burger_number = %s" % (burgerid)
         crsr.execute(sql_command)
@@ -40,7 +39,11 @@ class showburgerpage(directory):
         message_else=""
         tablename="burgers"
         matable=self.infotable(tablename)
-
+        try:
+            x=params["userid"][0]
+            self.set_footer(self.get_file("./footer.html").read().format(id=burgerid))
+        except:
+            self.set_footer(self.get_file("./footermenu.html").read())
         contentpage=self.force_to_unicode(self.get_file("burger.html").read())
         contentpage=contentpage.replace("<!-- myparams -->",dataparams[str(res[0][7])]+"&burgerid="+str(res[0][0]))
         sql_command = "select * from nutinfos where burger_id = %s" % (burgerid)

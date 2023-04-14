@@ -9,9 +9,11 @@ connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
 crsr = connection.cursor()
-
+import requests
 class directory(object):
-    
+    redirect=""
+    current_user=()
+    session=requests.Session()
     path1=os.getcwd()
     def __init__(self,title):
         global path1
@@ -25,6 +27,7 @@ class directory(object):
         self.url=""
         self.html=""
         self.current_user=()
+        self.current_order=[]
         self.mime=None
         self.content=""
         self.response=200
@@ -80,6 +83,12 @@ class directory(object):
         self.header=header1.read()
     def set_current_user(self,user):
         self.current_user=user
+    def get_current_order(self):
+        return self.current_order
+    def set_current_order(self,user):
+        self.current_order.append(user)
+    def append_current_order(self,user):
+        self.current_order.append(user)
     def get_current_user(self):
         return self.current_user
     def set_footer_with_path(self,footer):
@@ -288,6 +297,10 @@ class directory(object):
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")
+    def set_session(self,sess):
+        self.session=sess
+    def get_session(self):
+        return self.session
     def display_collection_sql(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
         idprecedent=0
         print(sqlargs)

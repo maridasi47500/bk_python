@@ -6,6 +6,8 @@ import smtplib
 import datetime
 import sys
 import requests
+from jsoncontent import jsoncontent
+from redirect import redirectaction
 global session
 import sqlite3
 from home import pagehome
@@ -48,6 +50,7 @@ from showburger import showburgerpage
 from signmein import signmeinpage
 from signinuser import pagesigninuser
 import accountpayment
+from addburger import addburgeraction
 from savemyinfo import savemyinfopage
 from savegiftcard import savegiftcardpage
 from savepayment import savepaymentpage
@@ -140,6 +143,13 @@ def myorders(query_components):
     #connection.commit()
 def afficher_modepaiement(text,usernumber):
     return afficher_modepaiementpage(text,usernumber)
+def addburger(params):
+    try:
+        Program=addburgeraction(params)
+        
+        return render_figure("burger.html",Program)
+    except:
+        print("erreur add burger")
 def addcard(params = None):
     try:
         Program=addcardpage("ajouter une carte")
@@ -248,8 +258,8 @@ def render_figure(pathname,Program):
         #print(p1())
         print("okokdac")
         #print(p2())
-        print(p1()+p2())
-        print('dac')
+        #print(p1()+p2())
+        #print('dac')
         title=Program.get_title
         try:
             print(session.current_user)
@@ -263,7 +273,11 @@ def render_figure(pathname,Program):
         content=Program.get_content
         footer=Program.get_footer
         layout=Program.get_layout()
-        if layout == False:
+        if isinstance(Program,jsoncontent):
+            html=Program
+        elif isinstance(Program,redirectaction):
+            html=Program
+        elif layout == False:
             print("content")
             try:
                 html=decode_any_string(myparams(content()))
@@ -358,6 +372,8 @@ def render_figure(pathname,Program):
         #print(mychemin)
         #print(type(html))
         if isinstance(html,str):
+            s1=html
+        elif isinstance(html,directory):
             s1=html
         else:
             s1=html.encode('utf-8')
@@ -612,7 +628,7 @@ def customizemymenu(query_components):
 def checkuser(query_components):
     try:
         Program=checkuserpage("vérifier l'utilisateur",query_components)
-        return Program
+        return render_figure("check.html",Program)
     except Exception as e:
         print("erreur validate code",e)
 def checkemail(query_components):
@@ -629,7 +645,7 @@ def insertburger(query_components):
     return render_figure("index.html")
 def menu(params = None):
     try:
-        Program=menupage("menu")
+        Program=menupage("menu",params)
         return render_figure(page+".html")
     except Exception as e:
         print("erreur menu",e)
@@ -752,7 +768,7 @@ class S(BaseHTTPRequestHandler):
         dir="./erreur"
         Program.set_path(dir)
         k= open(Program.get_path()+"/"+file,'rb').read()
-	print(k)
+        print(k)
         self._set_headers(switcher.get("html"))
         self.wfile.write(force_to_unicode(k.decode('utf-8')))
     def _mon_erreur_text(self,e):
@@ -761,10 +777,9 @@ class S(BaseHTTPRequestHandler):
         dir="./erreur"
         Program.set_path(dir)
         k= "mon erreur"
-	print(k)
+        print(k)
         self._set_headers(switcher.get("html"))
         self.wfile.write(force_to_unicode(k.decode('utf-8')))
-
     def _set_headers(self,myheader='text/html'):
         self.send_response(200)
         self.send_header('Content-type', myheader)
@@ -775,7 +790,6 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
     def do_GET(self):
         print("=========new route GET=========["+self.path+"]===========")
-
         try:
             copy()
             urlpath=self.path
@@ -851,12 +865,10 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
     def do_POST(self):
         print("=========new route POST====================")
-
         try:
             Program=directory("Burger King")
             Program.set_url(self.path)
             urlpath=Program.get_url()
-
             query_components = parse_qs(urlparse(urlpath).query)
             x=searchmyparams(query_components,urlpath)
             if x:
@@ -867,6 +879,10 @@ class S(BaseHTTPRequestHandler):
                 query_components["userid"]=[session.current_user[0]]
             except:
                 print("aucun user connecté")
+            try:
+                query_components["neworder"]=[session.neworder]
+            except:
+                print("aucune nouvelle commande")
             print "in post method"
             self.data_string = self.rfile.read(int(self.headers['Content-Length']))
             fields = parse_qs(self.data_string)
@@ -883,15 +899,19 @@ class S(BaseHTTPRequestHandler):
                         codehtml = res
                         print("is code HTML")
                         #print(codehtml)
-                    elif isinstance(res,object):
+                    elif isinstance(res,directory):
                         print("is object")
                         print(res)
                         Program=res
+                        try:
+                            if Program.get_session().current_user is not None:
+                                session.current_user=Program.get_session().get("current_user")
+                        except:
+                            print("pas de session")
                         if Program.get_current_user() is not None:
                             print("current_user")
                             print(Program.get_current_user())
                             session.current_user=Program.get_current_user()
-                        #.dict2class(res.__dict__)
             except KeyError:
                 print("erreur 6")
 
@@ -904,25 +924,28 @@ class S(BaseHTTPRequestHandler):
             #render_pages()
             #myaccountinfo()
             #home()
-            mytype=Program.get_mimetype() or self.path.split(".")[-1]
-            print(urlpath)
-            print("my type")
-            print(mytype)
-            print("Program.get json")
-            print(Program.get_json() is not None)
-            print(Program.get_json())
-            print(route_post.get(myurlpath))
+            try:
+                mytype=Program.get_mimetype() or self.path.split(".")[-1]
+                print(urlpath)
+                print("my type")
+                print(mytype)
+                print("Program.get json")
+                print(Program.get_json() is not None)
+                print(Program.get_json())
+                print(route_post.get(myurlpath))
+            except:
+                print("no mimetype(redirect)")
             print("redirect")
             print(Program.get_redirect())
             print(str(Program.get_redirect()) != 'None')
-            if str(Program.get_redirect()) != 'None':
+            if isinstance(Program,redirectaction):
                 self.send_response(301)
                 myred=Program.get_redirect()
                 self.send_header('Location',myred)
-                Program.set_redirect(None)
+                
 
 
-            elif mytype == "json":
+            elif isinstance(Program,jsoncontent):
                 print("return json")
                 data=Program.get_json()
                 Program.set_json(None)
@@ -941,6 +964,7 @@ class S(BaseHTTPRequestHandler):
                 print(mytype)
                 self._set_headers(switcher.get(mytype))
                 self.wfile.write(codehtml)
+            session.neworder=None
             self.end_headers()
         except UnboundLocalError:
             print("erreur post")
@@ -999,7 +1023,9 @@ r"^\/$":home,
 '/confirm-jwt': confirmjwt
 }
 global menu
+# POST routes
 route_post={
+    "/addburger":addburger,
     "/savegiftcard": savegiftcard,
     "/savepayment": savepayment,
     "/signup": signup_user,

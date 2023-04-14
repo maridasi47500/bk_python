@@ -32,6 +32,10 @@ class pagesigninuser(directory):
                 #print(sql)
                 #crsr.execute(sql)
                 #connection.commit()
+                sql1="delete from preorders where user_id = ?"
+                data1=(user_number,)
+                crsr.execute(sql1,data1)
+                connection.commit()
                 user=users[0]
                 session.current_user=user
                 print(session.current_user)

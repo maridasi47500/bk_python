@@ -1,9 +1,16 @@
 <footer>
-    <ul class="menu-nav"><li class="home"><a href="/">accueil</a></li>
-        <li class="menu"><a href="/menu">menu</a></li>
-        <li class="code"><a href="/code">code</a></li>
-        <li class="offers"><a href="/offers">offres</a></li>
-        <li class="rewards"><a href="/rewards">récompenses</a></li>
-
-</ul>
+    
+    <div >
+        
+                <form class="form-add-burger" onsubmit="return addburger();" method="post" action="/addburger"><div class="fields">
+<input type="hidden" name="id" value="{id}" id="id"/>
+                        <input type="number" name="nb" id="nb"/>            
+            </div>
+        
+<div class="actions"><input type="submit" name="ajouter au panier" value="ajouter"/></div>
+        
+        </form>
+    </div>
+   
+    
         </footer>

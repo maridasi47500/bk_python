@@ -3,9 +3,23 @@ import sqlite3
 connection = sqlite3.connect("mesburgers1.db")
 global crsr
 crsr = connection.cursor()
-
+import random as rand
+import json
+import binascii
+import random as rand
+import smtplib
+import datetime
+import sys
+import requests
+import os
+global session
+from redirect import redirectaction
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from os.path import exists
+from urlparse import urlparse, parse_qs
 from directory import directory
-class signup_user_page(directory):
+class signup_user_page(redirectaction):
     def __init__(self,title,query_components):
         self.title="inscription"
         
@@ -45,7 +59,9 @@ class signup_user_page(directory):
             crsr.execute("select * from users where email = '"+email+"'")
             connection.commit()
             ant=crsr.fetchall()
+            session=requests.Session()
             session.current_user = ant[0]
+            self.set_session(session)
             urlconfirmjwt="/confirm-jwt?token="+str(token)
             self.set_url(urlconfirmjwt)
 

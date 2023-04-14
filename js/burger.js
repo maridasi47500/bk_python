@@ -9,6 +9,15 @@ function toTitleCase(str) {
     }
   );
 }
+function addburger(){
+    var burgers=$("[data-mydata]"),customize="",paspremier=false;
+    var data;
+    for (var i = 0;i<burgers.length;i++){
+        $(".form-add-burger").append("<input type=\"hidden\" name=\"mydata[]\" value=\""+burgers[i].dataset.mydata+"\"/>");
+
+    }
+    return true;
+}
 function off() {
   document.getElementById("overlayburger").style.display = "none";
 }
@@ -216,7 +225,7 @@ function displayvalue(el){
 }
 function offmenuburger(myform = "mymodal") {
      var mydata=$("[data-mydiv]").serialize();
-     alert(mydata);
+     //alert(mydata);
      var mydivvalue=$("[data-mydiv]").data("mydiv");
      var myitem=$("[data-myid="+mydivvalue+"]");
      //alert(mydata);
