@@ -7,10 +7,10 @@ from email.MIMEText import MIMEText
 # cursor
 global crsr
 crsr = connection.cursor()
-
+from redirect import redirectaction
 from directory import directory
-class confirmjwtpage(directory):
-    def __init__(self,title):
+class confirmjwtpage(redirectaction):
+    def __init__(self,title,query_components):
         self.title=title
         print("sign sign up",query_components["token"])
         if query_components.get("token"):
@@ -35,8 +35,8 @@ class confirmjwtpage(directory):
             mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
 
             # Configuration du mail
-            self.set_path("./mespages")
-            m=get_file("inscription.txt")
+            self.set_path("./confirmjwt")
+            m=self.get_file("inscription.txt")
             n=m.read()
             print("mail")
             mail_content = n
