@@ -814,11 +814,17 @@ class S(BaseHTTPRequestHandler):
                     #code=Program.gethtml()
                     print("le code récupéré")    
                     break
+
             if routetrouve:
                 print("La route a été trouvée ? %r, c'est %s" % (routetrouve is not None, routetrouve))
             else:
                 print("La route n'a pas été trouvée ?  %r" % (routetrouve is None,))
-            if myurlpath.split(".")[-1] in ["css","scss"]:
+            if isinstance(Program,redirectaction):
+                self.send_response(301)
+                myred=Program.get_redirect()
+                self.send_header('Location',myred)
+
+            elif myurlpath.split(".")[-1] in ["css","scss"]:
                 print("le mimetype est %s et la réponse est %s" % ("css",200))
                 self._set_headers(switcher["css"])
 

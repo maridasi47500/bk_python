@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 global confirmjwt
 import sqlite3
+import smtplib
 connection = sqlite3.connect("mesburgers1.db")
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
@@ -65,3 +66,4 @@ class confirmjwtpage(redirectaction):
             self.set_redirect("/")
             #self.set_redirect("/signinuser?user_number=" + str(user_number))
             self.set_mimetype(None)
+            self.set_content("confirmer l'inscription")
