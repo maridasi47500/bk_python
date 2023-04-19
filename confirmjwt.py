@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 global confirmjwt
+import os
 import sqlite3
 import smtplib
 connection = sqlite3.connect("mesburgers1.db")
@@ -32,8 +33,8 @@ class confirmjwtpage(redirectaction):
             # Configuration SMTP | Ici ajusté pour fonctionné avec Gmail
             host_smtp = "smtp.gmail.com"
             port_smtp = 587
-            email_smtp = "mary.goudon@gmail.com" # Mon email Gmail
-            mdp_smtp = "eljlkuznppklsquw"  # Mon mot de passe
+            email_smtp = os.environ.get("MAIL1_BK") # Mon email Gmail
+            mdp_smtp = os.environ.get("MDP_BK")  # Mon mot de passe
 
             # Configuration du mail
             self.set_path("./confirmjwt")
@@ -44,7 +45,7 @@ class confirmjwtpage(redirectaction):
             print("mail")
             mail_content+="\n http://localhost:8000/confirm-jwt?token="+str()
             print("dest")
-            email_destinataire = "cleo.ordioni@gmail.com"
+            email_destinataire = os.environ.get("MAIL2_BK")
             formule_p = "Inscription à Burger King"
             msg = MIMEMultipart()
             msg['From'] = email_smtp
