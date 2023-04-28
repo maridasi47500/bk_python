@@ -100,14 +100,16 @@ tel varchar(255),
 zip varchar(255),
 dateofbirth date,
 offres integer,
-token text
+token text,
+signedin integer
 );
 CREATE TABLE IF NOT EXISTS preorders (
   id INTEGER PRIMARY KEY,
   burger_id integer,
   user_id integer,
   qty varchar(100),
-  data text
+  data text,
+  display integer
 );
 CREATE TABLE IF NOT EXISTS customizeorders (
   id INTEGER PRIMARY KEY,

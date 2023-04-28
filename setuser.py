@@ -10,17 +10,15 @@ connection = sqlite3.connect("mesburgers1.db")
 global crsr
 crsr = connection.cursor()
 import requests
-class directory(object):
+from directory import directory
+class setuserpage(directory):
     redirect=""
-    layout=""
-    footer=""
-    js=""
-    mytitle=""
     current_user=()
     session=None
     path1=os.getcwd()
     def __init__(self,title):
         global path1
+        self.session=None
         self.htmlpath="/"
         path1=os.getcwd()
         self.path1=os.getcwd()
@@ -164,10 +162,8 @@ class directory(object):
     def set_js(self,js):
         self.js=js
     def add_js(self,js):
-        mypath=self.get_path()
         self.set_path("./js")
         self.js+="<script type=\"text/javascript\" src=\""+self.get_htmlpath()+"/"+js+"\"></script>"
-        self.set_path(mypath)
     def get_htmlpath(self):
         return self.htmlpath
     def trouver_fichier(self,urlpath,myroutes):
@@ -193,10 +189,8 @@ class directory(object):
 
         return open(self.path+"/"+file,'r')
     def add_css(self,css):
-        mypath=self.get_path()
         self.set_path("./css")
         self.css+="<link rel=\"stylesheet\" href=\""+self.get_htmlpath()+"/"+css+"\"/>"
-        self.set_path(mypath)
     def get_css(self):
         return self.css
     def set_css(self,css):
@@ -207,7 +201,7 @@ class directory(object):
         return self.filename
     def set_path(self,mypath):
         self.htmlpath=mypath.replace("./","/")
-        self.path=self.path1+mypath.replace("./","/").replace(self.path1,"")
+        self.path=self.path1+mypath.replace("./","/")
     def get_filename_path(self,file):
         return self.path+"/"+file
     def get_css_dir_path(self):

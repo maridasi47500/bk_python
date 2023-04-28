@@ -34,20 +34,24 @@ class addburgeraction(redirectaction):
         except:
             nb=None
         try:
-            order=params["mydata"][0]
+            print(params["mydata[]"][0])
+            order=params["mydata[]"]
         except:
             order=[]
-        sql="insert into preorders (burger_id,user_id,qty,data) values (?,?,?,?);"
+        sql="insert into preorders (burger_id,user_id,qty,data,display) values (?,?,?,?,?);"
         print("data")
-        data=(id,userid,nb,"")
+        data=(id,userid,nb,"",0)
         print(data)
-        if len(order) == 0 and userid is not None:
-            crsr.execute(sql,(id,userid,nb,""))
-            connection.commit()
-        else:
-            for x in order:
-                crsr.execute(sql,(id,userid,nb,x))
-                connection.commit()
+        try:
+          if len(order) == 0 and userid is not None:
+              crsr.execute(sql,(id,userid,nb,"","0"))
+              connection.commit()
+          else:
+              for x in order:
+                  crsr.execute(sql,(id,userid,nb,x,"0"))
+                  connection.commit()
+        except Exception as e:
+          print(e)
         order.insert(0,nb)
         order.insert(0,id)
         print(order)

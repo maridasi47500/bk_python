@@ -27,7 +27,6 @@ class ingredientpage(directory):
         tablename="burgers"
         message_else=""
         collectionstr= self.display_collection(sql_command, (), "_articlesel", message_else, tablename).decode('utf-8').replace("mataille",taille)
-
         try:
             cheese=params["cheese"][0]
         except:
@@ -72,6 +71,6 @@ class ingredientpage(directory):
             bbq=params["bbq"][0]
         except:
             bbq=""
-        code=self.get_file("ingredients.html").read().format(cheese=cheese,myid=myid)
+        code=self.get_file("ingredients.html").read().format(burgernumber=id,cheese=cheese,myid=myid)
         self.set_content(collectionstr+code)
         self.set_layout(False)

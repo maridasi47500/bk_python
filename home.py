@@ -1,3 +1,4 @@
+# coding=utf-8
 import codecs 
 global home
 import sqlite3
@@ -31,7 +32,7 @@ def mycard(title,description,content):
 
 from directory import directory 
 class pagehome(directory):
-    def __init__(self,title):
+    def __init__(self,title,params):
         self.title=title
         self.header=""
         self.footer=""
@@ -42,25 +43,48 @@ class pagehome(directory):
         self.mime="html"
         self.json=None
         self.redirect=None
+        mycontent=""
         self.content=""
         self.css=""
-        self.set_path("./home")
         self.set_title("Burger King")
+        self.set_path("./home")
+        q=""
         print('hi')
-        self.set_header_with_path("header.html")
+        try:
+          print(params["userid"][0])
+          userid=params["userid"][0]
+          self.set_header_with_path("mynavsignedin.html")
+          #vous vous etes bien connecté ===> message fenetre ajouter un toast!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          users=crsr.execute("select * from users where user_number = ?",(userid,)).fetchall()[0]
+          if str(users[-1]) == "1":
+            #self.add_css("toast.css")
+            self.add_js("signedin.js")
+            q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien connecté-e.".decode('utf-8')
+            mycontent+=q
+            crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
+            connection.commit()
+          elif str(users[-1]) == "2":
+            #self.add_css("toast.css")
+            self.add_js("signedin.js")
+            q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien inscrit-e sur bk. Bienvenue.".decode('utf-8')
+            mycontent+=q
+            crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
+            connection.commit()
+
+        except Exception as e:
+          print("quelle erreur?",e)
+          self.set_header_with_path("mynav.html")
         self.set_footer_with_path("footer.html")
-        
         j=open(self.get_filename_path("index.html"),'rb')
         text=j.read().decode('utf-8')
         #print("my text",text)
         #print(result.group(1))
         crsr.execute("SELECT * FROM burgers")
-        mycontent="<ul>"
+        mycontent+="<ul>"
         # store all the fetched data in the ans variable
         print("burgersok")
         ans = crsr.fetchall()
         print("burgers")
-
         print(mycontent)
         print("cards1")
         crsr.execute("SELECT * FROM cards")
@@ -78,9 +102,40 @@ class pagehome(directory):
         print("le texte")
         text = text % ("",montitreici)
         
-        self.set_path("./")
-        self.set_content(text)
-        
+        self.add_css("home.css")
+        self.add_css("account.css")
+        self.add_css("signin.css")
+
+
+        try:
+            user_id=params["userid"][0]
+            sql="select * from preorders where user_id = ? and display = ?"
+            o=crsr.execute(sql,(user_id,"0"))
+            p=o.fetchall()
+            print(p[0])
+            paspremier=False
+            burgerslist=""
+            for burger in p:
+              if paspremier:
+                burgerslist+=", "
+              paspremier=True
+              print("order : ",burger)
+              burgernom=crsr.execute("select * from burgers where burger_number = ?",(burger[1],)).fetchall()[0][1]
+              print(burgernom)
+              crsr.execute("update preorders set display = 1 where id = ?",(burger[0],))
+              connection.commit()
+              burgerslist+=burgernom
+            q=self.get_file("burgerajoute.html").read().decode("utf-8")
+            print(q[0:40])
+            if len(p) == 1:
+              q=q % self.force_to_unicode(("votre burger a été ajouté (%s)".decode('utf-8') % burgerslist).encode('utf-8'))
+            else:
+              q=q % self.force_to_unicode(("vos burgers ont été ajoutés (%s)".decode('utf-8') % burgerslist).encode('utf-8'))
+            self.add_js("burgerajoute.js")
+            print("ok BURGER AJOUTE¡$$")
+        except Exception as e:
+            print(e,"ok user non connecté ???? u're OFFLINE")
+        self.set_content(text+q)
         print("le texte ok")    
         self.current_user=None
         #text=(text)

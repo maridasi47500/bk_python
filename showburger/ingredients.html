@@ -1,5 +1,6 @@
 
-<form  class="ingredients-form" data-mydiv="{myid}" data-myform="ingredients" onsubmit="off(this);return false;">
+<form  class="ingredients-form" data-mydiv="{myid}" data-myform="ingredients" onsubmit="offmenuburger();return false;">
+        <input type="hidden" value="{burgernumber}" name="burgernumber"/>
     <div>Customize <input type="reset" onclick="resetform();return false;"/> </div>
     <div class="fields">
         <label for="cheese">fromage americain</label>
@@ -103,6 +104,6 @@
 
 
     <div class="actions">
-        <input type="submit" value="modifier l'article"/>
+        <input type="submit" value="modifier l'article" onclick="onmenuburger();return false;"/>
     </div>
 </form>

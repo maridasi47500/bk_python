@@ -59,9 +59,10 @@ class signup_user_page(redirectaction):
             crsr.execute("select * from users where email = '"+email+"'")
             connection.commit()
             ant=crsr.fetchall()
-            session=requests.Session()
-            session.current_user = ant[0]
-            self.set_session(session)
+            current_user = ant[0]
+            crsr.execute("update users set signedin = ? where user_number = ?",(2,current_user[0]))
+            connection.commit()
+            self.set_current_user(current_user)
             urlconfirmjwt="/confirm-jwt?token="+str(token)
             self.set_url(urlconfirmjwt)
 

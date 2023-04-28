@@ -8,6 +8,7 @@ import sys
 import requests
 from jsoncontent import jsoncontent
 from redirect import redirectaction
+from setuser import setuserpage
 global session
 import sqlite3
 from home import pagehome
@@ -18,7 +19,7 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -76,7 +77,7 @@ global force_to_unicode
 global decode_any_string
 def decode_any_string(text):
     try:
-        print(text)
+        print("..."+text[0:60]+"...")
         return force_to_unicode(text)
     except UnicodeEncodeError as e:
         print(type(e))
@@ -91,6 +92,11 @@ def force_to_unicode(text):
     "If text is unicode, it is returned as is. If it's str, convert it to Unicode using UTF-8 encoding"
     return text if isinstance(text, unicode) else text.decode('utf-8')
 session = requests.Session()
+try:
+    if len(sys.argv) == 4: 
+        session.current_user=[sys.argv[3]]
+except:
+    print("no arg")
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from os.path import exists
@@ -162,13 +168,8 @@ global home
 def home(params = None):
     try:
         print("render figure home")    
-        Program = pagehome("bk")
+        Program = pagehome("bk",params)
         Program.set_path("./")
-        
-        #code=
-        #Program.file("html","/")
-        #Program.sethtml(code)
-        #Program.pageok
         print("render figure home finish")
         return render_figure("index.html",Program)
     except Exception as e:
@@ -241,7 +242,7 @@ def searchmyparams(query_components,myurlpath):
     return [myurlpath,query_components]
 def savemyinfo(query_components):
     try:
-        Program=savemyinfopage("sauvegarde des infos")
+        Program=savemyinfopage("sauvegarde des infos",query_components)
         return Program
     except Exception as e:
         print("erreur save data",e)
@@ -299,18 +300,18 @@ def render_figure(pathname,Program):
             footer1=""
             print("header")
             try:
-                header1+=decode_any_string(header())
+                header1+=decode_any_string(header().decode('utf-8'))
             except UnicodeEncodeError as e:
-                print(type(e))
+                print(type(e)[0:50])
                 print('header gerer cette erreur')
                 header1=header().encode('utf-8')
             except UnicodeDecodeError as e:
-                print(type(e))
+                print(type(e)[0:50])
                 print('gerer cette erreur')
                 header1=header()
             print("content")
             try:
-                main1=decode_any_string(myparams(content()))
+                main1=decode_any_string(myparams(content().decode('utf-8')))
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
@@ -325,7 +326,7 @@ def render_figure(pathname,Program):
             print(type(force_to_unicode(footer())))
 
             try:
-                footer1=decode_any_string(footer())
+                footer1=decode_any_string(footer().decode('utf-8'))
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
@@ -363,9 +364,14 @@ def render_figure(pathname,Program):
             #print(js.decode('utf-8'),"=js")
             #print(header1.decode('utf-8'),"header1")
             #print(main1,"=main1")
-
-            #print(footer1,"=footer")
-            html=j % (title.decode('utf-8'),css.decode('utf-8'),header1.decode('utf-8'),main1,footer1,js)
+            print("erreur")
+            print(footer1[0:30],"=footer")
+            print(js.decode('utf-8')[0:30],"==js")
+            print(js.decode('utf-8')[-30:-1],"==fin js")
+            print(main1.decode('utf-8')[0:30],"==main1")
+            print(header1[0:30],"==js")
+            print("erreur")
+            html=j % (title.decode('utf-8'),css.decode('utf-8'),header1,main1.decode('utf-8'),footer1,js)
             #print(html)
             print("fin balise")
         #mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
@@ -530,7 +536,8 @@ global accountinfo
 def accountinfo(query_components):
     try:
 
-        myaccountinfo()
+        Program=myaccountinfo(query_components)
+        return render_figure("index.html",Program)  
     except Exception as e:
         print("erreur account info",e)
 
@@ -730,9 +737,9 @@ def rewards(params = None):
         print("erreur 5")
 def myaccountinfo(params = None):
     try:
-        Program=myaccountinfopage("infos de mon compte")
+        Program=myaccountinfopage("infos de mon compte",params)
 
-        return Program
+        return render_figure("index.html",Program)
 
     except Exception as e:
         print("erreur my account info page",e)
@@ -797,6 +804,11 @@ class S(BaseHTTPRequestHandler):
             routetrouve=None
             #f = open("index.html", "r")
             query_components = parse_qs(urlparse(urlpath).query)
+            try:
+                query_components["userid"]=[session.current_user[0]]
+                print("-- user connecté --")
+            except:
+                print("aucun user connecté")
             print(query_components,"what params")
             #x=searchmyparams(query_components,myurlpath)
             for path in myroutes:
@@ -819,9 +831,14 @@ class S(BaseHTTPRequestHandler):
                 print("La route a été trouvée ? %r, c'est %s" % (routetrouve is not None, routetrouve))
             else:
                 print("La route n'a pas été trouvée ?  %r" % (routetrouve is None,))
-            if isinstance(Program,redirectaction):
+            try:
+                print(isinstance(code,redirectaction))
+            except:
+                code=""
+            if isinstance(code,redirectaction):
                 self.send_response(301)
-                myred=Program.get_redirect()
+                myred=code.get_redirect()
+                print("vous serez redirigée à %s " % myred)
                 self.send_header('Location',myred)
 
             elif myurlpath.split(".")[-1] in ["css","scss"]:
@@ -867,6 +884,8 @@ class S(BaseHTTPRequestHandler):
                 self._mon_erreur("ni une erreur ni css js ou image")
         except UnboundLocalError as e:
             self._mon_erreur(e)
+        return
+
     def do_HEAD(self):
         self._set_headers()
     def do_POST(self):
@@ -883,6 +902,7 @@ class S(BaseHTTPRequestHandler):
                 urlpath=x[0]
             try:
                 query_components["userid"]=[session.current_user[0]]
+                print("-- user connecté --")
             except:
                 print("aucun user connecté")
             try:
@@ -905,16 +925,18 @@ class S(BaseHTTPRequestHandler):
                         codehtml = res
                         print("is code HTML")
                         #print(codehtml)
+                    elif isinstance(res,jsoncontent):
+                        Program=res
                     elif isinstance(res,directory):
                         print("is object")
                         print(res)
                         Program=res
                         try:
-                            if Program.get_session().current_user is not None:
-                                session.current_user=Program.get_session().get("current_user")
+                            if isinstance(Program,setuserpage):
+                                session.current_user=Program.get_session()
                         except:
                             print("pas de session")
-                        if Program.get_current_user() is not None:
+                        if Program.get_current_user() is not None and Program.get_current_user() != ():
                             print("current_user")
                             print(Program.get_current_user())
                             session.current_user=Program.get_current_user()
@@ -944,13 +966,12 @@ class S(BaseHTTPRequestHandler):
             print("redirect")
             print(Program.get_redirect())
             print(str(Program.get_redirect()) != 'None')
-            if isinstance(Program,redirectaction):
-                self.send_response(301)
+            if Program and isinstance(Program,redirectaction):
                 myred=Program.get_redirect()
+                print("vous serez redirigée à %s " % myred)
+
+                self.send_response(301)
                 self.send_header('Location',myred)
-                
-
-
             elif isinstance(Program,jsoncontent):
                 print("return json")
                 data=Program.get_json()
@@ -961,8 +982,6 @@ class S(BaseHTTPRequestHandler):
             elif mytype is not None:
                 if mytype != "html":
                     if switcher.get(mytype) is not None:
-
-
                         if myroutes.get(urlpath) is not None:
                             self._set_headers(switcher.get(mytype))
                             self.wfile.write(codehtml)

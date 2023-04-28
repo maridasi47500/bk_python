@@ -11,11 +11,11 @@ class showburgerpage(directory):
     
     def __init__(self,title):
         self.title=title
-    def __init__(self,path,title,query_components):
+    def __init__(self,path,title,params):
         self.set_path(path)
         self.css=""
         self.js=""
-        print("show menu",query_components)
+        print("show menu",params)
         dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger&burger=value","3":"burger=burger&burger=value","4":"burger=side&burger=value","5":"burger=drink&burger=value","6":"burger=sweet&burger=value","7":"burger=burgerjr&burger=value&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy&burgerid="}
         self.set_title("Burger King")
         self.set_layout("ok")
@@ -31,7 +31,7 @@ class showburgerpage(directory):
         self.set_path(path)
         self.set_header_with_path("headersignin.html")
         self.set_header(self.get_header().replace("\"/\"","\"/menu\""))
-        burgerid=re.findall("\d+",str(query_components.get("param0")))[0]
+        burgerid=re.findall("\d+",str(params.get("param0")))[0]
         sql_command = "select * from burgers where burger_number = %s" % (burgerid)
         crsr.execute(sql_command)
         connection.commit()
@@ -41,7 +41,7 @@ class showburgerpage(directory):
         matable=self.infotable(tablename)
         try:
             x=params["userid"][0]
-            self.set_footer(self.get_file("./footer.html").read().format(id=burgerid))
+            self.set_footer(self.get_file("./footer.html").read().format(id=burgerid,userid=x))
         except:
             self.set_footer(self.get_file("./footermenu.html").read())
         contentpage=self.force_to_unicode(self.get_file("burger.html").read())

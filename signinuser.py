@@ -37,8 +37,9 @@ class pagesigninuser(directory):
                 crsr.execute(sql1,data1)
                 connection.commit()
                 user=users[0]
-                session.current_user=user
-                print(session.current_user)
                 self.set_current_user(user)
+                crsr.execute("update users set signedin = ? where user_number = ?",(1,user[0]))
+                connection.commit()
+
                 self.set_redirect("/confirm-otp")
 

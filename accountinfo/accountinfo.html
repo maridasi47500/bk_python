@@ -1,0 +1,61 @@
+<div><div class="account__Container-biuq6c-0 iIcinY"><div class="account__HeadingContainer-biuq6c-1 hWbyDh"><h1 class="account__Header-biuq6c-2 dBxCKV">Account</h1></div>
+        
+        
+<form action="/saveinfo" method="post" class="info-form" onsubmit="saveinfo();return false;" name="info-form" id="myform">
+ <input type="hidden" name="user_number" id="user_number" />
+ <input type="text" disabled="disabled" name="email" id="email" autocomplete="none" required />
+  <label for="email">Email</label>
+  <p class="error email-error"></p>
+    <input type="text" name="prenom" id="prenom" autocomplete="none" required />
+  <label for="prenom">Prénom</label>
+
+ 
+    <input type="text" name="tel" id="tel" autocomplete="none" required />
+  <label for="tel">Numéro de téléphone</label>
+  <p class="error tel-error"></p>
+
+<div class="datenaissance">
+    <p>
+  <label for="dateofbirth">Date de naissance</label>
+    </p>
+    <table>
+        <tr>
+        
+       <td>
+        <input type="text" name="yy" id="yy" autocomplete="none" />
+          <label for="yy">Année</label>
+          <p>AAAA</p>
+            </td>
+              <td>
+        <input type="text" name="mm" id="mm" autocomplete="none" />
+          <label for="mm">Mois</label>
+          <p>MM</p>
+            </td>
+             <td>
+        <input type="text" name="dd" id="dd" autocomplete="none" />
+          <label for="dd">Jour</label>
+          <p>DD</p>
+            </td>
+        </tr>
+    </table>
+        
+</div>
+  <div class="autreschamps">
+<input type="checkbox" name="offres" id="offres" autocomplete="none" />
+<label for="offres">
+Je souhaite recevoir des offres spéciales et d'autres informations de Burger King par e-mail
+</label>
+ 
+  </div>
+  <input type="text" name="zip" id="zip" autocomplete="none" required />
+  <label for="zip">Code postal</label>
+  <p class="error zip-error"></p>
+  <a href="" class="mybtn" onclick="saveinfo();return false;">Modifier</a>
+
+</form>     
+    
+    
+    </div></div>
+
+<div id="infosmodif">
+    Vos informations ont été modifiées.</div>

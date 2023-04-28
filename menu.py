@@ -11,10 +11,8 @@ global crsr
 crsr = connection.cursor()
 class menupage(directory):
     def __init__(self,title,params):
-        
         self.title=title
         self.set_path("./menu")
-        
         j=open(self.get_filename_path("menu.html"),'rb')
         text=j.read()
         result = re.search("<nav class=\"mytabs\"><ul>(.*)</ul></nav>",text)
@@ -25,6 +23,14 @@ class menupage(directory):
         print("burgersok")
         ans = crsr.fetchall()
         print("burgers")
+        try:
+          print(params["userid"][0])
+          #si l'uilisateur n'a pas de BK restaurant et est onnecté
+          #rediriger vers page de lieu
+          #self.set_header_with_path("mynavsignedin.html")
+        except:
+          #self.set_header_with_path("mynav.html")
+          print("user non connecté========!!!'''--'''!!!")
         for myburger in ans:
             #print("burger",myburger[1],mycontent)
             mycontent+= "<li class=\"mycat\"><a href=\"/menu/"+repr(myburger[0] if myburger[0] > 1 else '')+"\">"+(myburger[1]).encode('utf-8')+"</a></li>"
@@ -43,7 +49,6 @@ class menupage(directory):
                 print("myerreur")
                 j=open(os.getcwd()+"/listburger/_modelburger.html","rb")
                 s= j.read().decode('utf-8') % (str(burger[0]),(burger[1].encode('utf-8')))
-
                 mesburgers+= s
                 print("erreur")
             if mesburgers == "":
@@ -52,7 +57,6 @@ class menupage(directory):
                 text=text.replace(res.group(1),mesburgers)
             print("burgervalue")
             #print(myburger[1])
-
             self.set_path("./menu")
             try:
                 userid=(params["userid"][0],)
@@ -64,4 +68,3 @@ class menupage(directory):
                 print("pas de produit ajouté".decode("utf-8"))
             self.set_content(text)
             page=str(myburger[0] if myburger[0] > 1 else 'index')
-

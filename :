@@ -4,7 +4,7 @@ global crsr
 connection = sqlite3.connect("mesburgers1.db")
 
 crsr = connection.cursor()
-from jsoncontent import jsoncontent
+from json import jsoncontent
 
 myusers=crsr.execute("PRAGMA table_info([users])")
 table_users = myusers.fetchall()
