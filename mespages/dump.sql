@@ -101,7 +101,19 @@ zip varchar(255),
 dateofbirth date,
 offres integer,
 token text,
-signedin integer
+signedin integer,
+restaurant_id integer,
+address_id integer,
+pickup integer
+);
+CREATE TABLE IF NOT EXISTS restaurants (
+id INTEGER PRIMARY KEY,
+title VARCHAR(200) unique,
+address text
+);
+CREATE TABLE IF NOT EXISTS addresses (
+id INTEGER PRIMARY KEY,
+address text
 );
 CREATE TABLE IF NOT EXISTS preorders (
   id INTEGER PRIMARY KEY,

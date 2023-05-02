@@ -16,6 +16,7 @@ class directory(object):
     footer=""
     js=""
     mytitle=""
+    params={}
     current_user=()
     session=None
     path1=os.getcwd()
@@ -141,14 +142,41 @@ class directory(object):
         return self.url
     def set_url(self,url):
         self.url=url
+    def get_params(self):
+        return self.params
+    def set_params(self,content):
+        self.params=content
     def get_content(self):
         return self.content
     def set_content(self,content):
         self.content=content
     def get_header(self):
         return self.header
+    def only_set_header_withthispath(self,path):
+        x=self.get_file(path).read()
+        self.header=x
+    def set_header_withthispath(self,path):
+        x=self.get_file(path).read()
+        self.set_header(x)
     def set_header(self,myheader):
-        self.header=myheader
+        try:
+          print(self.params["userid"][0])
+          userid=(self.params["userid"][0])
+          sql="select * from users where user_number = ?"
+          user=crsr.execute(sql,(userid,)).fetchall()[0]
+          if int(user[-3]) > 0 or int(user[-2]) > 0:
+            if int(user[-3]) > 0 and int(user[-1]) > 0:
+              print("selctionner un restaurant ou aller chercher")
+              print("afficher DRIVETHROU: --address--")
+            if int(user[-2]) > 0 and int(user[-1]) > 0:
+              print("selctionner une adresse ")
+              print("affiher DELIVERY:---address--- ")
+          
+          self.header=myheader+pickup
+          
+        except:
+          self.header=myheader
+          print("aucun user connecte")
     def get_footer(self):
         return self.footer
     def set_footer(self,myfooter):

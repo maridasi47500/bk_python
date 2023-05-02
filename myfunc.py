@@ -94,7 +94,7 @@ def render_figure(pathname):
         f.close()
         #if (__words__).rstrip() == "Full Menu":
         print(Program.get_path())
-        if Program.get_path()+"/"+Program.get_filename() == path1+"/code/index.html":
+        if Program.get_path()+"/"+Program.get_filename() == path1+"/redeem/index.html":
             if len(argv) == 2:
                 run(port=int(argv[1]))
             else:

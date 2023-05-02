@@ -23,6 +23,6 @@ class validatecodepage(directory):
                 Program.set_json({"id":users[0][0],"correcturl":"1","url": "/store-locator"})
                 print(Program.get_json())
             else:
-                Program.set_json({"correcturl":"0","url": "/signin/codeincorrect"})
+                Program.set_json({"correcturl":"0","url": "/signin/redeemincorrect"})
                 print(Program.get_json())
             Program.set_mimetype("json")

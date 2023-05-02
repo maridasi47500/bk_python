@@ -14,12 +14,14 @@ import sqlite3
 from home import pagehome
 from changeitem import changeitempage
 from ingredients import ingredientpage
+from servicemode import servicemodepage
+from address import addresspage
 global copy
 global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/redeem":{"partiedemesmots":"Fournissez le code"},"/store-locator/service-mode":{"partiedemesmots":"Aller chercher"},"/store-locator":{"partiedemesmots":"Aller chercher"},"/store-locator/address":{"partiedemesmots":"Entrez votre adresse"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -55,6 +57,7 @@ from addburger import addburgeraction
 from savemyinfo import savemyinfopage
 from savegiftcard import savegiftcardpage
 from savepayment import savepaymentpage
+myredirect=["codepage"]
 switcher={
 'html':'text/html',
 'css':'text/css',
@@ -579,8 +582,8 @@ def confirmotp(params=None):
         print("erreur confirm otp",e)
 def code(params = None):
     try:
-        Program=codepage("code du coupon")
-        return render_figure("index.html")
+        Program=codepage("code du coupon",params)
+        return render_figure("index.html",params)
     except Exception as e:
         print("erreur 3",e)
 def signup(params = None):
@@ -624,6 +627,22 @@ def validatecode(query_components):
         return Program
     except Exception as e:
         print("erreur validate code",e)
+def servicemode(query_components):
+    Program=servicemodepage('entrer votre adresse',query_components) 
+    try:
+
+
+        return render_figure("servicemode.html",Program)
+    except Exception as e:
+        print("my errooor (=) service mode",e)
+def address(query_components):
+    Program=addresspage('choisir un restaurant',query_components) 
+    try:
+
+
+        return render_figure("address.html",Program)
+    except Exception as e:
+        print("my errooor (=) adress page",e)
 def customizemymenu(query_components):
     Program=customizemymenupage('personnaliser mon menu',query_components) 
     try:
@@ -835,7 +854,7 @@ class S(BaseHTTPRequestHandler):
                 print(isinstance(code,redirectaction))
             except:
                 code=""
-            if isinstance(code,redirectaction):
+            if isinstance(code,redirectaction) or (code.__class__.__name__ in myredirect and code.get_redirect() != ""):
                 self.send_response(301)
                 myred=code.get_redirect()
                 print("vous serez redirigée à %s " % myred)
@@ -1024,6 +1043,9 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+"/store-locator":servicemode,
+"/store-locator/service-mode":servicemode,
+"/store-locator/address":address,
 "/updateitem/customize":ingredients,
 "/updateitem/changeitem":changeitem,
 
@@ -1032,6 +1054,7 @@ r"/menu(/)([a-z]+)(/)?": showmenu,
 r"/menu(/)?([a-z]+)?(/)?": showmenu,
 "/orders/refresh":refreshmyorders,
 "/account/orders":myorders,
+"/redeem":code,
 "/account/payment":accountpayment,
 "/account/payment/add-card":addcard,
 "/account/payment/add-gift-card":addgiftcard,
