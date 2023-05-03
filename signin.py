@@ -26,4 +26,4 @@ class signinpage(directory):
         self.add_js("signin.js")
         self.set_footer("")
         self.set_path("./signin")
-        self.set_content(text)
+        self.set_content(text.decode('utf-8'))

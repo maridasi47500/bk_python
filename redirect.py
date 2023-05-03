@@ -6,7 +6,7 @@ class redirectaction(directory):
         self.htmlpath="/"
         path1=os.getcwd()
         self.path1=os.getcwd()
-        self.title = title
+        self.title = "title"
         self.layout = "ok"
         self.mytitle = redirect
         self.js=""

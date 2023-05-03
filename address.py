@@ -6,3 +6,5 @@ class addresspage(directory):
     self.only_set_header_withthispath("headersignin.html")
     f=self.get_file("address.html").read()
     self.set_content(f)
+    print("fin de cod")
+

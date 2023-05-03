@@ -21,7 +21,7 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/redeem":{"partiedemesmots":"Fournissez le code"},"/store-locator/service-mode":{"partiedemesmots":"Aller chercher"},"/store-locator":{"partiedemesmots":"Aller chercher"},"/store-locator/address":{"partiedemesmots":"Entrez votre adresse"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Aller chercher"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Aller chercher"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -253,6 +253,7 @@ def render_figure(pathname,Program):
     try:
         global path1
         path1=os.getcwd()
+        print(pathname,Program,"<== pathname, pgrm")
         Program.set_filename(pathname)
         print("render figure")
         print('ok')
@@ -277,8 +278,15 @@ def render_figure(pathname,Program):
         content=Program.get_content
         footer=Program.get_footer
         layout=Program.get_layout()
+        print(Program.__class__.__name__, "my html page action name")
+        print((Program.__class__.__name__ in myredirect), "my redirect is like codepage")
+        print(Program.get_redirect(), "my html redirect url link")
+        print(Program.get_redirect() != "", "my redirect is not ''")
+
         if isinstance(Program,jsoncontent):
             html=Program
+        elif Program.__class__.__name__ in myredirect and Program.get_redirect() != "":
+            html=redirectaction(Program.get_redirect())
         elif isinstance(Program,redirectaction):
             html=Program
         elif layout == False:
@@ -583,7 +591,7 @@ def confirmotp(params=None):
 def code(params = None):
     try:
         Program=codepage("code du coupon",params)
-        return render_figure("index.html",params)
+        return render_figure("index.html",Program)
     except Exception as e:
         print("erreur 3",e)
 def signup(params = None):
@@ -630,16 +638,12 @@ def validatecode(query_components):
 def servicemode(query_components):
     Program=servicemodepage('entrer votre adresse',query_components) 
     try:
-
-
         return render_figure("servicemode.html",Program)
     except Exception as e:
         print("my errooor (=) service mode",e)
 def address(query_components):
     Program=addresspage('choisir un restaurant',query_components) 
     try:
-
-
         return render_figure("address.html",Program)
     except Exception as e:
         print("my errooor (=) adress page",e)
@@ -854,7 +858,7 @@ class S(BaseHTTPRequestHandler):
                 print(isinstance(code,redirectaction))
             except:
                 code=""
-            if isinstance(code,redirectaction) or (code.__class__.__name__ in myredirect and code.get_redirect() != ""):
+            if isinstance(code,redirectaction):
                 self.send_response(301)
                 myred=code.get_redirect()
                 print("vous serez redirigée à %s " % myred)
@@ -1043,9 +1047,11 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
-"/store-locator":servicemode,
-"/store-locator/service-mode":servicemode,
-"/store-locator/address":address,
+
+r"^/store-locator/address$":address,
+r"^/store-locator/service-mode$":servicemode,
+r"^/store-locator$":servicemode,
+
 "/updateitem/customize":ingredients,
 "/updateitem/changeitem":changeitem,
 
