@@ -199,6 +199,8 @@ class directory(object):
         return self.js
     def set_js(self,js):
         self.js=js
+    def add_js_link(self,js):
+        self.js+="<script type=\"text/javascript\" src=\""+js+"\"></script>"
     def add_js(self,js):
         mypath=self.get_path()
         self.set_path("./js")
@@ -222,9 +224,6 @@ class directory(object):
             except:
                 print("erreur")
         return file
-    def get_file(self,file):
-
-        return open(file,'r')
     def get_file_with_path(self,file):
 
         return open(self.path+"/"+file,'r')
@@ -233,6 +232,8 @@ class directory(object):
         self.set_path("./css")
         self.css+="<link rel=\"stylesheet\" href=\""+self.get_htmlpath()+"/"+css+"\"/>"
         self.set_path(mypath)
+    def add_css_link(self,css):
+        self.css+="<link rel=\"stylesheet\" href=\""+css+"\"/>"
     def get_css(self):
         return self.css
     def set_css(self,css):
@@ -270,8 +271,8 @@ class directory(object):
         return text if isinstance(text, unicode) else text.decode('utf-8')
     def get_file(self,file):
         print("get file:")
-        print(self.get_filename_path(file))
-        return open(self.get_filename_path(file),'r')
+        print(self.get_filename_path(file.replace(".\\","")))
+        return open(self.get_filename_path(file.replace(".\\","")),'r')
     def get_file_dir(self,file,dir):
         print("get file:"+dir)
         self.set_path(dir)
