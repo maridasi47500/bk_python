@@ -19,6 +19,7 @@ width:50%;
 float:left;
 background-color:#f5ebdc;
 color:rgb(80, 35, 20);
+cursor:pointer;
 }
 .pickup .tab {
 width:50%;
@@ -31,4 +32,30 @@ line-height:100%;
 }
 input {
 width:100%;
+}
+.tabs-list {
+  flex-wrap: nowrap;
+}
+.tabs-list > * {
+	width: calc(100%/3);
+	display: block;
+	position: relative;
+	float: left;
+	text-align: center;
+         cursor:pointer;
+}
+.tabs-list > .selected {
+   border-bottom: 3px solid red;
+}
+#result {
+height:300px;
+}
+#result.close{
+height:0px;
+}
+#map {
+height:0px;
+}
+#map.result{
+height:100px;
 }

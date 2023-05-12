@@ -106,9 +106,11 @@ restaurant_id integer,
 address_id integer,
 pickup integer
 );
-CREATE TABLE IF NOT EXISTS restaurants (
+CREATE TABLE IF NOT EXISTS bks (
 id INTEGER PRIMARY KEY,
 title VARCHAR(200) unique,
+lat VARCHAR(200) unique,
+lon VARCHAR(200) unique,
 address text
 );
 CREATE TABLE IF NOT EXISTS addresses (

@@ -18,4 +18,5 @@ class servicemodepage(directory):
     a=self.get_file(".\leaflet_withoutmap.js").read()
     a=a.replace("{GEOCODERAPIKEY}",os.environ['GEOCODERAPIKEY'])
     self.add_css("leaflet_withoumap.css")
+    self.add_js("myleaflet.js")
     self.set_content(f+a)
