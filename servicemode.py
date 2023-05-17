@@ -15,7 +15,7 @@ class servicemodepage(directory):
     self.add_css_link("https://maps.locationiq.com/v2/libs/leaflet-geocoder/1.9.6/leaflet-geocoder-locationiq.min.css")
     self.add_js_link("https://maps.locationiq.com/v2/libs/leaflet-geocoder/1.9.6/leaflet-geocoder-locationiq.min.js")
 
-    a=self.get_file(".\leaflet_withoutmap.js").read()
+    a=self.get_file("./leaflet_withoutmap.js").read()
     a=a.replace("{GEOCODERAPIKEY}",os.environ['GEOCODERAPIKEY'])
     self.add_css("leaflet_withoumap.css")
     self.add_js("myleaflet.js")

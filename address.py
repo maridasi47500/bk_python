@@ -17,6 +17,6 @@ class addresspage(directory):
     self.add_css_link("https://maps.locationiq.com/v2/libs/leaflet-geocoder/1.9.6/leaflet-geocoder-locationiq.min.css")
     self.add_js_link("https://maps.locationiq.com/v2/libs/leaflet-geocoder/1.9.6/leaflet-geocoder-locationiq.min.js")
 
-    a=self.get_file(".\leaflet.js").read().encode('utf-8').replace('{GEOCODERAPIKEY}',os.environ['GEOCODERAPIKEY'])
+    a=self.get_file("./leaflet.js").read().encode('utf-8').replace('{GEOCODERAPIKEY}',os.environ['GEOCODERAPIKEY'])
     self.set_content(f+a)
     print("fin de cod")

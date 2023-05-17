@@ -1,3 +1,10 @@
+function cherchermcdo(){
+$.ajax({url: "/listlocation",data: {mylist: "nearby",lat: $('#lat').html(),lon: $('#lon').html(),address:$('#address').val()},
+success:function(data){
+$('#result').html(data);
+}});
+return false;
+}
 window.onload=function(){
 $(".tab2").click(function(){
 window.location = "/store-locator/address";
@@ -5,7 +12,7 @@ window.location = "/store-locator/address";
 $(".tabs-list *").click(function(){
 $('.tabs-list *').removeClass("selected");
 $(this).toggleClass("selected");
-$.ajax({url: "/listlocation",data: {mylist: $(this).data('mylist'),lat: $('#lat').html(),lon: $('#lon').html()},
+$.ajax({url: "/listlocation",data: {mylist: $(this).data('mylist'),lat: $('#lat').html(),lon: $('#lon').html(),address:$('#address').val()},
 success:function(data){
 $('#result').html(data);
 }});

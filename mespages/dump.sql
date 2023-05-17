@@ -113,6 +113,20 @@ lat VARCHAR(200) unique,
 lon VARCHAR(200) unique,
 address text
 );
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Avenida Nações Unidas, Burger King, Centro, Novo Hamburgo, Região Geográfica Imediata de Novo Hamburgo - São Leopoldo, Metropolitan Region of Porto Alegre, Região Geográfica Intermediária de Porto Alegre, Rio Grande do Sul, South Region, 93310-002, Brazil','-29.6838785','-51.133577755343005');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Parnamirim, Recife, Região Geográfica Imediata do Recife, Região Metropolitana do Recife, Região Geográfica Intermediária do Recife, Pernambuco, Northeast Region, 52060-590, Brazil','-8.0353669','-34.9129296');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Parnamirim, Recife, Região Geográfica Imediata do Recife, Região Metropolitana do Recife, Região Geográfica Intermediária do Recife, Pernambuco, Northeast Region, 52060-590, Brazil','-8.0354408','-34.91296855');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Avenida Interlagos, Campo Grande, Vila Arriete, São Paulo, Região Imediata de São Paulo, Região Metropolitana de São Paulo, Região Geográfica Intermediária de São Paulo, São Paulo, Southeast Region, 04660-006, Brazil','-23.6815839','-46.689319417340016');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, 1321, Rua Augusta, Consolação, São Paulo, Região Imediata de São Paulo, Região Metropolitana de São Paulo, Região Geográfica Intermediária de São Paulo, São Paulo, Southeast Region, 01305-100, Brazil','-23.5555588','-46.657349');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, 2294, Avenida Brigadeiro Luís Antônio, Jardim Paulista, São Paulo, Região Imediata de São Paulo, Região Metropolitana de São Paulo, Região Geográfica Intermediária de São Paulo, São Paulo, Southeast Region, 01402-000, Brazil','-23.56777','-46.6493222');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, 569, Rua Frei Caneca, Consolação, São Paulo, Região Imediata de São Paulo, Região Metropolitana de São Paulo, Região Geográfica Intermediária de São Paulo, São Paulo, Southeast Region, 01307-001, Brazil','-23.5543122','-46.6524059');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Avenida John Boyd Dunlop, Campinas, Região Imediata de Campinas, Região Metropolitana de Campinas, Região Geográfica Intermediária de Campinas, São Paulo, Southeast Region, 13033-050, Brazil','-22.909815','-47.0923249');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Estrada do Coqueiro Grande, Cajazeiras, Salvador, Região Geográfica Imediata de Salvador, Região Metropolitana de Salvador, Região Geográfica Intermediária de Salvador, Bahia, Northeast Region, 41340-120, Brazil','-12.9049619','-38.4003086');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Wagenwegstraat, Paramaribo, Centrum, Paramaribo, Suriname','5.82745445','-55.1556997');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, 1793, Rua Silva Teles, Belém, São Paulo, Região Imediata de São Paulo, Região Metropolitana de São Paulo, Região Geográfica Intermediária de São Paulo, São Paulo, Southeast Region, 03026-001, Brazil','-23.5237975','-46.605083627795786');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, 35G/H, Rua São José, Castelo, Centro, Zona Central do Rio de Janeiro, Rio de Janeiro, Região Geográfica Imediata do Rio de Janeiro, Região Metropolitana do Rio de Janeiro, Região Geográfica Intermediária do Rio de Janeiro, Rio de Janeiro, Southeast Region, 20011-020, Brazil','-22.9049933','-43.1749227');
+INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk','Burger King, Regent Street, Lacytown, Alberttown, City of Georgetown, Eccles-Ramsburg Village District, Demerara-Mahaica, Guyana','6.8101662','-58.1612344');
+
 CREATE TABLE IF NOT EXISTS addresses (
 id INTEGER PRIMARY KEY,
 address text
@@ -143,7 +157,7 @@ CREATE TABLE IF NOT EXISTS customcustoms (
 );
 INSERT or ignore INTO nutinfos (burger_id,calories,gras,grassature,grastrans,cholesterol,sodium,glucides,fibre,sucre,proteines) VALUES (1.0,683.6,41.8,11.4,0.7,90.4,1175.3,54.6,3.0,13.3,32.0);
 
-INSERT or ignore INTO users (email,prenom,code) VALUES ('cleo@gmail.com','cleo jeanne','098790');
+INSERT or ignore INTO users (email,prenom,code) VALUES ('cloe@gmail.com','cleo jeanne','098790');
 INSERT or ignore INTO burgercats (name,url) VALUES ('Forfaits famille','burgers');
 INSERT or ignore INTO burgercats (name,url) VALUES ('Hamburgers grillés à la flamme','flame');
 INSERT or ignore INTO burgercats (name,url) VALUES ('Poulet et plus','meat');

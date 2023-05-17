@@ -1,11 +1,17 @@
 import os
 import json
+
 global path1
 import sqlite3  
 global codecs
 import codecs
 from multipledispatch import dispatch
+import math
 connection = sqlite3.connect("mesburgers1.db")
+connection.create_function('sqrt', 1, math.sqrt)
+connection.create_function('cos', 1, math.cos)
+connection.create_function('pow', 2, math.pow)
+
 # cursor
 global crsr
 crsr = connection.cursor()
@@ -246,6 +252,7 @@ class directory(object):
         self.htmlpath=mypath.replace("./","/")
         self.path=self.path1+mypath.replace("./","/").replace(self.path1,"")
     def get_filename_path(self,file):
+        print(self.path+"/"+file, " ok ok ok")
         return self.path+"/"+file
     def get_css_dir_path(self):
         return "./css/"
@@ -271,8 +278,8 @@ class directory(object):
         return text if isinstance(text, unicode) else text.decode('utf-8')
     def get_file(self,file):
         print("get file:")
-        print(self.get_filename_path(file.replace(".\\","")))
-        return open(self.get_filename_path(file.replace(".\\","")),'r')
+        print(self.get_filename_path(file.replace(".//","/")))
+        return open(self.get_filename_path(file.replace(".//","/")),'r')
     def get_file_dir(self,file,dir):
         print("get file:"+dir)
         self.set_path(dir)
@@ -294,8 +301,7 @@ class directory(object):
         crsr.execute("PRAGMA table_info(["+tablename+"])")
         connection.commit()
         matable=crsr.fetchall()
-        #self.set_path("./mespages")
-        h=self.get_file(templatename+".html")
+        h=self.get_file("./"+templatename+".html")
         template=self.force_to_unicode(h.read())
         mysql=sql % sqlargs
         print(mysql)
