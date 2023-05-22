@@ -21,6 +21,7 @@ class directory(object):
     header=""
     layout=""
     footer=""
+    content=""
     title=""
     js=""
     css=""
@@ -308,6 +309,7 @@ class directory(object):
         crsr.execute(mysql)
         connection.commit()
         res=crsr.fetchall()
+        print("dans ce result sql il y a %s resul" % res)
         myfigure=""
         x=0
         mytemplate=""

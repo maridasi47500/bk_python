@@ -12,7 +12,7 @@ from redirect import redirectaction
 connection = sqlite3.connect("mesburgers1.db")
 connection.create_function('sqrt', 1, math.sqrt)
 connection.create_function('cos', 1, math.cos)
-connection.create_function('pow', 1, math.pow)
+connection.create_function('pow', 2, math.pow)
 global crsr
 crsr = connection.cursor()
 import os
@@ -44,7 +44,19 @@ class listlocationpage(directory):
             print(data)
             lat=data['lat']
             lon=data['lon']
-            sql_command = """SELECT *, lat, lon, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks HAVING distance < 25 ORDER BY distance;"""
+            #sql_command = """SELECT *, lat, lon, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id HAVING distance < 1000000 ORDER BY distance;"""
+            #sql_command = """SELECT * from bks GROUP BY bks.id HAVING (sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2))) < 5000 ;"""
+            sql_command = """SELECT * from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ;"""
+            sql_command2 = """SELECT id,address, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id ORDER BY distance;"""
+            crsr.execute(sql_command2.format(startlat=lat,startlng=lon))
+            connection.commit()
+            res=crsr.fetchall()
+            print("resultat",res)
+            sql_command2 = """SELECT * from bks"""
+            crsr.execute(sql_command2)
+            connection.commit()
+            res=crsr.fetchall()
+            print("resultats longuur",len(res))
             tablename="bks"
             message_else=""
             collectionstr= self.display_collection(sql_command.format(startlat=lat,startlng=lon), (), "nearby", message_else, tablename)
@@ -56,5 +68,8 @@ class listlocationpage(directory):
           tablename="bks"
           message_else=""
           collectionstr= self.display_collection(sql_command, (), "favorite", message_else, tablename)
-        g=self.get_file_with_path("list.html")
-        self.set_content(g % collectionstr)
+        try:
+          g=self.get_file_with_path("list.html").read()
+          self.set_content(g % collectionstr)
+        except Exception as e:
+          print(e,"eERREUR")
