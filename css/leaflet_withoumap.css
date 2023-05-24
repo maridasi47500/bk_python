@@ -22,3 +22,11 @@ body {
   .leaflet-locationiq-results{
       padding-top: 45px;
   }
+.location-buttons {
+width:100%;
+}
+.location-buttons .myaction {
+width:33%;
+display:inline-block;
+float:left;
+}

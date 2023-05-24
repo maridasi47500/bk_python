@@ -1,3 +1,12 @@
+function clicklocation(ev){
+var loc=ev.target;
+var id=loc.dataset.id;
+var action=loc.dataset.action;
+$.ajax({url:"/bkaction",data:{id: id, action:action},success:function(data){
+}});
+
+}
+
 function cherchermcdo(){
 $.ajax({url: "/listlocation",data: {mylist: "nearby",lat: $('#lat').html(),lon: $('#lon').html(),address:$('#address').val()},
 success:function(data){
