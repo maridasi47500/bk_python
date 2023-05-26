@@ -135,7 +135,10 @@ class pagehome(directory):
             print("ok BURGER AJOUTE¡$$")
         except Exception as e:
             print(e,"ok user non connecté ???? u're OFFLINE")
-        self.set_content(text+q)
+        policy=self.get_file_with_path("policy.html").read().decode('utf-8')
+        self.add_js("policy.js")
+        self.add_css("policy.css")
+        self.set_content(text+q+policy)
         print("le texte ok")    
         self.current_user=None
         #text=(text)

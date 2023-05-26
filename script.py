@@ -7,6 +7,10 @@ import datetime
 import sys
 import requests
 from jsoncontent import jsoncontent
+from infolocation import infolocationpage
+from orderlocation import orderlocationpage
+from offerslocation import offerslocationpage
+from favlocation import favlocationpage
 from bkaction import bkactionjson
 from redirect import redirectaction
 from setuser import setuserpage
@@ -23,7 +27,7 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/favlocation":{"partiedemesmots":"favlocation"},"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -66,6 +70,7 @@ switcher={
 'json':'application/json',
 'js':'text/javascript',
 'png':"image/png",
+'gif':"image/gif",
 'ico':'image/vnd.microsoft.icon'
 }
 
@@ -184,6 +189,42 @@ def addcard(params = None):
     except:
         print("erreur add card")
 global home
+def infolocation(params = None):
+    try:
+        print("render figure home")    
+        Program = infolocationpage("bk",params)
+        Program.set_path("./")
+        print("render figure home finish")
+        return render_figure("index.html",Program)
+    except Exception as e:
+        print("erreur 1",e)
+def orderlocation(params = None):
+    try:
+        print("render figure home")    
+        Program = orderlocationpage("bk",params)
+        Program.set_path("./")
+        print("render figure home finish")
+        return render_figure("index.html",Program)
+    except Exception as e:
+        print("erreur 1",e)
+def offerslocation(params = None):
+    try:
+        print("render figure home")    
+        Program = offerslocationpage("bk",params)
+        Program.set_path("./")
+        print("render figure home finish")
+        return render_figure("index.html",Program)
+    except Exception as e:
+        print("erreur 1",e)
+def favlocation(params = None):
+    try:
+        print("render figure home")    
+        Program = favlocationpage("bk",params)
+        Program.set_path("./")
+        print("render figure home finish")
+        return render_figure("index.html",Program)
+    except Exception as e:
+        print("erreur 1",e)
 def home(params = None):
     try:
         print("render figure home")    
@@ -886,7 +927,7 @@ class S(BaseHTTPRequestHandler):
 
                 code=open(os.getcwd()+myurlpath, "rb").read().decode('utf-8')
                 self.wfile.write(code)
-            elif myurlpath.split(".")[-1] in ["png"]:
+            elif myurlpath.split(".")[-1] in ["png","gif"]:
                 print("le mimetype est %s et la réponse est %s" % ("png",200))
                 self._set_headers(switcher[myurlpath.split(".")[-1]])
 
@@ -1096,6 +1137,10 @@ r"^\/$":home,
 global menu
 # POST routes
 route_post={
+    "/infolocation":infolocation,
+    "/orderlocation":orderlocation,
+    "/offerslocation":offerslocation,
+    "/favlocation":favlocation,
     "/bkaction":bkaction,
     "/addburger":addburger,
     "/savegiftcard": savegiftcard,
