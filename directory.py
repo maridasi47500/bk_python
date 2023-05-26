@@ -294,7 +294,7 @@ class directory(object):
             self.set_footer(myfooter)
         except IOError:
             self.set_footer("")
-    def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False):
+    def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
         idprecedent=0
         print(sqlargs)
         print(len(sqlargs))
@@ -302,6 +302,8 @@ class directory(object):
         crsr.execute("PRAGMA table_info(["+tablename+"])")
         connection.commit()
         matable=crsr.fetchall()
+        if addattributes:
+          matable+=addattributes
         h=self.get_file("./"+templatename+".html")
         template=self.force_to_unicode(h.read())
         mysql=sql % sqlargs

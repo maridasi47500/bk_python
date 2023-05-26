@@ -5,22 +5,25 @@
 <p>
 (address)
 </p>
-<span class⁼"myfav" data-id="(id)">
+<span class⁼"myfav" data-id="(id)" data-action="fav" onclick="clicklocation(event);return false;">
+<img src="/images/coeur(myfav).png" height="20" width="20"/>
 </span>
 </div>
 <div class="location-buttons location(id)" style="display:none;">
-<div data-id="(id)" data-action="action1" class="myaction">
+<div data-id="(id)" data-action="info" class="myaction" onclick="clicklocation(event);return false;">
 info
 </div>
-<div data-id="(id)" data-action="action2" class="myaction">
+<div data-id="(id)" data-action="order" class="myaction" onclick="clicklocation(event);return false;">
 order
 </div>
-<div data-id="(id)" data-action="action3" class="myaction">
+<div data-id="(id)" data-action="offers" class="myaction" onclick="clicklocation(event);return false;">
 offers
 </div>
 </div>
-<form data-id="(id)" class="order" method="post" action="/orderlocation">
-</div>
-<form data-id="(id)" class="offers" method="post" action="/offerslocation">
-</div>
+<form data-id="(id)" class="order-form" method="post" action="/orderlocation">
+<input type="hidden" value="(id)" name="id"/>
+</form>
+<form data-id="(id)" class="offers-form" method="post" action="/offerslocation">
+<input type="hidden" value="(id)" name="id"/>
+</form>
 

@@ -113,6 +113,11 @@ lat VARCHAR(200) unique,
 lon VARCHAR(200) unique,
 address text
 );
+CREATE TABLE IF NOT EXISTS favbks (
+id INTEGER PRIMARY KEY,
+user_id integer unique,
+bk_id integer unique
+);
 INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk1','Avenida Nações Unidas, Burger King, Centro, Novo Hamburgo, Região Geográfica Imediata de Novo Hamburgo - São Leopoldo, Metropolitan Region of Porto Alegre, Região Geográfica Intermediária de Porto Alegre, Rio Grande do Sul, South Region, 93310-002, Brazil','-29.6838785','-51.133577755343005');
 INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk2','Burger King, Parnamirim, Recife, Região Geográfica Imediata do Recife, Região Metropolitana do Recife, Região Geográfica Intermediária do Recife, Pernambuco, Northeast Region, 52060-590, Brazil','-8.0353669','-34.9129296');
 INSERT or ignore INTO 'bks' (title,address,lat,lon) VALUES('bk3','Burger King, Parnamirim, Recife, Região Geográfica Imediata do Recife, Região Metropolitana do Recife, Região Geográfica Intermediária do Recife, Pernambuco, Northeast Region, 52060-590, Brazil','-8.0354408','-34.91296855');

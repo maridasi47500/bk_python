@@ -46,9 +46,9 @@ class listlocationpage(directory):
             lon=data['lon']
             #sql_command = """SELECT *, lat, lon, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id HAVING distance < 1000000 ORDER BY distance;"""
             #sql_command = """SELECT * from bks GROUP BY bks.id HAVING (sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2))) < 5000 ;"""
-            sql_command = """SELECT * from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ;"""
+            sql_command = """SELECT * from bks, (case when (select count(favbks.id) from favbks where favbks.bk_id = bks.id and favbks.user_id = ?) > 0 then 1 else 0 end) as myfavs GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ;"""
             sql_command2 = """SELECT id,address, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id ORDER BY distance;"""
-            crsr.execute(sql_command2.format(startlat=lat,startlng=lon))
+            crsr.execute(sql_command2.format(startlat=lat,startlng=lon),(userid,))
             connection.commit()
             res=crsr.fetchall()
             print("resultat",res)
@@ -59,7 +59,7 @@ class listlocationpage(directory):
             print("resultats longuur",len(res))
             tablename="bks"
             message_else=""
-            collectionstr= self.display_collection(sql_command.format(startlat=lat,startlng=lon), (), "nearby", message_else, tablename)
+            collectionstr= self.display_collection(sql_command.format(startlat=lat,startlng=lon), (), "nearby", message_else, tablename,False,False,("myfav",))
           except Exception as e:
             print("print error:",e)
             collectionstr=""
