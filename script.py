@@ -193,11 +193,10 @@ def infolocation(params = None):
     try:
         print("render figure home")    
         Program = infolocationpage("bk",params)
-        Program.set_path("./")
         print("render figure home finish")
         return render_figure("index.html",Program)
     except Exception as e:
-        print("erreur 1",e)
+        print("erreur 1 INFO LOCAtION",e)
 def orderlocation(params = None):
     try:
         print("render figure home")    
@@ -889,7 +888,7 @@ class S(BaseHTTPRequestHandler):
                 print("-- user connecté --")
             except:
                 print("aucun user connecté")
-            print(query_components,"what params")
+            print('path',myurlpath , query_components,"what params")
             #x=searchmyparams(query_components,myurlpath)
             for path in myroutes:
                 #simple=path.split("?")[0]
@@ -1104,6 +1103,7 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+    "/infolocation":infolocation,
 
 r"^/store-locator/address$":address,
 r"^/store-locator/service-mode$":servicemode,
@@ -1137,7 +1137,7 @@ r"^\/$":home,
 global menu
 # POST routes
 route_post={
-    "/infolocation":infolocation,
+
     "/orderlocation":orderlocation,
     "/offerslocation":offerslocation,
     "/favlocation":favlocation,

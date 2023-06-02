@@ -17,6 +17,7 @@ global crsr
 crsr = connection.cursor()
 import requests
 class directory(object):
+    path1=os.getcwd()
     redirect=""
     header=""
     layout=""
@@ -29,7 +30,7 @@ class directory(object):
     myparams={}
     current_user=()
     session=None
-    path1=os.getcwd()
+    
     def __init__(self,title):
         global path1
         self.htmlpath="/"
@@ -76,6 +77,10 @@ class directory(object):
         matable=crsr.fetchall()
         return matable
 
+    def content_from_file(self,filename):
+        x=self.get_file_with_path(filename).read()
+        print("longueur du fichier:",len(x))
+        self.set_content(x)
     def parameters(self):
         return self.parameters
     def work(self,code):
@@ -233,7 +238,9 @@ class directory(object):
         return file
     def get_file_with_path(self,file):
 
-        return open(self.path+"/"+file,'r')
+        thispath=self.path+"/"+file
+        print("this path:",thispath)
+        return open(thispath,'r')
     def add_css(self,css):
         mypath=self.get_path()
         self.set_path("./css")
