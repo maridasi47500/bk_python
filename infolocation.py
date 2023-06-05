@@ -9,12 +9,12 @@ class infolocationpage(directory):
       id=param["id"][0]
     except:
       id=None
-    sql="select *, (lat - 0.2) as lata, (lon - 0.2) as lona,(lat - 0.2) as latb,(lon + 0.2) as lonb from bks where id = ?"
+    sql="select *, (lat - 0.2) lata, (lon - 0.2) lona,(lat + 0.2) latb,(lon + 0.2) lonb from bks where id = ?"
     sqlargs=(id,)
     templatename="mytemplate.html"
     errormessage="aucun bk de cet id"
     tablename="bks"
-    x=self.display_collection_with_current_path(sql,sqlargs,templatename,errormessage,tablename,False,False,("lata","lona","latb","lonb"))
+    x=self.display_collection_with_current_path(sql,sqlargs,templatename,errormessage,tablename,False,False,("lata","lona","latb","lonb",))
     self.set_content(x)
     print("INFO LOCATION")
 
