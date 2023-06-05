@@ -14,7 +14,7 @@ class infolocationpage(directory):
     templatename="mytemplate.html"
     errormessage="aucun bk de cet id"
     tablename="bks"
-    x=self.display_collection_with_current_path(sql,sqlargs,templatename,errormessage,tablename,False,False,("lata","lona","latb","lonb",))
+    x=self.display_collection_with_current_path(sql,sqlargs,templatename,errormessage,tablename,False,False,((0,"lata"),(1,"lona"),(3,"latb"),(3,"lonb"),))
     self.set_content(x)
     print("INFO LOCATION")
 

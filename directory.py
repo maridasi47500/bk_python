@@ -313,6 +313,7 @@ class directory(object):
         connection.commit()
         matable=crsr.fetchall()
         if addattributes:
+          print(addattributes)
           matable+=addattributes
         h=self.get_file_with_path(templatename)
         template=self.force_to_unicode(h.read())
