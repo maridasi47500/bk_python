@@ -109,8 +109,8 @@ pickup integer
 CREATE TABLE IF NOT EXISTS bks (
 id INTEGER PRIMARY KEY,
 title VARCHAR(200) unique,
-lat VARCHAR(200) unique,
-lon VARCHAR(200) unique,
+lat float unique,
+lon float unique,
 address text
 );
 CREATE TABLE IF NOT EXISTS favbks (
