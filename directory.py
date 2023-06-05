@@ -301,6 +301,67 @@ class directory(object):
             self.set_footer(myfooter)
         except IOError:
             self.set_footer("")
+    def mysql(self,sql,args):
+        crsr.execute(sql,args)
+        connection.commit()
+    def display_collection_with_current_path(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
+        idprecedent=0
+        print(sqlargs)
+        print(len(sqlargs))
+        print(sql,sqlargs,templatename,errormessage,tablename)
+        crsr.execute("PRAGMA table_info(["+tablename+"])")
+        connection.commit()
+        matable=crsr.fetchall()
+        if addattributes:
+          matable+=addattributes
+        h=self.get_file_with_path(templatename)
+        template=self.force_to_unicode(h.read())
+        
+        print(sql)
+        crsr.execute(sql,sqlargs)
+        connection.commit()
+        res=crsr.fetchall()
+        print("dans ce result sql il y a %s resul" % res)
+        myfigure=""
+        x=0
+        mytemplate=""
+        if len(res) > 0:
+            print("plusieurs "+tablename)
+
+            for re in res:
+                paspremier = False
+                mytemplate=self.force_to_unicode(template)
+                for x in range(len(re)):
+                    print(x)
+                    print(re[x])
+                    z=re[x]
+                    strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
+                    print(strrep)
+                    if type(z) == int or type(z) == float:
+                        z=str(z)
+                    if z is not None:
+                        mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
+                    if matable[x][1] == sortby:
+                        if idprecedent != 0:
+                            if re[x] != idprecedent:
+                                if paspremier:
+                                    myfigure+="</div>"
+                                    paspremier = True
+                                #self.set_path("./mespages")
+                                kk=self.get_file(templatesortby)
+                                kk=kk.read()
+                                y=0
+                                for y in range(len(re)):
+                                    mystrrep="(%s)" % (matable[y][1])
+                                    kk=kk.replace(mystrrep, self.force_to_unicode(str(re[y])))
+                                myfigure += kk
+                        idprecedent=re[x]
+
+                myfigure+=mytemplate
+                myfigure+="</div>"
+            return myfigure
+        else:
+            return self.force_to_unicode("<p>"+errormessage+"</p>")
     def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
         idprecedent=0
         print(sqlargs)

@@ -1,3 +1,28 @@
+// Get the modal
+var modal_info = document.getElementById("myModalinfoloc");
+
+// Get the button that opens the modal
+var btn_info = document.getElementById("myBtninfoloc");
+
+// Get the <span> element that closes the modal
+var span_info = document.getElementsByClassName("closeinfoloc")[0];
+
+// When the user clicks on the button, open the modal
+btn_info.onclick = function() {
+  modal_info.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span_info.onclick = function() {
+  modal_info.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal_info) {
+    modal_info.style.display = "none";
+  }
+} 
 function clicklocation(ev){
 var loc=ev.target;
 var id=loc.dataset.id;
@@ -11,6 +36,9 @@ switch (action) {
   case 'info':
     console.log('info');
     $.ajax({url:"/infolocation",data:{id: id, action:action},success:function(data){
+$('.contentinfoloc').html(data);
+  modal_info.style.display = "block";
+
     }});
     break;
   case 'order':
