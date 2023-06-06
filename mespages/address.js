@@ -66,3 +66,8 @@ map.on('singleclick', function (event) {
      }
  });
 }
+function ouvrirpopup_quand_crate_chfargee(){
+ content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
+ overlay.setPosition(ol.proj.fromLonLat([4.35247, 50.84673]));
+}
+
