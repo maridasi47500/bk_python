@@ -1,11 +1,12 @@
 <p>Entrez votre adresse</p>
 <input name="address" type="text" id="addresstext"/>
 <button onclick="sefairelivrer();">se faire livrer</button>
-<div id="map" class="result"></div>
+<div id="mymap" class="result"></div>
 <!-- For the search box -->
 <div id="search-box"></div>
 <!-- To display the result -->
 <div id="result" class="close"></div>
+<button id="mybtn" type="button" onclick="mylongfunc(parseFloat(this.dataset.lat),parseFloat(this.dataset.lon))" class="close" hidden></button>
 
 
 <div hidden id="lat"></div>
