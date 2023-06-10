@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from findaddress import findaddresspage
 
 import json
 import psutil
@@ -532,6 +533,7 @@ def render_pages(params = None):
     erreur404()
     myaccountinfo()
 def reloadmymodules(params = None):
+  reload(findaddress)
     reload(address)
 def copy(params = None):
     #restart_program()
@@ -875,6 +877,11 @@ def confirmjwt(query_components):
 
     except Exception as e:
         print("erreur confirm jwt",e)
+
+def findaddress(params):
+  Program=findaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
 class S(BaseHTTPRequestHandler):
     def _mon_erreur(self,e):
         print("erreur get",e)
@@ -1133,6 +1140,7 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+"/findaddress":findaddress,
     "/infolocation":infolocation,
 
 r"^/store-locator/address$":address,

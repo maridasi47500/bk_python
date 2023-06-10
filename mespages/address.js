@@ -1,3 +1,8 @@
+function sefairelivrer(){
+$.ajax({url:"/findaddress",data:{address:$("#addresstext").val()},success:function(data){
+}})
+}
+
 window.onload=function(){ 
 var attribution = new ol.control.Attribution({
      collapsible: false

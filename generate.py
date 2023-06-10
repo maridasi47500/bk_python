@@ -30,7 +30,7 @@ class {myclass}page(directory):
 
     myfavdirectory="myfavdirectory"
     myhtml="myhtml"
-    with open("./path_to_file", "r") as f:
+    with open("./script.py", "r") as f:
       contents = f.readlines()
     scriptfunc="""
 def {myclass}(params):
@@ -47,7 +47,7 @@ def {myclass}(params):
     index=[i for i in range(len(contents)) if "def reloadmymodules" in contents[i]][0]
     contents.insert((index+1), "  reload({myclass})\n".format(myclass=filename))
 
-    with open("./path_to_file", "w") as f:
+    with open("./script.py", "w") as f:
         contents = "".join(contents)
         f.write(contents)
     os.system("mkdir %s" % myfavdirectory)

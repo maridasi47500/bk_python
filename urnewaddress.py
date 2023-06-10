@@ -1,5 +1,10 @@
 # coding=utf-8
 import sqlite3
+import urllib, json
+
+global url
+
+
 from directory import directory
 connection = sqlite3.connect("mesburgers1.db")
 # cursor
