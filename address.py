@@ -23,5 +23,5 @@ class addresspage(directory):
     self.add_js("address.js")
 
     #a=self.get_file("./leaflet.js").read().encode('utf-8').replace('{GEOCODERAPIKEY}',os.environ['GEOCODERAPIKEY'])
-    self.set_content(f+a)
+    self.set_content(f)
     print("fin de cod")

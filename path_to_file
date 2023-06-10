@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-
+from zernewaddress import zernewaddresspage
+from urnewaddress import urnewaddresspage
+from othernewaddress import othernewaddresspage
+from mynewaddress import mynewaddresspage
 import json
 import psutil
 import logging
@@ -532,7 +535,9 @@ def render_pages(params = None):
     erreur404()
     myaccountinfo()
 def reloadmymodules(params = None):
-    reload(address)
+  reload(zernewaddress)
+reload(urnewaddress)
+reload(othernewaddress)reload(mynewaddress)reload(mynewaddress)reload(mynewaddress)reload(mynewaddress)    reload(address)
 def copy(params = None):
     #restart_program()
     #os.execv(sys.argv[0], sys.argv)
@@ -875,6 +880,41 @@ def confirmjwt(query_components):
 
     except Exception as e:
         print("erreur confirm jwt",e)
+
+def mynewaddress(params):
+  Program=mynewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def mynewaddress(params):
+  Program=mynewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def mynewaddress(params):
+  Program=mynewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def mynewaddress(params):
+  Program=mynewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def othernewaddress(params):
+  Program=othernewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def urnewaddress(params):
+  Program=urnewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
+
+def zernewaddress(params):
+  Program=zernewaddresspage("./myfavdirectory","super website",params)
+  return render_figure("myhtml.html",Program)
+
 class S(BaseHTTPRequestHandler):
     def _mon_erreur(self,e):
         print("erreur get",e)
@@ -1133,7 +1173,9 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
-    "/infolocation":infolocation,
+"/zernewaddress":zernewaddress,
+"/urnewaddress":urnewaddress,
+"/othernewaddress":othernewaddress,"/mynewaddress":mynewaddress,"/mynewaddress":mynewaddress,"/mynewaddress":mynewaddress,"/mynewaddress":mynewaddress,    "/infolocation":infolocation,
 
 r"^/store-locator/address$":address,
 r"^/store-locator/service-mode$":servicemode,
