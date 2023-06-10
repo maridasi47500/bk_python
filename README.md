@@ -4,7 +4,7 @@
 # burger queen ('---')
 #pour générer une nouvelle route GET lancer
 ```
-python script.py myclass [myroutename]
+python generate.py myclass [myroutename]
 ```
 # ~~~~~~ 
 dans ~/.bash_profile avoir: un mot de passe crypte de mail,un email de reception un email d'envoi, le code d'api geocode
