@@ -1,5 +1,10 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8 -*-
+global findaddress
+import findaddress
+import address
+global address
 from findaddress import findaddresspage
+
 
 import json
 import psutil
@@ -32,7 +37,9 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/favlocation":{"partiedemesmots":"favlocation"},"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/favlocation":{"partiedemesmots":"favlocation"},
+"/findaddress":{"partiedemesmots":"findaddress"},
+"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -533,7 +540,7 @@ def render_pages(params = None):
     erreur404()
     myaccountinfo()
 def reloadmymodules(params = None):
-  reload(findaddress)
+    reload(findaddress)
     reload(address)
 def copy(params = None):
     #restart_program()
@@ -727,7 +734,7 @@ def servicemode(query_components):
         return render_figure("servicemode.html",Program)
     except Exception as e:
         print("my errooor (=) service mode",e)
-def address(query_components):
+def addressfunc(query_components):
     Program=addresspage('choisir un restaurant',query_components) 
     try:
         return render_figure("address.html",Program)
@@ -878,8 +885,8 @@ def confirmjwt(query_components):
     except Exception as e:
         print("erreur confirm jwt",e)
 
-def findaddress(params):
-  Program=findaddresspage("./myfavdirectory","super website",params)
+def findaddressfunc(params):
+  Program=findaddresspage("./myfindaddressdirectory","super website",params)
   return render_figure("myhtml.html",Program)
 
 class S(BaseHTTPRequestHandler):
@@ -955,7 +962,13 @@ class S(BaseHTTPRequestHandler):
                 myred=code.get_redirect()
                 print("vous serez redirigée à %s " % myred)
                 self.send_header('Location',myred)
+            elif isinstance(code,jsoncontent):
+                print("return json")
+                data=code.get_json()
+                code.set_json(None)
 
+                self._set_headers(switcher.get("json"))
+                self.wfile.write(str(data).replace("'",'"'))
             elif myurlpath.split(".")[-1] in ["css","scss"]:
                 print("le mimetype est %s et la réponse est %s" % ("css",200))
                 self._set_headers(switcher["css"])
@@ -1140,10 +1153,10 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
-"/findaddress":findaddress,
+"/findaddress":findaddressfunc,
     "/infolocation":infolocation,
 
-r"^/store-locator/address$":address,
+r"^/store-locator/address$":addressfunc,
 r"^/store-locator/service-mode$":servicemode,
 r"^/store-locator$":servicemode,
 

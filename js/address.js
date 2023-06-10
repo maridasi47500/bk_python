@@ -1,3 +1,10 @@
+function sefairelivrer(){
+$.ajax({url:"/findaddress",data:{address:$("#addresstext").val()},success:function(data){
+ajouterunmarqueur(data.lat,data.lon);
+init_la_popup();
+}})
+}
+
 window.onload=function(){ 
 var attribution = new ol.control.Attribution({
      collapsible: false
@@ -54,18 +61,21 @@ var container = document.getElementById('popup');
      return false;
  };
 //ouvrir la popup quand on cliue sur le marker
+//#function ouvrirpopupclickmarqueur(){
 map.on('singleclick', function (event) {
      if (map.hasFeatureAtPixel(event.pixel) === true) {
          var coordinate = event.coordinate;
 
-         content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
+         content.innerHTML = '<b>Hello!</b><br />la livraison arrivera ici.';
          overlay.setPosition(coordinate);
      } else {
          overlay.setPosition(undefined);
          closer.blur();
      }
  });
+//}
 }
+
 function ouvrirpopup_quand_crate_chfargee(){
  content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
  overlay.setPosition(ol.proj.fromLonLat([4.35247, 50.84673]));

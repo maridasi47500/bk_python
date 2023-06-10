@@ -11,18 +11,20 @@ connection = sqlite3.connect("mesburgers1.db")
 global crsr
 crsr = connection.cursor()
 class jsoncontent(directory):
+    mimetype="json"
+    layout=""
+    redirect=None
+
     def __init__(self,title):
         global path1
         self.htmlpath="/"
         path1=os.getcwd()
         self.path1=os.getcwd()
         self.title = title
-        self.layout = "ok"
         self.mytitle = title
         self.js=""
         self.url=""
         self.html=""
-        self.current_user=()
         self.current_order=[]
         self.mime=None
         self.content=""
