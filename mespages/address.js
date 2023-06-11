@@ -1,12 +1,21 @@
 var layer,coordinate,closer,content,container,map,overlay,attribution;
 function sefairelivrer(){
 $.ajax({url:"/findaddress",data:{address:$("#addresstext").val()},success:function(data){
-//#mymap.innerHTML="";
+//#var layer,coordinate,closer,content,container,map,overlay,attribution;
+var mymap=document.querySelector("#mymap");
+mymap.outerHTML="<div id=\"mymap\" class=\"result\"></div>";
+var popup=document.querySelector("#popup");
+if (popup){
+popup.remove()
+}
+document.body.innerHTML+=" <div id=\"popup\" class=\"ol-popup\">     <a href=\"#\" id=\"popup-closer\" class=\"ol-popup-closer\"></a>  <div id=\"popup-content\"></div> </div>";
 console.log(parseFloat(data.lat),parseFloat(data.lon))
+mylongfunc(parseFloat(data.lat),parseFloat(data.lon))
+//initmap(parseFloat(data.lat),parseFloat(data.lon))
 //mylongfunc(parseFloat(data.lat),parseFloat(data.lon))
-mybtn.dataset.lat=data.lat;
-mybtn.dataset.lon=data.lon;
-mybtn.click()
+//mybtn.dataset.lat=data.lat;
+//mybtn.dataset.lon=data.lon;
+//mybtn.click()
 
 }})
 }
@@ -14,26 +23,20 @@ mybtn.click()
 function mylongfunc(lat = null,lon = null){
 console.log("init map")
 initmap(lat,lon)
-console.log("ajouter un marqueur")
+console.log(lat,lon,"ajouter un marqueur")
 ajouterunmarqueur(lat,lon)
-console.log("ajouter une popup")
-mymap.outerHTML=mymap.outerHTML+`
- <div id="popup" class="ol-popup">
-     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-     <div id="popup-content"></div>
- </div>
+console.log(lat,lon,"ajouter une popup")
 
-
-`;
-console.log("init popup")
+console.log(lat,lon,"init popup")
 init_la_popup();
-console.log("ouvrir popup");
+console.log(lat,lon,"ouvrir popup");
 ouvrirpopupclickmarqueur();
-console.log("text popup");
+console.log(lat,lon,"text popup");
 ouvrirpopup_quand_crate_chfargee(lat,lon)
 }
 
-function initmap(mylat = 4.35247, mylon = 50.84673){
+function initmap(mylat = 50.84673, mylon = 4.35247){
+alert(mylat+"+"+mylon+"+"+typeof mylat)
 attribution = new ol.control.Attribution({
      collapsible: false
  });
@@ -43,7 +46,7 @@ attribution = new ol.control.Attribution({
      layers: [
          new ol.layer.Tile({
              source: new ol.source.OSM({
-                 url: 'https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png',
+                 url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                  attributions: [ ol.source.OSM.ATTRIBUTION, 'Tiles courtesy of <a href="https://geo6.be/">GEO-6</a>' ],
                  maxZoom: 18
              })
@@ -56,20 +59,8 @@ attribution = new ol.control.Attribution({
          zoom: 12
      })
  });
- overlay = new ol.Overlay({
-     element: container,
-     autoPan: true,
-     autoPanAnimation: {
-         duration: 250
-     }
- });
- map.addOverlay(overlay);
 }
-window.onload=function(){ 
-initmap();
-//mylongfunc();
-}
-function ajouterunmarqueur(lat= 4.35247, lon = 50.84673){
+function ajouterunmarqueur(lat = 50.84673, lon = 4.35247){
  layer = new ol.layer.Vector({
      source: new ol.source.Vector({
          features: [
@@ -85,6 +76,16 @@ function init_la_popup(){
  container = document.getElementById('popup');
  content = document.getElementById('popup-content');
  closer = document.getElementById('popup-closer');
+ console.log(container,content,closer);
+
+ overlay = new ol.Overlay({
+     element: container,
+     autoPan: true,
+     autoPanAnimation: {
+         duration: 250
+     }
+ });
+ map.addOverlay(overlay);
 
 
 
@@ -110,7 +111,12 @@ map.on('singleclick', function (event) {
 }
 
 function ouvrirpopup_quand_crate_chfargee(lat,lon){
- content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
- overlay.setPosition(ol.proj.fromLonLat([lon,lat]));
+ content.innerHTML = '<b>Hello world!</b><br />Livraison ici.';
+ //overlay.setPosition(ol.proj.fromLonLat([lon,lat]));
 }
 
+window.onload=function(){ 
+var layer,coordinate,closer,content,container,map,overlay,attribution;
+initmap();
+//mylongfunc();
+}

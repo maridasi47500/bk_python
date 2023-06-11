@@ -2,6 +2,10 @@
 <input name="address" type="text" id="addresstext"/>
 <button onclick="sefairelivrer();">se faire livrer</button>
 <div id="mymap" class="result"></div>
+ <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
+ </div>
 <!-- For the search box -->
 <div id="search-box"></div>
 <!-- To display the result -->
@@ -12,7 +16,3 @@
 <div hidden id="lat"></div>
 <div hidden id="lon"></div>
 
-<div id="popup" class="ol-popup">
-     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-     <div id="popup-content"></div>
- </div>
