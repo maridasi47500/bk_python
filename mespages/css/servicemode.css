@@ -59,3 +59,61 @@ height:0px;
 #map.result{
 height:100px;
 }
+#popup {
+	background: white;
+	border: 1px solid black;
+	color: black;
+	padding: 10px;
+}
+[name="address"] {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+width:100%;
+float:left;
+}
+.mysearch{
+padding:20px;
+
+text-align:center;
+
+}
+.searchdiv{
+width:10%;
+position:absolute;
+background:white;
+right:20px;
+top:5px;
+
+}
+.searchbar {
+position:relative;
+}
+.deliver {
+background:red;
+color:white;
+font-weight:900;
+height:90px;
+width:100%;
+display:block;
+font-size:30px;
+
+}
+.notdeliver {
+pointer-events:none;
+background:grey;
+border-radius:300000px;
+color:white;
+}
+.addressnonreconnue 
+{
+color:red;
+}
+.addressereconnue 
+{
+display:none;
+color:red;
+}
+.myerror{
+border:1px solid red;
+}

@@ -1,4 +1,7 @@
 # coding: utf-8 -*-
+from searchrestaurant import searchrestaurantpage
+import searchrestaurant
+global searchrestaurant
 global findaddress
 import findaddress
 import address
@@ -38,6 +41,7 @@ global connection
 global get_file
 global switcher
 __mots__={"/favlocation":{"partiedemesmots":"favlocation"},
+    "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},
 "/findaddress":{"partiedemesmots":"findaddress"},
 "/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"Fournissez le code"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
@@ -540,6 +544,7 @@ def render_pages(params = None):
     erreur404()
     myaccountinfo()
 def reloadmymodules(params = None):
+    reload(searchrestaurant)
     reload(findaddress)
     reload(address)
 def copy(params = None):
@@ -889,6 +894,11 @@ def findaddressfunc(params):
   Program=findaddresspage("./myfindaddressdirectory","super website",params)
   return render_figure("myhtml.html",Program)
 
+
+def searchrestaurantfunc(params):
+  Program=searchrestaurantpage("./mysearchrestaurantdirectory","super website",params)
+  return render_figure("mysearchrestauranthtml.html",Program)
+
 class S(BaseHTTPRequestHandler):
     def _mon_erreur(self,e):
         print("erreur get",e)
@@ -1153,6 +1163,7 @@ render_pages()
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+"/searchrestaurant":searchrestaurantfunc,
 "/findaddress":findaddressfunc,
     "/infolocation":infolocation,
 

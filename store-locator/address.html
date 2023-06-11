@@ -1,11 +1,23 @@
+<div class="mysearch">
 <p>Entrez votre adresse</p>
-<input name="address" type="text" id="addresstext"/>
-<button onclick="sefairelivrer();">se faire livrer</button>
+<div class="searchbar">
+<input name="address" type="text" id="addresstext" placeholder="Adresse de livraison"/>
+<p class="addressnonreconnue addressereconnue">L'adresse n'est pas reconnue.</p>
+<div class="searchdiv">
+&#x1F50D
+</div>
+</div>
+<button onclick="sefairelivrer();">cherche</button>
 <div id="mymap" class="result"></div>
  <div id="popup" class="ol-popup">
      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
      <div id="popup-content"></div>
  </div>
+<p class="unit">L'unité peut être saisie lors du paiement</p>
+
+<p>Des conditions et frais de livraison s'appliquent. Cliquez ici pour plus de détails.</p>
+<a href="" id="livrerici" onclick="deliverhere();return false;" class="deliver notdeliver">Livrez ici</a>
+<p class="searchrestaurant delivery">Nous cherchons quel restaurant peut vous livrer, cela peut prendre du temps</p>
 <!-- For the search box -->
 <div id="search-box"></div>
 <!-- To display the result -->
@@ -13,6 +25,8 @@
 <button id="mybtn" type="button" onclick="mylongfunc(parseFloat(this.dataset.lat),parseFloat(this.dataset.lon))" class="close" hidden></button>
 
 
+
 <div hidden id="lat"></div>
 <div hidden id="lon"></div>
 
+</div>

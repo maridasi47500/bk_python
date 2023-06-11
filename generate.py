@@ -18,7 +18,7 @@ global crsr
 crsr = connection.cursor()
 
 class {myclass}page(directory):
-  def __init__(self,path,params):
+  def __init__(self,path,title,params):
     self.set_path(path)
     self.content_from_file("{myhtml}.html")
     self.title=title
@@ -54,7 +54,7 @@ def {myclass}func(params):
     index=[i for i in range(len(contents)) if "def reloadmymodules" in contents[i]][0]
     contents.insert((index+1), "    reload({myclass})\n".format(myclass=filename))
     index=[i for i in range(len(contents)) if "__mots__={" in contents[i]][0]
-    contents.insert((index+1), "    \"/{myclass}\":{\"partiedemesmots\":\"{myclass}\"},\n".format(myclass=filename))
+    contents.insert((index+1), "    \"/{myclass}\":{\"partiedemesmots\":\"{myclass}\"},\n".replace("{myclass}",filename))
 
     with open("./script.py", "w") as f:
         contents = "".join(contents)

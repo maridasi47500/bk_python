@@ -25,6 +25,8 @@ class findaddresspage(jsoncontent):
     print(self.mimetype,"mimeype")
     print("content",self.content)
     try:
+      if int(address.split(" ")[0]) <= 0:
+        raise Exception("Sorry, l'adresse doit commencer par un numero") 
       print("essayer d'avoir la lat :")
       url = "https://nominatim.openstreetmap.org/?addressdetails=1&format=json&limit=1&q="+address.replace(" ","+")
       response = urllib.urlopen(url)
@@ -32,7 +34,10 @@ class findaddresspage(jsoncontent):
       print(data)
       lat=data['lat']
       lon=data['lon']
-      self.set_json({"lat": lat, "lon": lon})
+      self.set_json({"lat": lat, "lon": lon, "jsonenvoye":"resultat"})
+    except ValueError as e:
+      self.set_json({"quelquesoit le json envoyé":"résultat"})
+      print("râté", "l'adresse doit commencer par un numero")
     except Exception as e:
       self.set_json({"quelquesoit le json envoyé":"résultat"})
       print("râté", e)

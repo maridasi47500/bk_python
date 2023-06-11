@@ -2,20 +2,26 @@ var layer,coordinate,closer,content,container,map,overlay,attribution;
 function sefairelivrer(){
 $.ajax({url:"/findaddress",data:{address:$("#addresstext").val()},success:function(data){
 //#var layer,coordinate,closer,content,container,map,overlay,attribution;
+if (data.jsonenvoye === "resultat"){
 var mymap=document.querySelector("#mymap");
 mymap.outerHTML="<div id=\"mymap\" class=\"result\"></div>";
 var popup=document.querySelector("#popup");
 if (popup){
 popup.remove()
 }
-document.body.innerHTML+=" <div id=\"popup\" class=\"ol-popup\">     <a href=\"#\" id=\"popup-closer\" class=\"ol-popup-closer\"></a>  <div id=\"popup-content\"></div> </div>";
+document.body.innerHTML+=" <div id=\"popup\" class=\"ol-popup\">     <a href=\"#\" id=\"popup-closer\" class=\"ol-popup-closer\">x</a>  <div id=\"popup-content\"></div> </div>";
 console.log(parseFloat(data.lat),parseFloat(data.lon))
 mylongfunc(parseFloat(data.lat),parseFloat(data.lon))
-//initmap(parseFloat(data.lat),parseFloat(data.lon))
-//mylongfunc(parseFloat(data.lat),parseFloat(data.lon))
-//mybtn.dataset.lat=data.lat;
-//mybtn.dataset.lon=data.lon;
-//mybtn.click()
+$(".addressnonreconnue").addClass("addressereconnue");
+$(".deliver").removeClass("notdeliver");
+$("[name=address]").removeClass("myerror");
+} else {
+$(".addressnonreconnue").removeClass("addressereconnue");
+
+$(".deliver").addClass("notdeliver");
+$("[name=address]").addClass("myerror");
+
+}
 
 }})
 }
@@ -36,7 +42,7 @@ ouvrirpopup_quand_crate_chfargee(lat,lon)
 }
 
 function initmap(mylat = 50.84673, mylon = 4.35247){
-alert(mylat+"+"+mylon+"+"+typeof mylat)
+//alert(mylat+"+"+mylon+"+"+typeof mylat)
 attribution = new ol.control.Attribution({
      collapsible: false
  });
