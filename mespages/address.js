@@ -2,7 +2,8 @@ var layer,coordinate,closer,content,container,map,overlay,attribution;
 function deliverhere(){
 $.ajax({url:"/searchrestaurant",data:{lat:$("#livrerici")[0].dataset.lat,lon:$("#livrerici")[0].dataset.lon},success:function(data){
 console.log(data);
-});
+}});
+return false;
 }
 function sefairelivrer(){
 $.ajax({url:"/findaddress",data:{address:$("#addresstext").val()},success:function(data){

@@ -2,32 +2,54 @@
 import sqlite3
 from directory import directory
 from jsoncontent import jsoncontent
+import math
+import re
+import sqlite3
+import urllib, json
+
 connection = sqlite3.connect("mesburgers1.db")
+connection.create_function('sqrt', 1, math.sqrt)
+connection.create_function('cos', 1, math.cos)
+connection.create_function('pow', 2, math.pow)
+
 # cursor
 global crsr
 crsr = connection.cursor()
 
 class searchrestaurantpage(jsoncontent):
   def __init__(self,path,title,params):
+    listparams=("userid","lat","lon")
+    for p in listparams:
+        exec("try:\n {val}=params['{val}'][0]\nexcept:\n  {val}=None".format(val=p))
     self.set_path(path)
     self.set_json({"dujson":"resultat"})
     self.content_from_file("mysearchrestauranthtml.html")
     self.title=title
     self.params=title
-    try:
-      userid=params["userid"][0]
-    except:
-      userid=None
-    lat=data['lat']
-    lon=data['lon']
-    sql_command = """SELECT *, (case when (select count(favbks.id) from favbks where favbks.bk_id = bks.id and favbks.user_id = {userid}) > 0 then 1 else 0 end) as myfavs from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ;"""
-    sql_command2 = """SELECT id,address, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id ORDER BY distance;"""
-    crsr.execute(sql_command2.format(startlat=lat,startlng=lon))
+    durees={}
+    start = '%s,%s' % (lon,lat)
+    sql_command = """SELECT * from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ORDER BY SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) desc;"""
+    crsr.execute(sql_command.format(startlat=lat,startlng=lon))
     connection.commit()
     res=crsr.fetchall()
     print("resultat",res)
-    sql_command2 = """SELECT * from bks"""
-    crsr.execute(sql_command2)
+    for r in res:
+        myid=self.searchattribute(r,"bks","id")
+        mylat=self.searchattribute(r,"bks","lat")
+        mylon=self.searchattribute(r,"bks","lon")
+        stop = '%s,%s' % (mylon,mylat)
+        #url = 'http://router.project-osrm.org/viaroute?loc=' + start + '&loc=' + stop
+        url = 'http://router.project-osrm.org/route/v1/driving/'+start+';'+stop+'?overview=false'
+        print(url)
+        response = urllib.urlopen(url)
+        data = json.loads(response.read())
+        print("==DATA route==")
+        print(data)
+        duree=data["routes"][0]["duration"]
+        durees[myid]=duree
+    minvalue=min(durees)
+    print(minvalue)
+    crsr.execute("update users set restaurant_id = ? where user_number = ?",(minalue,userid))
     connection.commit()
-    res=crsr.fetchall()
+
 

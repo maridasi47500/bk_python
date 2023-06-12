@@ -62,6 +62,7 @@ class directory(object):
         self.footer=footer1.read()
         self.parameters={}
         self.current_user=None
+
     def switcher(self,extension):
         return {
         'html':'text/html',
@@ -363,6 +364,14 @@ class directory(object):
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")
+    def searchattribute(self,mydata,tablename,myattribute):
+        def takefirst(x):
+            return x[1]
+        crsr.execute("PRAGMA table_info(["+tablename+"])")
+        connection.commit()
+        matable=map(takefirst,crsr.fetchall())
+        iattr=matable.index(myattribute)
+        return mydata[iattr]
     def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
         idprecedent=0
         print(sqlargs)

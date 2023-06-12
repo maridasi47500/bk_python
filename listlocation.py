@@ -59,7 +59,7 @@ class listlocationpage(directory):
             print("resultats longuur",len(res))
             tablename="bks"
             message_else=""
-            collectionstr= self.display_collection(sql_command.format(startlat=lat,startlng=lon,userid=userid), (), "nearby", message_else, tablename,False,False,("myfav",))
+            collectionstr= self.display_collection(sql_command.format(startlat=lat,startlng=lon,userid=userid), (), "nearby", message_else, tablename,False,False,((1,"myfavs"),))
           except Exception as e:
             print("print error:",e)
             collectionstr=""
