@@ -18,38 +18,42 @@ crsr = connection.cursor()
 
 class searchrestaurantpage(jsoncontent):
   def __init__(self,path,title,params):
-    listparams=("userid","lat","lon")
-    for p in listparams:
-        exec("try:\n {val}=params['{val}'][0]\nexcept:\n  {val}=None".format(val=p))
-    self.set_path(path)
-    self.set_json({"dujson":"resultat"})
-    self.content_from_file("mysearchrestauranthtml.html")
-    self.title=title
-    self.params=title
-    durees={}
-    start = '%s,%s' % (lon,lat)
-    sql_command = """SELECT * from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ORDER BY SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) desc;"""
-    crsr.execute(sql_command.format(startlat=lat,startlng=lon))
-    connection.commit()
-    res=crsr.fetchall()
-    print("resultat",res)
-    for r in res:
-        myid=self.searchattribute(r,"bks","id")
-        mylat=self.searchattribute(r,"bks","lat")
-        mylon=self.searchattribute(r,"bks","lon")
-        stop = '%s,%s' % (mylon,mylat)
-        #url = 'http://router.project-osrm.org/viaroute?loc=' + start + '&loc=' + stop
-        url = 'http://router.project-osrm.org/route/v1/driving/'+start+';'+stop+'?overview=false'
-        print(url)
-        response = urllib.urlopen(url)
-        data = json.loads(response.read())
-        print("==DATA route==")
-        print(data)
-        duree=data["routes"][0]["duration"]
-        durees[myid]=duree
-    minvalue=min(durees)
-    print(minvalue)
-    crsr.execute("update users set restaurant_id = ? where user_number = ?",(minalue,userid))
-    connection.commit()
+    try:
+      listparams=("userid","lat","lon")
+      for p in listparams:
+          exec("try:\n {val}=params['{val}'][0]\nexcept:\n  {val}=None".format(val=p))
+      self.set_path(path)
+      self.set_json({"dujson":"resultat"})
+      self.content_from_file("mysearchrestauranthtml.html")
+      self.title=title
+      self.params=title
+      durees={}
+      start = '%s,%s' % (lon,lat)
+      sql_command = """SELECT * from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ORDER BY SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) desc;"""
+      crsr.execute(sql_command.format(startlat=lat,startlng=lon))
+      connection.commit()
+      res=crsr.fetchall()
+      print("resultat",res)
+      for r in res:
+          myid=self.searchattribute(r,"bks","id")
+          mylat=self.searchattribute(r,"bks","lat")
+          mylon=self.searchattribute(r,"bks","lon")
+          stop = '%s,%s' % (mylon,mylat)
+          #url = 'http://router.project-osrm.org/viaroute?loc=' + start + '&loc=' + stop
+          url = 'http://router.project-osrm.org/route/v1/driving/'+start+';'+stop+'?overview=false'
+          print(url)
+          response = urllib.urlopen(url)
+          data = json.loads(response.read())
+          print("==DATA route==")
+          print(data)
+          duree=data["routes"][0]["duration"]
+          durees[myid]=duree
+      minvalue=min(durees)
+      print(minvalue)
+      crsr.execute("update users set restaurant_id = ? where user_number = ?",(minalue,userid))
+      connection.commit()
+      self.set_json({"restaurant_livraison_id":minvalue,"restauranttrouve":"1"})
+    except:
+      self.set_json({"restaurant_livraison_id":None,"restauranttrouve":"0"})
 
 
