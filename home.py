@@ -74,7 +74,15 @@ class pagehome(directory):
         except Exception as e:
           print("quelle erreur?",e)
           self.set_header_with_path("mynav.html")
-        self.set_footer_with_path("footer.html")
+
+        sql="select * from users where user_number = ?"
+        user=crsr.execute(sql,(userid,)).fetchall()[0]
+        restaurant=self.searchattribute(user,"users","restaurant_id")
+        if restaurant:
+          self.set_footer_with_path("footercode.html")
+        else:
+          self.set_footer_with_path("footer.html")
+
         j=open(self.get_filename_path("index.html"),'rb')
         text=j.read().decode('utf-8')
         #print("my text",text)

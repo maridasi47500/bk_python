@@ -1,5 +1,6 @@
 # coding=utf-8
 import sqlite3
+from erreur import erreur
 from directory import directory
 from jsoncontent import jsoncontent
 import math
@@ -45,15 +46,21 @@ class searchrestaurantpage(jsoncontent):
           response = urllib.urlopen(url)
           data = json.loads(response.read())
           print("==DATA route==")
-          print(data)
+
           duree=data["routes"][0]["duration"]
-          durees[myid]=duree
+          print(data,duree)
+          durees[str(myid)]=duree
+          print(durees)
       minvalue=min(durees)
       print(minvalue)
-      crsr.execute("update users set restaurant_id = ? where user_number = ?",(minalue,userid))
+      crsr.execute("update users set restaurant_id = ? where user_number = ?",(minvalue,userid))
       connection.commit()
       self.set_json({"restaurant_livraison_id":minvalue,"restauranttrouve":"1"})
-    except:
-      self.set_json({"restaurant_livraison_id":None,"restauranttrouve":"0"})
+    except Exception as e:
+      print(e)
+      self.__class__ = erreur
+      self.set_erreur(str(e))
+      self.set_title("/searchrestaurant")
+      self.set_json({"erreur":str(e),"restaurant_livraison_id":None,"restauranttrouve":"0"})
 
 

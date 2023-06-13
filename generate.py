@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from erreur import erreur
 import sys
 import os
 print(sys.argv[1])
@@ -7,6 +8,7 @@ if sys.argv[1] == "myclass":
 
 
   filename=sys.argv[2]
+  marouteget="\"/%s\"" % filename
   myhtml="my"+filename+"html"
   myfavdirectory="my%sdirectory" % filename
   mystr="""# coding=utf-8
@@ -16,21 +18,28 @@ connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
 crsr = connection.cursor()
+from erreur import erreur
 
 class {myclass}page(directory):
   def __init__(self,path,title,params):
-    self.set_path(path)
-    self.content_from_file("{myhtml}.html")
-    self.title=title
-    self.params=title
     try:
-      userid=params["userid"][0]
-    except:
-      userid=None
+      self.set_path(path)
+      self.content_from_file("{myhtml}.html")
+      self.title=title
+      self.params=title
+      try:
+        userid=params["userid"][0]
+      except:
+        userid=None
+    except Exception as e:
+      self.__class__ = erreur
+      self.set_erreur(str(e))
+      self.set_title({marouteget})
+
 """
   if not os.path.isfile(filename):
     f = open(filename+".py", "w") 
-    f.write(mystr.format(myclass=filename,myhtml=myhtml))
+    f.write(mystr.format(myclass=filename,myhtml=myhtml,marouteget=marouteget))
     f.close()
 
 
@@ -62,7 +71,7 @@ def {myclass}func(params):
     os.system("mkdir %s" % myfavdirectory)
     pathhtml="%s/%s.html" % (myfavdirectory, myhtml)
     os.system("touch %s" % pathhtml)
-    marouteget="\"/%s\"" % filename
+
     if not os.path.isfile(pathhtml):
         with open("./script.py", "w") as f:
             urlayout="""<h1>Layout de la route {myclass}</h1>
