@@ -100,18 +100,31 @@ class directory(object):
         for key in my_dict:
             setattr(self, key, my_dict[key])
     def set_header_with_path(self,header):
-        header1=self.get_file_with_path(header)
-        self.header=header1.read()
+        header1=self.get_file_with_path(header).read()
+        crsr.execute()
+        self.header=header1
     def set_current_user(self,user):
         self.current_user=user
+    def get_current_user(self):
+        return self.current_user
+    def set_current_user_id(self,userid):
+        crsr.execute("select * from users where user_number = ?",(userid,))
+        print("al ze users")
+        h=crsr.fetchall()
+        if h:
+          h=h[0]
+          print("1st users")
+        self.current_user=h
+        print("don")
+    def get_current_user_id(self):
+        return self.searchattribute(self.current_user, "users", "user_number")
     def get_current_order(self):
         return self.current_order
     def set_current_order(self,user):
         self.current_order.append(user)
     def append_current_order(self,user):
         self.current_order.append(user)
-    def get_current_user(self):
-        return self.current_user
+
     def set_footer_with_path(self,footer):
         footer1=self.get_file_with_path(footer)
         self.footer=footer1.read()

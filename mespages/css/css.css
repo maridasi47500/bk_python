@@ -162,3 +162,13 @@ justify-content:space-between;
 #myform {
     padding-bottom:500px;
 }
+.signup{
+border-radius:99999999px;
+background:red;
+color:white;
+}
+.royalprk{
+font-size:50px;
+font-weight:900;
+color:red;
+}

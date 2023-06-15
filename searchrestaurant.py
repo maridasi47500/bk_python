@@ -35,18 +35,18 @@ class searchrestaurantpage(jsoncontent):
       connection.commit()
       res=crsr.fetchall()
       print("resultat",res)
+
+
       for r in res:
           myid=self.searchattribute(r,"bks","id")
           mylat=self.searchattribute(r,"bks","lat")
           mylon=self.searchattribute(r,"bks","lon")
           stop = '%s,%s' % (mylon,mylat)
-          #url = 'http://router.project-osrm.org/viaroute?loc=' + start + '&loc=' + stop
           url = 'http://router.project-osrm.org/route/v1/driving/'+start+';'+stop+'?overview=false'
           print(url)
           response = urllib.urlopen(url)
           data = json.loads(response.read())
           print("==DATA route==")
-
           duree=data["routes"][0]["duration"]
           print(data,duree)
           durees[str(myid)]=duree
@@ -56,6 +56,18 @@ class searchrestaurantpage(jsoncontent):
       crsr.execute("update users set restaurant_id = ? where user_number = ?",(minvalue,userid))
       connection.commit()
       self.set_json({"restaurant_livraison_id":minvalue,"restauranttrouve":"1"})
+      #si un restaurant a été  trouvé set users's address
+      url1 = "https://nominatim.openstreetmap.org/reverse?lat="+str(lat)+"&lon="+str(lon)+"&addressdetails=1&format=json&limit=1"
+      response1 = urllib.urlopen(url1)
+      data1 = json.loads(response1.read())[0]
+      address1=data1["display_name"]
+      sql_command = "insert into addresses (address) values (?)"
+      crsr.execute(sql_command,(address1,))
+      connection.commit()
+      xx=crsr.fetchall()[0]
+      sql_command = "update users set address_id = ? where user_number = ?"
+      crsr.execute(sql_command,(xx[0], userid))
+      connection.commit()
     except Exception as e:
       print(e)
       self.__class__ = erreur

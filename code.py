@@ -18,9 +18,6 @@ class codepage(directory):
 
         self.set_path("./code")
         self.add_js("userconnecte.js")
-        self.set_header(self.get_header())
-        self.set_footer(self.get_footer())
-
         try:
           print(params["userid"][0])
           userid=params["userid"][0]
@@ -31,13 +28,22 @@ class codepage(directory):
           restaurant=self.searchattribute(user,"users","restaurant_id")
           address=self.searchattribute(user,"users","address_id")
           print("tous les utilisateur selectionnees",user,"restaurant",restaurant,"address",address)
-          if restaurant is None and address is None:
+          if user is not None and restaurant is None and address is None:
             self.set_redirect("/store-locator/service-mode")
 
 
-          self.content_from_file("code.html")
+          self.content_from_file("codesignedin.html")
         except Exception as e:
           print("user non connecté ERREUR??:",e)
+          self.content_from_file("code.html")
+          userid=None
+        print("currentuer")
+        self.set_current_user_id(userid)
+        print("heder")
+        self.set_header_with_path("header.html")
+        print("footer")
+        self.set_footer_with_path("footer.html")
+
 
         print("fin de cod #code #codebk #redeem")
 

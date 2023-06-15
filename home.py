@@ -11,7 +11,7 @@ path1=os.getcwd()
 global card        
 def card(title,description,button):
     try:
-        f=open(path1+"/mesprsrages/card.html", 'rb')
+        f=open(path1+"/mespages/card.html", 'rb')
         s=f.read().decode('utf-8')
 
         html=s % (title,description,button)
