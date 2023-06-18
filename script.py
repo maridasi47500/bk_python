@@ -508,9 +508,15 @@ menuburger=[
 f=open(path1+"/mespages/dump.sql",'rb')
 sql_command = f.read().decode('utf-8')
 global myroutes
-
-for sql in sql_command.split(";"):
-    print(sql)
+kk=0
+mysqlcom= sql_command.split(";")
+for sql in mysqlcom:
+    if kk==0:
+      print("Chargement du sql,patientez. ")
+    elif kk == (len(mysqlcom) - 1): 
+      print(" sql chargé.")
+    #print(sql)
+    kk+=1
     try:
         crsr.execute(sql)
     except Exception as e:
@@ -536,13 +542,6 @@ def bootstrapcss(params = None):
     h="""  """
     return h
 
-def render_pages(params = None):
-    home()
-    menu()
-    signup()
-    signin()
-    erreur404()
-    myaccountinfo()
 def reloadmymodules(params = None):
     reload(searchrestaurant)
     reload(findaddress)
@@ -559,7 +558,6 @@ def copy(params = None):
     os.system("cp "+path1+"/mespages/userconnecte.js "+path1+"/js")
     os.system("cp "+path1+"/mespages/signin.js "+path1+"/js")
 
-Program=directory("Burger King")
 #Program.path("./")
 
 
@@ -1088,7 +1086,6 @@ class S(BaseHTTPRequestHandler):
             print(Program.get_redirect())
             copy()
             reloadmymodules()
-            #render_pages()
             #myaccountinfo()
             #home()
             try:
@@ -1156,7 +1153,6 @@ def run(server_class=HTTPServer, handler_class=S, port=8000,host="localhost"):
 
 if __name__ == "__main__":
     from sys import argv
-render_pages()
 #rewards()
 #offers()
 
