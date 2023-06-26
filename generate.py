@@ -43,41 +43,43 @@ class {myclass}page(directory):
     f.close()
 
 
+  with open("./script.py", "r") as f:
+    contents = f.readlines()
 
-    with open("./script.py", "r") as f:
-      contents = f.readlines()
-    scriptfunc="""
+
+  scriptfunc="""
 def {myclass}func(params):
   Program={myclass}page("./{myfavdirectory}","super website",params)
   return render_figure("{myhtml}.html",Program)
 
 """
-    index=[i for i in range(len(contents)) if "class S(BaseHTTPRequestHandler):" in contents[i]][0]
-    contents.insert(index, scriptfunc.format(myfavdirectory=myfavdirectory,myclass=filename,myhtml=myhtml))
-    contents.insert(1, "global {myclass}\n".format(myclass=filename))
-    contents.insert(1, "import {myclass}\n".format(myclass=filename))
-    contents.insert(1, "from {myclass} import {myclass}page\n".format(myclass=filename))
-    myrouteget="\"/{myclass}\":{myclass}func,\n"
-    index=[i for i in range(len(contents)) if "myroutes = {" in contents[i]][0]
-    contents.insert((index+1), myrouteget.format(myclass=filename))
-    index=[i for i in range(len(contents)) if "def reloadmymodules" in contents[i]][0]
-    contents.insert((index+1), "    reload({myclass})\n".format(myclass=filename))
-    index=[i for i in range(len(contents)) if "__mots__={" in contents[i]][0]
-    contents.insert((index+1), "    \"/{myclass}\":{\"partiedemesmots\":\"{myclass}\"},\n".replace("{myclass}",filename))
+  index=[i for i in range(len(contents)) if "class S(BaseHTTPRequestHandler):" in contents[i]][0]
+  contents.insert(index, scriptfunc.format(myfavdirectory=myfavdirectory,myclass=filename,myhtml=myhtml))
+  contents.insert(1, "global {myclass}\n".format(myclass=filename))
+  contents.insert(1, "import {myclass}\n".format(myclass=filename))
+  contents.insert(1, "from {myclass} import {myclass}page\n".format(myclass=filename))
+  myrouteget="\"/{myclass}\":{myclass}func,\n"
+  index=[i for i in range(len(contents)) if "myroutes = {" in contents[i]][0]
+  contents.insert((index+1), myrouteget.format(myclass=filename))
+  index=[i for i in range(len(contents)) if "def reloadmymodules" in contents[i]][0]
+  contents.insert((index+1), "    reload({myclass})\n".format(myclass=filename))
+  index=[i for i in range(len(contents)) if "__mots__={" in contents[i]][0]
+  contents.insert((index+1), "    \"/{myclass}\":{\"partiedemesmots\":\"{myclass}\"},\n".replace("{myclass}",filename))
 
-    with open("./script.py", "w") as f:
-        contents = "".join(contents)
-        f.write(contents)
-    os.system("mkdir %s" % myfavdirectory)
-    pathhtml="%s/%s.html" % (myfavdirectory, myhtml)
-    os.system("touch %s" % pathhtml)
+  with open("./script.py", "w") as f:
+      contents = "".join(contents)
+      f.write(contents)
 
-    if not os.path.isfile(pathhtml):
-        with open("./script.py", "w") as f:
-            urlayout="""<h1>Layout de la route {myclass}</h1>
+  os.system("mkdir %s" % myfavdirectory)
+  pathhtml="%s/%s.html" % (myfavdirectory, myhtml)
+  os.system("touch %s" % pathhtml)
+
+  if os.path.isfile(pathhtml):
+      with open(pathhtml, "w") as f:
+          urlayout="""<h1>Layout de la route {myclass}</h1>
 <p><a href="{marouteget}">nous sommes ici (essayez ce lien)</a></p>
 <p>Entrez du texte sur cette page</p>
 """
-            f.write(urlayout.format(marouteget=marouteget,myclass=myclass))
+          f.write(urlayout.format(marouteget=marouteget,myclass=filename))
 
-    print("ma route get %s a été ajoutée. Maintenant vous pouvez essayer d'y acceder" % marouteget)
+  print("ma route get %s a été ajoutée. Maintenant vous pouvez essayer d'y acceder" % marouteget)

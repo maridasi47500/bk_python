@@ -9,10 +9,13 @@ crsr = connection.cursor()
 import os
 path1=os.getcwd()
 from erreur import erreur
+import traceback
+import sys
 
 from directory import directory
 class codepage(directory):
     def __init__(self,title,params):
+      try:
         self.set_title(title)
         print("code")
 
@@ -46,4 +49,15 @@ class codepage(directory):
 
 
         print("fin de cod #code #codebk #redeem")
+
+      except Exception as e:
+        self.__class__ = erreur
+        #self.set_erreur(str(e))
+
+        print(traceback.format_exc())
+        self.set_erreur(str(traceback.format_exc()))
+        # or
+        #print(sys.exc_info()[2])
+        self.set_title("Erreur route redeem: "+str(e))
+
 

@@ -80,7 +80,7 @@ class directory(object):
 
     def content_from_file(self,filename):
         x=self.get_file_with_path(filename).read()
-        print("longueur du fichier:",len(x))
+        print("longueur du fichier:",len(x),";nom du fichier:", filename)
         self.set_content(x)
     def parameters(self):
         return self.parameters
@@ -101,7 +101,6 @@ class directory(object):
             setattr(self, key, my_dict[key])
     def set_header_with_path(self,header):
         header1=self.get_file_with_path(header).read()
-        crsr.execute()
         self.header=header1
     def set_current_user(self,user):
         self.current_user=user

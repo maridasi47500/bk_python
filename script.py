@@ -11,7 +11,9 @@ from findaddress import findaddresspage
 
 import json
 import psutil
+import traceback
 import logging
+from erreur import erreur
 import binascii
 import random as rand
 import smtplib
@@ -155,7 +157,6 @@ path1=os.getcwd()
 import codecs
 import re
 
-global Program
 global get_file
 global get_file_dir
 def get_file(file):
@@ -168,7 +169,6 @@ def get_file_dir(file,dir):
     return open(Program.get_path()+"/"+file,'r')
 
 global mycard
-global myparams
 
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -259,7 +259,7 @@ def favlocation(params = None):
         return render_figure("index.html",Program)
     except Exception as e:
         print("erreur 1",e)
-def home(params = None):
+def homefunc(params = None):
     try:
         print("render figure home")    
         Program = pagehome("bk",params)
@@ -343,6 +343,7 @@ def savemyinfo(query_components):
 def render_figure(pathname,Program):
     try:
         global path1
+        s1=Program
         path1=os.getcwd()
         print(pathname,Program,"<== pathname, pgrm")
         Program.set_filename(pathname)
@@ -383,15 +384,15 @@ def render_figure(pathname,Program):
         elif layout == False:
             print("content")
             try:
-                html=decode_any_string(myparams(content()))
+                html=decode_any_string(content())
             except UnicodeEncodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html=myparams(content()).encode('utf-8')
+                html=content().encode('utf-8')
             except UnicodeDecodeError as e:
                 print(type(e))
                 print('gerer cette erreur')
-                html=myparams(content())
+                html=content()
         else:
             title=title()
             css=Program.get_css()
@@ -400,7 +401,7 @@ def render_figure(pathname,Program):
             header1=""
             main1=""
             footer1=""
-            print("header")
+            print("header render_figure")
             try:
                 header1+=decode_any_string(header().decode('utf-8'))
             except UnicodeEncodeError as e:
@@ -411,18 +412,18 @@ def render_figure(pathname,Program):
                 print(type(e)[0:50])
                 print('gerer cette erreur')
                 header1=header()
-            print("content")
+            print("content rnder figure")
             try:
-                main1=decode_any_string(myparams(content().decode('utf-8')))
+                main1=decode_any_string(content().decode('utf-8'))
             except UnicodeEncodeError as e:
-                print(type(e))
+                print(type(e),"render figure")
                 print('gerer cette erreur')
-                main1=myparams(content()).encode('utf-8')
+                main1=content().encode('utf-8')
             except UnicodeDecodeError as e:
-                print(type(e))
+                print(type(e),"render figure")
                 print('gerer cette erreur')
-                main1=myparams(content())
-            print("footer")
+                main1=content()
+            print("footer render figure")
             print("type footer")
 
             print(type(force_to_unicode(footer())))
@@ -439,11 +440,10 @@ def render_figure(pathname,Program):
                 footer1=footer()
             print("footer ajouté")
             print("type menu")
-            print(type(Program.get_menu()))
             try:
                 body+=force_to_unicode(Program.get_menu())
             except UnicodeEncodeError as e:
-                print(type(e))
+                print(type(e) )
                 print('gerer cette erreur')
                 body+=Program.get_menu().encode('utf-8')
             except UnicodeDecodeError as e:
@@ -489,6 +489,9 @@ def render_figure(pathname,Program):
         return s1
     except Exception as e:
         print(e,'erreru')
+        print(traceback.format_exc())
+        ##s1.set_erreur(str(traceback.format_exc()))
+
 
 menuburger=[
 {'url':'fullmenu', 'title': "Full Menu",'myurl':"pages/menu/fullmenu.html"},
@@ -545,6 +548,7 @@ def bootstrapcss(params = None):
 def reloadmymodules(params = None):
     reload(searchrestaurant)
     reload(findaddress)
+    reload(home)
     reload(address)
 def copy(params = None):
     #restart_program()
@@ -631,14 +635,6 @@ def signup_user(query_components):
 global splitparams
 def splitparams(x):
     return x.split("=")
-def myparams(x):
-    myvar={
-    'monemailici': Program.get_email(),
-    'monuseridici': Program.get_userid()
-    }
-    for y in myvar:
-        x=x.replace(y,myvar[y])
-    return x
 global accountinfo
 def accountinfo(query_components):
     try:
@@ -962,9 +958,12 @@ class S(BaseHTTPRequestHandler):
             else:
                 print("La route n'a pas été trouvée ?  %r" % (routetrouve is None,))
             try:
-                print(isinstance(code,redirectaction))
+              if code is None:
+                print("code in none")
+                code=""
             except:
                 code=""
+            
             if isinstance(code,redirectaction):
                 self.send_response(301)
                 myred=code.get_redirect()
@@ -1000,6 +999,7 @@ class S(BaseHTTPRequestHandler):
                 try:
                     dic=__mots__[routetrouve]
                     if dic["partiedemesmots"]:
+                        print("partie de mes mots cherches : "+dic["partiedemesmots"])
                         print("une partie de mes mots a été cherchée?vrai")
                         try:
                             if code.index(dic["partiedemesmots"]):
@@ -1011,15 +1011,52 @@ class S(BaseHTTPRequestHandler):
 
                                 self.wfile.write(code)
                                 print("les mots ed la page ont été reconnus?vrai")
-                        except:
+                        except Exception as e:
+                            print("retrouver l'output dans myoutput.html ")
+                            k=open("myoutput.html","w")
+                            k.write(code)
+                            k.close()
+                            print("une partie de mes mots n'a ps été trouvee")
                             print("la route nest pas html")
+                            print(str(e)+str(traceback.format_exc()))
+                            mycode=erreur("erreur:: ")
+
+
+                            mycode.set_erreur(str(traceback.format_exc()))
+                            mycode.set_title("Erreur "+dic["partiedemesmots"]+": mot non trouves")
+                            self._set_headers(switcher["html"])
+
+                            self.wfile.write(render_figure("hhh.html",mycode))
+
+
+
+                        #try:
+                        #    if code.index("Traceback"):
+                        #        print("une erreur a été trouvée dans le code html")
+
+                        #        self._set_headers(switcher["html"])
+
+
+                        #        self.wfile.write(code)
+                        #except Exception as e:
+                        #    print("aucune erreur n'a été trouvée dans le code html")
+                        #    print(str(e)+str(traceback.format_exc()))
+                        #    print("retrouver l'output dans myoutput.html ")
+                        #    k=open("myoutput.html","w")
+                        #    k.write(code)
+                        #    k.close()
                 except Exception as e:
                         print("les mots ed la page ont été reconnu?faux",code)
                         self._mon_erreur_text(e)
+                        print(str(e)+str(traceback.format_exc()))
             else:
                 self._mon_erreur("ni une erreur ni css js ou image")
         except UnboundLocalError as e:
-            self._mon_erreur(e)
+
+
+          self._set_headers(switcher["html"])
+          self.wfile.write(str(e)+str(traceback.format_exc()))
+
         return
 
     def do_HEAD(self):
@@ -1061,6 +1098,8 @@ class S(BaseHTTPRequestHandler):
                         codehtml = res
                         print("is code HTML")
                         #print(codehtml)
+                    elif isinstance(res,erreur):
+                        Program=res
                     elif isinstance(res,jsoncontent):
                         Program=res
                     elif isinstance(res,directory):
@@ -1181,7 +1220,7 @@ r"/menu(/)?([a-z]+)?(/)?": showmenu,
 "/account/payment/add-card":addcard,
 "/account/payment/add-gift-card":addgiftcard,
 "/signinuser": signinuser,
-r"^\/$":home,
+r"^\/$":homefunc,
 "/signin":signin,
             "/signup": signup,
             "/rewards": rewards,

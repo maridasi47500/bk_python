@@ -2,6 +2,7 @@
 import codecs 
 global home
 import sqlite3
+from erreur import erreur
 connection = sqlite3.connect("mesburgers1.db")
 # cursor
 global crsr
@@ -31,8 +32,11 @@ def mycard(title,description,content):
         return ""
 
 from directory import directory 
+import traceback
+import sys
 class pagehome(directory):
     def __init__(self,title,params):
+      try:   
         self.title=title
         self.header=""
         self.footer=""
@@ -50,30 +54,29 @@ class pagehome(directory):
         self.set_path("./home")
         q=""
         print('hi')
-        try:
-          print(params["userid"][0])
-          userid=params["userid"][0]
-          self.set_header_with_path("mynavsignedin.html")
-          #vous vous etes bien connecté ===> message fenetre ajouter un toast!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          users=crsr.execute("select * from users where user_number = ?",(userid,)).fetchall()[0]
-          if str(users[-1]) == "1":
-            #self.add_css("toast.css")
-            self.add_js("signedin.js")
-            q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien connecté-e.".decode('utf-8')
-            mycontent+=q
-            crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
-            connection.commit()
-          elif str(users[-1]) == "2":
-            #self.add_css("toast.css")
-            self.add_js("signedin.js")
-            q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien inscrit-e sur bk. Bienvenue.".decode('utf-8')
-            mycontent+=q
-            crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
-            connection.commit()
+        print(params["userid"][0])
+        userid=params["userid"][0]
+        self.set_header_with_path("mynavsignedin.html")
+        #vous vous etes bien connecté ===> message fenetre ajouter un toast!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        users=crsr.execute("select * from users where user_number = ?",(userid,)).fetchall()[0]
+        if str(users[-1]) == "1":
+          #self.add_css("toast.css")
+          self.add_js("signedin.js")
+          q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien connecté-e.".decode('utf-8')
+          mycontent+=q
+          crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
+          connection.commit()
+        elif str(users[-1]) == "2":
+          #self.add_css("toast.css")
+          self.add_js("signedin.js")
+          q+=self.get_file("signedin.html").read().decode("utf-8") % "vous vou es bien inscrit-e sur bk. Bienvenue.".decode('utf-8')
+          mycontent+=q
+          crsr.execute("update users set signedin = ? where user_number = ?",(0,users[0]))
+          connection.commit()
 
-        except Exception as e:
-          print("quelle erreur?",e)
-          self.set_header_with_path("mynav.html")
+        #print("quelle erreur?",e)
+        self.set_header_with_path("mynav.html")
+        print("blabl")
 
         sql="select * from users where user_number = ?"
         user=crsr.execute(sql,(userid,)).fetchall()[0]
@@ -143,6 +146,7 @@ class pagehome(directory):
             print("ok BURGER AJOUTE¡$$")
         except Exception as e:
             print(e,"ok user non connecté ???? u're OFFLINE")
+            print(traceback.format_exc())
         policy=self.get_file_with_path("policy.html").read().decode('utf-8')
         self.add_js("policy.js")
         self.add_css("policy.css")
@@ -151,3 +155,14 @@ class pagehome(directory):
         self.current_user=None
         #text=(text)
         print("hom function ok")
+      except Exception as e:
+        self.__class__ = erreur
+        #self.set_erreur(str(e))
+
+        print(traceback.format_exc())
+        self.set_erreur(str(traceback.format_exc()))
+        # or
+        #print(sys.exc_info()[2])
+        self.set_title("Erreur route home: "+str(e))
+
+
