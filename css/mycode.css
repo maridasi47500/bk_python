@@ -1,0 +1,32 @@
+.mybtns{
+width:100%;
+clear:both;
+}
+.code1 {
+text-align:center;
+width:100%;
+}
+h1{
+float:none;
+clear:none;
+}
+.royalprk {
+
+text-align:center;
+}
+.mybtns *{
+border-radius:333333px;
+border:1px solid;
+}
+.rewards {
+float:left;
+margin-left:30px;
+margin-right:30px;
+padding:10px;
+}
+.offers {
+float:right;
+margin-left:30px;
+margin-right:30px;
+padding:10px;
+}

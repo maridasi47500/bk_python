@@ -21,6 +21,7 @@ class codepage(directory):
 
         self.set_path("./code")
         self.add_js("userconnecte.js")
+        self.add_css("mycode.css")
         try:
           print(params["userid"][0])
           userid=params["userid"][0]

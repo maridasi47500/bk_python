@@ -1,4 +1,5 @@
-# coding: utf-8 -*-
+# coding=utf-8
+import htmlentities
 from searchrestaurant import searchrestaurantpage
 import searchrestaurant
 global searchrestaurant
@@ -466,13 +467,13 @@ def render_figure(pathname,Program):
             #print(js.decode('utf-8'),"=js")
             #print(header1.decode('utf-8'),"header1")
             #print(main1,"=main1")
-            print("erreur")
-            print(footer1[0:30],"=footer")
-            print(js.decode('utf-8')[0:30],"==js")
-            print(js.decode('utf-8')[-30:-1],"==fin js")
-            print(main1.decode('utf-8')[0:30],"==main1")
-            print(header1[0:30],"==js")
-            print("erreur")
+            #print("erreur")
+            #print(footer1[0:30],"=footer")
+            #print(js.decode('utf-8')[0:30],"==js")
+            #print(js.decode('utf-8')[-30:-1],"==fin js")
+            #print(main1.decode('utf-8')[0:30],"==main1")
+            #print(header1[0:30],"==js")
+            #print("erreur")
             html=j % (title.decode('utf-8'),css.decode('utf-8'),header1,main1.decode('utf-8'),footer1,js)
             #print(html)
             print("fin balise")

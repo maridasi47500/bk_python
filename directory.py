@@ -1,3 +1,5 @@
+# coding=utf-8
+import htmlentities
 import os
 import json
 
@@ -81,6 +83,9 @@ class directory(object):
     def content_from_file(self,filename):
         x=self.get_file_with_path(filename).read()
         print("longueur du fichier:",len(x),";nom du fichier:", filename)
+        for a in ["é","à","è"]:
+           x=x.replace(a,htmlentities.encode(a))
+
         self.set_content(x)
     def parameters(self):
         return self.parameters
