@@ -1020,11 +1020,15 @@ class S(BaseHTTPRequestHandler):
                             print("une partie de mes mots n'a ps été trouvee")
                             print("la route nest pas html")
                             print(str(e)+str(traceback.format_exc()))
-                            mycode=erreur("erreur:: ")
+                            try:
+                              motscherches=dic["partiedemesmots"]
+                            except:
+                              motscherches="aucun mot n'a ete cherche"
+                            mycode=erreur("erreur::  "+motscherches+": mot non trouves")
 
 
                             mycode.set_erreur(str(traceback.format_exc()))
-                            mycode.set_title("Erreur "+dic["partiedemesmots"]+": mot non trouves")
+                            mycode.set_title("Erreur "+motscherches+": mot non trouves")
                             self._set_headers(switcher["html"])
 
                             self.wfile.write(render_figure("hhh.html",mycode))
@@ -1048,8 +1052,17 @@ class S(BaseHTTPRequestHandler):
                         #    k.close()
                 except Exception as e:
                         print("les mots ed la page ont été reconnu?faux",code)
-                        self._mon_erreur_text(e)
                         print(str(e)+str(traceback.format_exc()))
+                        self._set_headers(switcher["html"])
+                        motscherches="aucun mot n'a ete cherche ni trouve"
+                        mycode=erreur("erreur:: "+motscherches+": mot non trouves")
+
+
+                        mycode.set_erreur("<br>peut être que la route n'est pas dans le dictionnaire<br>"+str(traceback.format_exc()))
+                        mycode.set_title("Erreur "+motscherches+": mot non trouves")
+
+
+                        self.wfile.write(render_figure("hhh.html",mycode))
             else:
                 self._mon_erreur("ni une erreur ni css js ou image")
         except UnboundLocalError as e:
