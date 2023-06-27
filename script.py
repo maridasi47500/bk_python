@@ -1058,7 +1058,7 @@ class S(BaseHTTPRequestHandler):
                         mycode=erreur("erreur:: "+motscherches+": mot non trouves")
 
 
-                        mycode.set_erreur("<br>peut être que la route n'est pas dans le dictionnaire<br>"+str(traceback.format_exc()))
+                        mycode.set_erreur("<br>peut etre que la route n'est pas dans le dictionnaire<br>"+str(traceback.format_exc()))
                         mycode.set_title("Erreur "+motscherches+": mot non trouves")
 
 
