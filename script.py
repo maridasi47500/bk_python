@@ -1,4 +1,10 @@
 # coding=utf-8
+from rewards import rewardspage
+import rewards
+global rewards
+from offers import offerspage
+import offers
+global offers
 import htmlentities
 from searchrestaurant import searchrestaurantpage
 import searchrestaurant
@@ -44,6 +50,8 @@ global connection
 global get_file
 global switcher
 __mots__={"/favlocation":{"partiedemesmots":"favlocation"},
+    "/rewards/list":{"partiedemesmots":"rewards"},
+    "/rewards/offers":{"partiedemesmots":"offers"},
     "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},
 "/findaddress":{"partiedemesmots":"findaddress"},
 "/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"royalprk"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"\/menu\/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
@@ -547,6 +555,8 @@ def bootstrapcss(params = None):
     return h
 
 def reloadmymodules(params = None):
+    reload(rewards)
+    reload(offers)
     reload(searchrestaurant)
     reload(findaddress)
     reload(home)
@@ -829,19 +839,8 @@ def ajoutlistburger(burger):
 # execute the statement
 
 
-global offers
-def offers(params = None):
-    try:
-        print("offers")
-        Program.set_header(Program.get_header())
-        Program.set_footer(Program.get_footer())
-        Program.set_path("./offers")
-        Program.set_content("")
-        return render_figure("index.html")
-    except:
-        print("erreur 4")
 global rewards
-def rewards(params = None):
+def rewardsfun(params = None):
     try:
         Program.set_title("Burger King")
 
@@ -893,6 +892,16 @@ def findaddressfunc(params):
 def searchrestaurantfunc(params):
   Program=searchrestaurantpage("./mysearchrestaurantdirectory","super website",params)
   return render_figure("mysearchrestauranthtml.html",Program)
+
+
+def offersfunc(params):
+  Program=offerspage("./myoffersdirectory","super website",params)
+  return render_figure("myoffershtml.html",Program)
+
+
+def rewardsfunc(params):
+  Program=rewardspage("./myrewardsdirectory","super website",params)
+  return render_figure("myrewardshtml.html",Program)
 
 class S(BaseHTTPRequestHandler):
     def _mon_erreur(self,e):
@@ -1212,6 +1221,8 @@ if __name__ == "__main__":
 
 global route_post
 myroutes = {"/customizemenu":customizemymenu,
+"/rewards/list":rewardsfunc,
+"/rewards/offers":offersfunc,
 "/searchrestaurant":searchrestaurantfunc,
 "/findaddress":findaddressfunc,
     "/infolocation":infolocation,
@@ -1237,7 +1248,8 @@ r"/menu(/)?([a-z]+)?(/)?": showmenu,
 r"^\/$":homefunc,
 "/signin":signin,
             "/signup": signup,
-            "/rewards": rewards,
+            #"/rewards/offers": offersfunc,
+            #"/rewards/list": rewardsfunc,
 '/account/info': myaccountinfo,
 '/confirm-otp': confirmotp,
 "/confirm-jwt": confirmjwt,
