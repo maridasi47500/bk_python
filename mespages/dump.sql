@@ -104,7 +104,9 @@ token text,
 signedin integer,
 restaurant_id integer,
 address_id integer,
-pickup integer
+pickup integer,
+codepromo varchar(10),
+datecode date
 );
 CREATE TABLE IF NOT EXISTS bks (
 id INTEGER PRIMARY KEY,

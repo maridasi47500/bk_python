@@ -1,4 +1,5 @@
 # coding=utf-8
+import random
 import sqlite3
 from erreur import erreur
 from directory import directory
@@ -53,7 +54,9 @@ class searchrestaurantpage(jsoncontent):
           print(durees)
       minvalue=min(durees)
       print(minvalue)
-      crsr.execute("update users set restaurant_id = ? where user_number = ?",(minvalue,userid))
+      nb=str(random.randrange(100000, 999999))
+      today=str(datetime.now().date())
+      crsr.execute("update users set restaurant_id = ?, codepromo=?,datecode=? where user_number = ?",(minvalue,nb,today,userid))
       connection.commit()
       self.set_json({"restaurant_livraison_id":minvalue,"restauranttrouve":"1"})
       #si un restaurant a été  trouvé set users's address

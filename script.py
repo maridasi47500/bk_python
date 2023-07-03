@@ -414,11 +414,11 @@ def render_figure(pathname,Program):
             try:
                 header1+=decode_any_string(header().decode('utf-8'))
             except UnicodeEncodeError as e:
-                print(type(e)[0:50])
+                print(type(e))
                 print('header gerer cette erreur')
                 header1=header().encode('utf-8')
             except UnicodeDecodeError as e:
-                print(type(e)[0:50])
+                print(type(e))
                 print('gerer cette erreur')
                 header1=header()
             print("content rnder figure")

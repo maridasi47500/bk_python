@@ -81,15 +81,14 @@ class pagehome(directory):
         sql="select * from users where user_number = ?"
         user=crsr.execute(sql,(userid,)).fetchall()[0]
         restaurant=self.searchattribute(user,"users","restaurant_id")
+        print("resaurant: utilisateur!", restaurant)
         if restaurant:
           self.set_footer_with_path("footercode.html")
+          self.set_header_with_path_and_address("headersignedin.html",userid)
         else:
           self.set_footer_with_path("footer.html")
 
-        j=open(self.get_filename_path("index.html"),'rb')
-        text=j.read().decode('utf-8')
-        #print("my text",text)
-        #print(result.group(1))
+        self.content_from_file("index.html")
         crsr.execute("SELECT * FROM burgers")
         mycontent+="<ul>"
         # store all the fetched data in the ans variable
@@ -105,13 +104,9 @@ class pagehome(directory):
         ans = crsr.fetchall()
         print("allcards")
         print("cads")
-        #for x in ans:
-        #    mycontent+= card(x[1],x[2],x[3])
-        #print(mycontent)
         montitreici="Burger Queen"
-        #print(text.decode('utf-8'))    
         print("le texte")
-        text = text % ("",montitreici)
+        self.content = self.content % ("",montitreici)
         
         self.add_css("home.css")
         self.add_css("account.css")
@@ -150,19 +145,13 @@ class pagehome(directory):
         policy=self.get_file_with_path("policy.html").read().decode('utf-8')
         self.add_js("policy.js")
         self.add_css("policy.css")
-        self.set_content(text+q+policy)
+        self.content=self.content.decode('utf-8')+q+policy
         print("le texte ok")    
-        self.current_user=None
-        #text=(text)
         print("hom function ok")
       except Exception as e:
+        print("ERREUR DE LA function OME")
         self.__class__ = erreur
-        #self.set_erreur(str(e))
 
         print(traceback.format_exc())
         self.set_erreur(str(traceback.format_exc()))
-        # or
-        #print(sys.exc_info()[2])
         self.set_title("Erreur route home: "+str(e))
-
-

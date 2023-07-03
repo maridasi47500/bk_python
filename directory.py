@@ -107,6 +107,15 @@ class directory(object):
     def set_header_with_path(self,header):
         header1=self.get_file_with_path(header).read()
         self.header=header1
+    def set_header_with_path_and_address(self,header,userid):
+        header1=self.get_file_with_path(header).read()
+        sql="select users.restaurant_id from users where user_number = ?"
+        print(sql,crsr.execute(sql,(userid,)).fetchall()[0])
+        sql="select *, (select bks.address from bks where bks.id = users.restaurant_id limit 1) as restaurant from users where user_number = ?"
+        print(sql)
+        user=crsr.execute(sql,(userid,)).fetchall()[0]
+        self.header=header1.replace("(address)",self.searchattribute(user, "users", "restaurant",("restaurant",)))
+        print(self.header)
     def set_current_user(self,user):
         self.current_user=user
     def get_current_user(self):
@@ -381,13 +390,16 @@ class directory(object):
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")
-    def searchattribute(self,mydata,tablename,myattribute):
+    def searchattribute(self,mydata,tablename,myattribute,addattribute = False):
         def takefirst(x):
             return x[1]
         crsr.execute("PRAGMA table_info(["+tablename+"])")
         connection.commit()
         matable=map(takefirst,crsr.fetchall())
+        if addattribute:
+          matable+=addattribute
         iattr=matable.index(myattribute)
+        print(matable, myattribute, iattr, mydata)
         return mydata[iattr]
     def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
         idprecedent=0

@@ -5,10 +5,14 @@ class offerslocationpage(redirectaction):
     self.param=param
     self.path="/"
     try:
+      id=param["id"][0]
+    except:
+      id=None
+    try:
       userid=param["userid"][0]
     except:
       userid=None
-    self.mysql("update users set restaurant_id = ?", (userid))
+    self.mysql("update users set restaurant_id = ? where user_number = ?", (id,userid))
     self.redirect="/orders"
 
 

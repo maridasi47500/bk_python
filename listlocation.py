@@ -44,8 +44,6 @@ class listlocationpage(directory):
             print(data)
             lat=data['lat']
             lon=data['lon']
-            #sql_command = """SELECT *, lat, lon, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id HAVING distance < 1000000 ORDER BY distance;"""
-            #sql_command = """SELECT * from bks GROUP BY bks.id HAVING (sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2))) < 5000 ;"""
             sql_command = """SELECT *, (case when (select count(favbks.id) from favbks where favbks.bk_id = bks.id and favbks.user_id = {userid}) > 0 then 1 else 0 end) as myfavs from bks GROUP BY bks.id HAVING SQRT( POW(69.1 * (lat - {startlat}), 2) + POW(69.1 * ({startlng} - lon) * COS(lat / 57.3), 2)) < 100 ;"""
             sql_command2 = """SELECT id,address, sqrt( pow((69.1 * (lat - {startlat})), 2) + pow((69.1 * ({startlng} - lon) * cos(lat / 57.3)), 2)) AS distance FROM bks GROUP BY bks.id ORDER BY distance;"""
             crsr.execute(sql_command2.format(startlat=lat,startlng=lon))
@@ -70,6 +68,6 @@ class listlocationpage(directory):
           collectionstr= self.display_collection(sql_command, (), "favorite", message_else, tablename)
         try:
           g=self.get_file_with_path("list.html").read()
-          self.set_content(g % collectionstr)
+          self.set_content((g % collectionstr).replace("(userid)",str(userid)))
         except Exception as e:
           print(e,"eERREUR")
