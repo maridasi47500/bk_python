@@ -1,4 +1,5 @@
 # coding=utf-8
+import ftfy
 from rewards import rewardspage
 import rewards
 global rewards
@@ -469,20 +470,7 @@ def render_figure(pathname,Program):
             js+=Program.get_js().decode('utf-8')
 
             j=open(path1+"/myapppage.html","r").read().decode('utf-8')
-            #print(j)
-            #print(title.decode('utf-8'),"=title")
-            #print(css.decode('utf-8'),"=css")
-            #print(js.decode('utf-8'),"=js")
-            #print(header1.decode('utf-8'),"header1")
-            #print(main1,"=main1")
-            #print("erreur")
-            #print(footer1[0:30],"=footer")
-            #print(js.decode('utf-8')[0:30],"==js")
-            #print(js.decode('utf-8')[-30:-1],"==fin js")
-            #print(main1.decode('utf-8')[0:30],"==main1")
-            #print(header1[0:30],"==js")
-            #print("erreur")
-            html=j % (title.decode('utf-8'),css.decode('utf-8'),header1,main1.decode('utf-8'),footer1,js)
+            html=j % (ftfy.fix_text(title.decode('utf-8')),ftfy.fix_text(css.decode('utf-8')),ftfy.fix_text(header1.decode('utf-8')),ftfy.fix_text(main1.decode('utf-8')),ftfy.fix_text(footer1),ftfy.fix_text(js.decode('utf-8')))
             #print(html)
             print("fin balise")
         #mychemin=p1()+("" if (p1()[-1]=="/" or p2()[0] == "/") else "/")+p2()
@@ -895,12 +883,12 @@ def searchrestaurantfunc(params):
 
 
 def offersfunc(params):
-  Program=offerspage("./myoffersdirectory","super website",params)
+  Program=offerspage("./offers","super website",params)
   return render_figure("myoffershtml.html",Program)
 
 
 def rewardsfunc(params):
-  Program=rewardspage("./myrewardsdirectory","super website",params)
+  Program=rewardspage("./rewards","super website",params)
   return render_figure("myrewardshtml.html",Program)
 
 class S(BaseHTTPRequestHandler):

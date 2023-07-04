@@ -11,8 +11,11 @@ decorator==4.0.6
 defer==1.0.6
 ecdsa==0.13
 fbchat==1.9.7
+ftfy==4.4.3
 html==1.16
 html5lib==1.1
+htmlentities==0.2.1
+HTMLParser==0.0.2
 idna==2.10
 ipaddress==1.0.23
 langdetect==1.0.8
@@ -48,4 +51,5 @@ soupsieve==1.9.6
 tzlocal==2.1
 unity-lens-photos==1.0
 urllib3==1.26.13
+wcwidth==0.2.6
 webencodings==0.5.1

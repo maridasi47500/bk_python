@@ -115,6 +115,37 @@ lat float unique,
 lon float unique,
 address text
 );
+CREATE TABLE IF NOT EXISTS rewards (
+id INTEGER PRIMARY KEY,
+name VARCHAR(250) unique,
+image VARCHAR(250) unique,
+description text,
+mytype varchar(240)
+
+);
+CREATE TABLE IF NOT EXISTS offers (
+id INTEGER PRIMARY KEY,
+bk_id integer,
+burger_id integer,
+mytype varchar(240)
+);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 1, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 2, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 3, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 4, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 5, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 6, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 7, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 8, "pick up only");
+CREATE TABLE IF NOT EXISTS myoffers (
+id INTEGER PRIMARY KEY,
+offer_id integer,
+user_id integer,
+bought integer
+);
+insert or ignore into myoffers(offer_id, user_id, bought) values(1, 1, 0);
+insert or ignore into myoffers(offer_id, user_id, bought) values(2, 1, 0);
+insert or ignore into myoffers(offer_id, user_id, bought) values(3, 1, 0);
 CREATE TABLE IF NOT EXISTS favbks (
 id INTEGER PRIMARY KEY,
 user_id integer unique,

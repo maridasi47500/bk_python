@@ -19,6 +19,7 @@ connection = sqlite3.connect("mesburgers1.db")
 global crsr
 crsr = connection.cursor()
 from erreur import erreur
+import traceback
 
 class {myclass}page(directory):
   def __init__(self,path,title,params):
@@ -33,8 +34,9 @@ class {myclass}page(directory):
         userid=None
     except Exception as e:
       self.__class__ = erreur
-      self.set_erreur(str(e))
-      self.set_title({marouteget})
+      print(traceback.format_exc())
+      self.set_erreur(str(traceback.format_exc()))
+      self.set_title("Erreur route {marouteget}: "+str(e))
 
 """
   if not os.path.isfile(filename):

@@ -2,6 +2,7 @@
 import htmlentities
 import os
 import json
+import ftfy
 
 global path1
 import sqlite3  
@@ -105,7 +106,7 @@ class directory(object):
         for key in my_dict:
             setattr(self, key, my_dict[key])
     def set_header_with_path(self,header):
-        header1=self.get_file_with_path(header).read()
+        header1=self.get_file_with_path(header).read().decode("utf-8")
         self.header=header1
     def set_header_with_path_and_address(self,header,userid):
         header1=self.get_file_with_path(header).read()
@@ -114,7 +115,7 @@ class directory(object):
         sql="select *, (select bks.address from bks where bks.id = users.restaurant_id limit 1) as restaurant from users where user_number = ?"
         print(sql)
         user=crsr.execute(sql,(userid,)).fetchall()[0]
-        self.header=header1.replace("(address)",self.searchattribute(user, "users", "restaurant",("restaurant",)))
+        self.header=header1.replace("(address)",self.searchattribute(user, "users", "restaurant",("restaurant",))[0:60])
         print(self.header)
     def set_current_user(self,user):
         self.current_user=user
