@@ -15,6 +15,7 @@ class erreur(directory):
     if self.content == "" or self.content is None:
       self.content+= "<h6>%s</h6>" % (self.title)
     self.erreur+=str(err)
+    print(self.erreur)
     self.content+= "<p>%s</p>" % (self.erreur)
   def get_erreur(self,err):
     return self.erreur

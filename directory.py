@@ -86,8 +86,15 @@ class directory(object):
         print("longueur du fichier:",len(x),";nom du fichier:", filename)
         for a in ["é","à","è"]:
            x=x.replace(a,htmlentities.encode(a))
-
         self.set_content(x)
+    def content_from_file_yield(self,filename,myyield):
+        x=self.get_file_with_path(filename).readlines()
+        print("longueur du fichier (nb lines):",len(x),";nom du fichier:", filename)
+        index=[i for i in range(len(x)) if "yield" in x[i]][0]
+        x.insert((index+1),self.force_to_unicode(myyield.encode('utf-8')))
+
+
+        self.set_content("".join(x))
     def parameters(self):
         return self.parameters
     def work(self,code):
@@ -374,7 +381,7 @@ class directory(object):
                         if idprecedent != 0:
                             if re[x] != idprecedent:
                                 if paspremier:
-                                    myfigure+="</div>"
+                                    #myfigure+="</div>"
                                     paspremier = True
                                 #self.set_path("./mespages")
                                 kk=self.get_file(templatesortby)
@@ -387,7 +394,7 @@ class directory(object):
                         idprecedent=re[x]
 
                 myfigure+=mytemplate
-                myfigure+="</div>"
+                #myfigure+="</div>"
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")
@@ -443,7 +450,7 @@ class directory(object):
                         if idprecedent != 0:
                             if re[x] != idprecedent:
                                 if paspremier:
-                                    myfigure+="</div>"
+                                    #myfigure+="</div>"
                                     paspremier = True
                                 #self.set_path("./mespages")
                                 kk=self.get_file(templatesortby)
@@ -456,7 +463,7 @@ class directory(object):
                         idprecedent=re[x]
 
                 myfigure+=mytemplate
-                myfigure+="</div>"
+                #myfigure+="</div>"
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")

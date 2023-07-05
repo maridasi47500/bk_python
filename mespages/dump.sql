@@ -115,14 +115,6 @@ lat float unique,
 lon float unique,
 address text
 );
-CREATE TABLE IF NOT EXISTS rewards (
-id INTEGER PRIMARY KEY,
-name VARCHAR(250) unique,
-image VARCHAR(250) unique,
-description text,
-mytype varchar(240)
-
-);
 CREATE TABLE IF NOT EXISTS offers (
 id INTEGER PRIMARY KEY,
 bk_id integer,
@@ -226,6 +218,9 @@ INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("Dou
 INSERT or ignore INTO burgers (name,prix,mincal,burgercat_id,image) VALUES ("Triple Whopper","7.59","1169",6,"burger.png");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('fries',20.00,300,800,"burger.png","jrsides");
 INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('apple juice',20.00,300,800,"burger.png","jrdrinks");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('burger special',20.00,300,800,"burger.png","rewards");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('frites special',20.00,300,800,"burger.png","rewards");
+INSERT or ignore INTO burgers (name,prix,mincal,maxcal,image,mytype) VALUES ('glaces special',20.00,300,800,"burger.png","rewards");
 
 
 INSERT or ignore INTO ingredients (name) VALUES ('mayo');
