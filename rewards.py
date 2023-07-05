@@ -18,16 +18,20 @@ class rewardspage(directory):
 
 
       try:
+        sql="select * from burgers where mytype = 'rewards'"
         userid=params["userid"][0]
         self.set_header_with_path_and_address("headersignedin.html",userid)
-        sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.id ) as countoffers, (select count(offers.id) from offers where offers.bk_id = (select restaurant_id from users where user_number = ?)) as countrestaus from burgers where countoffers > 0 and countrestaus > 0 "
+
       except Exception as e:
         userid=None
         self.content_from_file("rewardsoffline.html")
-        print(traceback.format_exc())
-        self.set_header_with_path("mynav.html")
-        sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.id) as countoffers from burgers where countoffers > 0"
       self.set_footer_with_path("footer.html")
+      tablename="burgers"
+      message_else="Aucune récompense n'est disponible."
+
+      collectionstr= self.display_collection(sql, myarg, "_recompense", message_else, tablename,False,False,myparams)
+      self.content_from_file_yield("myrewardshtml.html",collectionstr)
+
     except Exception as e:
       self.__class__ = erreur
       self.set_erreur(str(e))
