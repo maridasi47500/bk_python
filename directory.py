@@ -409,7 +409,7 @@ class directory(object):
         iattr=matable.index(myattribute)
         print(matable, myattribute, iattr, mydata)
         return mydata[iattr]
-    def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False):
+    def display_collection(self,sql,sqlargs,templatename,errormessage,tablename,sortby = False,templatesortby = False,addattributes = False,valueofmycolumn = ("",)):
         idprecedent=0
         print(sqlargs)
         print(len(sqlargs))
@@ -434,36 +434,49 @@ class directory(object):
             print("plusieurs "+tablename)
 
             for re in res:
-                paspremier = False
-                mytemplate=self.force_to_unicode(template)
-                for x in range(len(re)):
-                    print(x)
-                    print(re[x])
-                    z=re[x]
-                    strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
-                    print(strrep)
-                    if type(z) == int or type(z) == float:
-                        z=str(z)
-                    if z is not None:
-                        mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
-                    if matable[x][1] == sortby:
-                        if idprecedent != 0:
-                            if re[x] != idprecedent:
-                                if paspremier:
-                                    #myfigure+="</div>"
-                                    paspremier = True
-                                #self.set_path("./mespages")
-                                kk=self.get_file(templatesortby)
-                                kk=kk.read()
-                                y=0
-                                for y in range(len(re)):
-                                    mystrrep="(%s)" % (matable[y][1])
-                                    kk=kk.replace(mystrrep, self.force_to_unicode(str(re[y])))
-                                myfigure += kk
-                        idprecedent=re[x]
 
-                myfigure+=mytemplate
-                #myfigure+="</div>"
+                paspremier = False
+                for val in valueofmycolumn:
+                  valueofcolumn=self.searchattribute(re,tablename,val,addattributes)
+                  try:
+                    if valueofcolumn is not None:
+                      valueofcolumn=str(valueofcolumn)
+                    else:
+                      valueofcolumn=""
+                  except:
+                    valueofcolumn=""
+                  h=self.get_file("./"+templatename+valueofcolumn+".html")
+
+                  template=self.force_to_unicode(h.read())
+                  mytemplate=self.force_to_unicode(template)
+                  for x in range(len(re)):
+                      print(x)
+                      print(re[x])
+                      z=re[x]
+                      strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
+                      print(strrep)
+                      if type(z) == int or type(z) == float:
+                          z=str(z)
+                      if z is not None:
+                          mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
+                      if matable[x][1] == sortby:
+                          if idprecedent != 0:
+                              if re[x] != idprecedent:
+                                  if paspremier:
+                                      #myfigure+="</div>"
+                                      paspremier = True
+                                  #self.set_path("./mespages")
+                                  kk=self.get_file(templatesortby)
+                                  kk=kk.read()
+                                  y=0
+                                  for y in range(len(re)):
+                                      mystrrep="(%s)" % (matable[y][1])
+                                      kk=kk.replace(mystrrep, self.force_to_unicode(str(re[y])))
+                                  myfigure += kk
+                          idprecedent=re[x]
+
+                  myfigure+=mytemplate
+                  #myfigure+="</div>"
             return myfigure
         else:
             return self.force_to_unicode("<p>"+errormessage+"</p>")

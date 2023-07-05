@@ -28,8 +28,9 @@ class rewardspage(directory):
       self.set_footer_with_path("footer.html")
       tablename="burgers"
       message_else="Aucune récompense n'est disponible."
+      myarg=()
 
-      collectionstr= self.display_collection(sql, myarg, "_recompense", message_else, tablename,False,False,myparams)
+      collectionstr= self.display_collection(sql, myarg, "_recompense", message_else, tablename)
       self.content_from_file_yield("myrewardshtml.html",collectionstr)
 
     except Exception as e:
