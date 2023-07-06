@@ -19,9 +19,9 @@ class offerspage(directory):
       try:
         userid=params["userid"][0]
         self.set_header_with_path_and_address("headersignedin.html",userid)
-        sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.burger_number ) as countoffers, (select (case when count(myoffers.id) > 0 then 1 else 0 end) from myoffers left joins offers off on off.id = myoffers.offer_id where myoffers.user_id = ? and off.burger_id = burgers.id) as nbmyoffers,(select count(offers.id) from offers where offers.bk_id = (select restaurant_id from users where user_number = ?)) as countrestaus from burgers where countoffers > 0 and countrestaus > 0 "
-        myparams=("countoffers","countrestaus","nbmyoffers")
-        mytemplatenames=("nbmyoffers")
+        sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.burger_number ) as countoffers, (case when (select count(myoffers.id) as countmyoff from myoffers left join offers off on off.id = myoffers.offer_id where myoffers.user_id = ? and off.burger_id = burgers.burger_number) > 0 then 1 else 0 end) as nbmyoffers,(select count(offers.id) from offers where offers.bk_id = (select restaurant_id from users where user_number = ?)) as countrestaus from burgers where countoffers > 0 and countrestaus > 0 "
+        myparams=("countoffers","nbmyoffers",'countrestaus',)
+        mytemplatenames=("nbmyoffers",)
         myarg=(userid,userid,)
       except:
         userid=None

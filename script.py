@@ -55,7 +55,10 @@ __mots__={"/favlocation":{"partiedemesmots":"favlocation"},
     "/rewards/offers":{"partiedemesmots":"offers"},
     "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},
 "/findaddress":{"partiedemesmots":"findaddress"},
-"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"/redeem":{"partiedemesmots":"royalprk"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"/menu/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},
+"^/redeem(/.*)?$":{"partiedemesmots":"royalprk"},
+"\/redeem[\/]+":{"partiedemesmots":"royalprk"},
+r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"/menu/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -1228,7 +1231,8 @@ r"/menu(/)([a-z]+)(/)?": showmenu,
 r"/menu(/)?([a-z]+)?(/)?": showmenu,
 "/orders/refresh":refreshmyorders,
 "/account/orders":myorders,
-"/redeem":code,
+"^/redeem(/.*)?$":code,
+"\/redeem[\/]+":code,
 "/account/payment":accountpayment,
 "/account/payment/add-card":addcard,
 "/account/payment/add-gift-card":addgiftcard,

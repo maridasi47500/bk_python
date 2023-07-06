@@ -5,6 +5,7 @@ import json
 import ftfy
 
 global path1
+import traceback
 import sqlite3  
 global codecs
 import codecs
@@ -417,13 +418,20 @@ class directory(object):
         crsr.execute("PRAGMA table_info(["+tablename+"])")
         connection.commit()
         matable=crsr.fetchall()
+
+        def takefirst(xx):
+          return xx[1]
+        matable=map(takefirst,matable)
         if addattributes:
           matable+=addattributes
         h=self.get_file("./"+templatename+".html")
         template=self.force_to_unicode(h.read())
-        mysql=sql % sqlargs
+        try:
+          mysql=(sql % sqlargs,)
+        except:
+          mysql=(sql, sqlargs)
         print(mysql)
-        crsr.execute(mysql)
+        crsr.execute(*mysql)
         connection.commit()
         res=crsr.fetchall()
         print("dans ce result sql il y a %s resul" % res)
@@ -437,13 +445,14 @@ class directory(object):
 
                 paspremier = False
                 for val in valueofmycolumn:
-                  valueofcolumn=self.searchattribute(re,tablename,val,addattributes)
                   try:
+                    valueofcolumn=self.searchattribute(re,tablename,val,addattributes)
                     if valueofcolumn is not None:
                       valueofcolumn=str(valueofcolumn)
                     else:
                       valueofcolumn=""
-                  except:
+                  except Exception as e:
+                    print(traceback.format_exc())
                     valueofcolumn=""
                   h=self.get_file("./"+templatename+valueofcolumn+".html")
 
@@ -453,13 +462,13 @@ class directory(object):
                       print(x)
                       print(re[x])
                       z=re[x]
-                      strrep=self.force_to_unicode("(%s)" % (matable[x][1]))
+                      strrep=self.force_to_unicode("(%s)" % (matable[x]))
                       print(strrep)
                       if type(z) == int or type(z) == float:
                           z=str(z)
                       if z is not None:
                           mytemplate=mytemplate.replace(strrep, self.force_to_unicode(z))
-                      if matable[x][1] == sortby:
+                      if matable[x] == sortby:
                           if idprecedent != 0:
                               if re[x] != idprecedent:
                                   if paspremier:
@@ -470,7 +479,7 @@ class directory(object):
                                   kk=kk.read()
                                   y=0
                                   for y in range(len(re)):
-                                      mystrrep="(%s)" % (matable[y][1])
+                                      mystrrep="(%s)" % (matable[y])
                                       kk=kk.replace(mystrrep, self.force_to_unicode(str(re[y])))
                                   myfigure += kk
                           idprecedent=re[x]

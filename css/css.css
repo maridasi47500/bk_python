@@ -4,6 +4,9 @@
     float:left;
     padding-left:0;
 }
+.offreselectionnee {
+border:1px solid black;
+}
 main {
     top:80px;
     position:relative;

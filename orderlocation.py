@@ -9,5 +9,5 @@ class orderlocationpage(redirectaction):
     except:
       userid=None
     self.mysql("update users set restaurant_id = ?", (userid))
-    self.redirect="/orders"
+    self.redirect="/menu"
 

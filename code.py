@@ -22,18 +22,34 @@ class codepage(directory):
         self.set_path("./code")
         self.add_js("userconnecte.js")
         self.add_css("mycode.css")
+        self.set_header_with_path("header.html")
+        print("footer")
+        self.set_footer_with_path("footer.html")
         try:
           print(params["userid"][0])
           userid=params["userid"][0]
           print("user connecté")
           #select l'utilisateur et voir si il a une address et un restaurant
           sql="select * from users where user_number = ?"
-          user=crsr.execute(sql,(userid,)).fetchall()[0]
-          restaurant=self.searchattribute(user,"users","restaurant_id")
-          address=self.searchattribute(user,"users","address_id")
-          print("tous les utilisateur selectionnees",user,"restaurant",restaurant,"address",address)
+          try:
+            user=crsr.execute(sql,(userid,)).fetchall()[0]
+          except:
+            user=None
+          try:
+            restaurant=self.searchattribute(user,"users","restaurant_id")
+          except:
+            restaurant=None
+          try:
+            address=self.searchattribute(user,"users","address_id")
+          except:
+            address=None
+          print(" CHERCHER ICI tous les utilisateur selectionnees",user,"restaurant",restaurant,"address",address)
           if user is not None and restaurant is None and address is None:
             self.set_redirect("/store-locator/service-mode")
+          if restaurant is not None:
+            self.set_header_with_path_and_address("headersignedin.html",userid)
+
+          
 
 
           self.content_from_file("codesignedin.html")
@@ -44,9 +60,7 @@ class codepage(directory):
         print("currentuer")
         self.set_current_user_id(userid)
         print("heder")
-        self.set_header_with_path("header.html")
-        print("footer")
-        self.set_footer_with_path("footer.html")
+
 
 
         print("fin de cod #code #codebk #redeem")

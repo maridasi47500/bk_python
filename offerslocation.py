@@ -13,6 +13,6 @@ class offerslocationpage(redirectaction):
     except:
       userid=None
     self.mysql("update users set restaurant_id = ? where user_number = ?", (id,userid))
-    self.redirect="/orders"
+    self.redirect="/rewards/offers"
 
 
