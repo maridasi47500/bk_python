@@ -419,11 +419,20 @@ class directory(object):
         connection.commit()
         matable=crsr.fetchall()
 
+        def takeatt(xx):
+          return xx["attr"]
         def takefirst(xx):
           return xx[1]
+        def mykey(k):
+          return k["index"]
         matable=map(takefirst,matable)
+
         if addattributes:
-          matable+=addattributes
+          keys=[]
+          for att in addattributes:
+            keys.append({"attr":att,"index":sql.index(att)})
+          addattr=sorted(keys,key=mykey)
+          matable+=map(takeatt,addattr)
         h=self.get_file("./"+templatename+".html")
         template=self.force_to_unicode(h.read())
         try:
