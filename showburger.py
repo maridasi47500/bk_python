@@ -15,7 +15,7 @@ class showburgerpage(directory):
         self.set_path(path)
         self.css=""
         self.js=""
-        print("show menu",params)
+        print("show burger of my  menu",params)
         dataparams={"1":"burger1=sandwich&burger2=sandwich&drink1=small&drink2=small&side1=small&side2=small","2":"burger=burger&burger=value","3":"burger=burger&burger=value","4":"burger=side&burger=value","5":"burger=drink&burger=value","6":"burger=sweet&burger=value","7":"burger=burgerjr&burger=value&jrsides=jrsides&jrdrinks=jrdrinks&jrtreats=toy&burgerid="}
         self.set_title("Burger King")
         self.set_layout("ok")

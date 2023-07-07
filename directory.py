@@ -463,10 +463,9 @@ class directory(object):
                   except Exception as e:
                     print(traceback.format_exc())
                     valueofcolumn=""
-                  h=self.get_file("./"+templatename+valueofcolumn+".html")
-
-                  template=self.force_to_unicode(h.read())
-                  mytemplate=self.force_to_unicode(template)
+                  h1=self.get_file_with_path(templatename+valueofcolumn+".html")
+                  template1=self.force_to_unicode(h1.read())
+                  mytemplate=self.force_to_unicode(template1)
                   for x in range(len(re)):
                       print(x)
                       print(re[x])

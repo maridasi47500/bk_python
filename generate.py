@@ -9,6 +9,7 @@ if sys.argv[1] == "myclass":
 
   filename=sys.argv[2]
   marouteget="\"/%s\"" % filename
+  marouteget2="\\\"/%s\\\"" % filename
   myhtml="my"+filename+"html"
   myfavdirectory="my%sdirectory" % filename
   mystr="""# coding=utf-8
@@ -36,12 +37,12 @@ class {myclass}page(directory):
       self.__class__ = erreur
       print(traceback.format_exc())
       self.set_erreur(str(traceback.format_exc()))
-      self.set_title("Erreur route {marouteget}: "+str(e))
+      self.set_title("Erreur route {marouteget2}: "+str(e))
 
 """
   if not os.path.isfile(filename):
     f = open(filename+".py", "w") 
-    f.write(mystr.format(myclass=filename,myhtml=myhtml,marouteget=marouteget))
+    f.write(mystr.format(myclass=filename,myhtml=myhtml,marouteget=marouteget,marouteget2=marouteget2))
     f.close()
 
 

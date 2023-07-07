@@ -119,16 +119,17 @@ CREATE TABLE IF NOT EXISTS offers (
 id INTEGER PRIMARY KEY,
 bk_id integer,
 burger_id integer,
-mytype varchar(240)
+mytype integer
 );
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 1, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 2, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 3, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 4, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 5, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 6, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 7, "pick up only");
-insert or ignore into offers(bk_id, burger_id, mytype) values(10, 8, "pick up only");
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 1, 0);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 2, 0);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 3, 0);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 4, 0);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 5, 1);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 6, 1);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 7, 1);
+insert or ignore into offers(bk_id, burger_id, mytype) values(10, 8, 1);
+insert or ignore into offers(bk_id, burger_id) values(10, 9);
 CREATE TABLE IF NOT EXISTS myoffers (
 id INTEGER PRIMARY KEY,
 offer_id integer,

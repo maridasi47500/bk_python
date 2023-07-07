@@ -1,4 +1,11 @@
 # coding=utf-8
+from showoffer import showofferpage
+from collections import OrderedDict
+import showoffer
+global showoffer
+from savetoredeem import savetoredeempage
+import savetoredeem
+global savetoredeem
 import ftfy
 from rewards import rewardspage
 import rewards
@@ -50,15 +57,7 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/favlocation":{"partiedemesmots":"favlocation"},
-    "/rewards/list":{"partiedemesmots":"rewards"},
-    "/rewards/offers":{"partiedemesmots":"offers"},
-    "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},
-"/findaddress":{"partiedemesmots":"findaddress"},
-"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},
-"^/redeem(/.*)?$":{"partiedemesmots":"royalprk"},
-"\/redeem[\/]+":{"partiedemesmots":"royalprk"},
-r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"},r"/menu/[0-9]*$(\/)?": {"partiedemesmots":"Personnaliser votre commande"}, r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/favlocation":{"partiedemesmots":"favlocation"},    r"\/rewards\/offers\/\d+(\/)?":{"partiedemesmots":"showoffer"},    "/rewards/list":{"partiedemesmots":"rewards"},    "/rewards/offers":{"partiedemesmots":"offers"},    "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},"/findaddress":{"partiedemesmots":"findaddress"},"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"^/redeem(/.*)?$":{"partiedemesmots":"royalprk"},"\/redeem[\/]+":{"partiedemesmots":"royalprk"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"}, r"/menu(/)([0-9]+)(/)?": {"partiedemesmots":"Personnaliser votre commande"},  r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -546,6 +545,8 @@ def bootstrapcss(params = None):
     return h
 
 def reloadmymodules(params = None):
+    reload(showoffer)
+    reload(savetoredeem)
     reload(rewards)
     reload(offers)
     reload(searchrestaurant)
@@ -894,6 +895,16 @@ def rewardsfunc(params):
   Program=rewardspage("./rewards","super website",params)
   return render_figure("myrewardshtml.html",Program)
 
+
+def savetoredeemfunc(params):
+  Program=savetoredeempage("./mysavetoredeemdirectory","super website",params)
+  return render_figure("mysavetoredeemhtml.html",Program)
+
+
+def showofferfunc(params):
+  Program=showofferpage("./offers","super website",params)
+  return render_figure("myshowofferhtml.html",Program)
+
 class S(BaseHTTPRequestHandler):
     def _mon_erreur(self,e):
         print("erreur get",e)
@@ -931,6 +942,14 @@ class S(BaseHTTPRequestHandler):
             routetrouve=None
             #f = open("index.html", "r")
             query_components = parse_qs(urlparse(urlpath).query)
+
+
+            try:
+                query_components["path"]=[urlpath]
+                print("-- urlpath --",urlpath)
+            except:
+                print("aucun url path")
+
             try:
                 query_components["userid"]=[session.current_user[0]]
                 print("-- user connecté --")
@@ -938,13 +957,16 @@ class S(BaseHTTPRequestHandler):
                 print("aucun user connecté")
             print('path',myurlpath , query_components,"what params")
             #x=searchmyparams(query_components,myurlpath)
+            #print(myroutes)
+            #blabla=myroutes.sorted(
+            #print("MY ROUTE KEYS",myroutes.keys())
             for path in myroutes:
                 #simple=path.split("?")[0]
                 #print("le chemin est %s et la route %s" % (myurlpath,path))
-                #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) != None))
+                #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) is not None))
                 mysimplefunc=myroutes[path]
                 kk=re.match(path, myurlpath)
-                if kk:
+                if kk is not None:
                     for x in range(len(kk.groups())):
                         print(kk.group(0),x,kk.group(x))
                         query_components["param"+str(x)] = kk.group(x)
@@ -1032,24 +1054,6 @@ class S(BaseHTTPRequestHandler):
                             self._set_headers(switcher["html"])
 
                             self.wfile.write(render_figure("hhh.html",mycode))
-
-
-
-                        #try:
-                        #    if code.index("Traceback"):
-                        #        print("une erreur a été trouvée dans le code html")
-
-                        #        self._set_headers(switcher["html"])
-
-
-                        #        self.wfile.write(code)
-                        #except Exception as e:
-                        #    print("aucune erreur n'a été trouvée dans le code html")
-                        #    print(str(e)+str(traceback.format_exc()))
-                        #    print("retrouver l'output dans myoutput.html ")
-                        #    k=open("myoutput.html","w")
-                        #    k.write(code)
-                        #    k.close()
                 except Exception as e:
                         print("les mots ed la page ont été reconnu?faux",code)
                         print(str(e)+str(traceback.format_exc()))
@@ -1087,6 +1091,11 @@ class S(BaseHTTPRequestHandler):
                 print(x)
                 query_components=x[1]
                 urlpath=x[0]
+            try:
+                query_components["path"]=[urlpath]
+                print("-- urlpath --",urlpath)
+            except:
+                print("aucun url path")
             try:
                 query_components["userid"]=[session.current_user[0]]
                 print("-- user connecté --")
@@ -1211,47 +1220,11 @@ if __name__ == "__main__":
 
 
 global route_post
-myroutes = {"/customizemenu":customizemymenu,
-"/rewards/list":rewardsfunc,
-"/rewards/offers":offersfunc,
-"/searchrestaurant":searchrestaurantfunc,
-"/findaddress":findaddressfunc,
-    "/infolocation":infolocation,
-
-r"^/store-locator/address$":addressfunc,
-r"^/store-locator/service-mode$":servicemode,
-r"^/store-locator$":servicemode,
-
-"/listlocation":listlocation,
-"/updateitem/customize":ingredients,
-"/updateitem/changeitem":changeitem,
-
-r"/menu/[0-9]*$(\/)?": showburger,
-r"/menu(/)([a-z]+)(/)?": showmenu,
-r"/menu(/)?([a-z]+)?(/)?": showmenu,
-"/orders/refresh":refreshmyorders,
-"/account/orders":myorders,
-"^/redeem(/.*)?$":code,
-"\/redeem[\/]+":code,
-"/account/payment":accountpayment,
-"/account/payment/add-card":addcard,
-"/account/payment/add-gift-card":addgiftcard,
-"/signinuser": signinuser,
-r"^\/$":homefunc,
-"/signin":signin,
-            "/signup": signup,
-            #"/rewards/offers": offersfunc,
-            #"/rewards/list": rewardsfunc,
-'/account/info': myaccountinfo,
-'/confirm-otp': confirmotp,
-"/confirm-jwt": confirmjwt,
-"/setcookie": setcookie,
-
-'/confirm-jwt': confirmjwt
-}
+myroutes = OrderedDict({"/customizemenu":customizemymenu,r"\/rewards\/offers\/\d+(\/)?":showofferfunc,"/rewards/list":rewardsfunc,"/rewards/offers":offersfunc,"/searchrestaurant":searchrestaurantfunc,"/findaddress":findaddressfunc,    "/infolocation":infolocation,r"^/store-locator/address$":addressfunc,r"^/store-locator/service-mode$":servicemode,r"^/store-locator$":servicemode,"/listlocation":listlocation,"/updateitem/customize":ingredients,"/updateitem/changeitem":changeitem,r"/menu(/)([0-9]+)(/)?": showburger,r"/menu(/)([a-z]+)(/)?": showmenu,r"/menu(/)?([a-z]+)?(/)?": showmenu,"/orders/refresh":refreshmyorders,"/account/orders":myorders,"^/redeem(/.*)?$":code,"\/redeem[\/]+":code,"/account/payment":accountpayment,"/account/payment/add-card":addcard,"/account/payment/add-gift-card":addgiftcard,"/signinuser": signinuser,r"^\/$":homefunc,"/signin":signin,            "/signup": signup,'/account/info': myaccountinfo,'/confirm-otp': confirmotp,"/confirm-jwt": confirmjwt,"/setcookie": setcookie,'/confirm-jwt': confirmjwt})
 global menu
 # POST routes
-route_post={
+route_post=OrderedDict({
+r"\/rewards\/offers\/[0-9]+(\/)?":savetoredeemfunc,
 
     "/orderlocation":orderlocation,
     "/offerslocation":offerslocation,
@@ -1268,7 +1241,7 @@ route_post={
     "/checkemail": checkemail,
     "/checkuser.json": checkuser,
     "/validatecode": validatecode
-}
+})
 if len(argv) == 3:
     run(port=int(argv[1]),host=argv[2])
 elif len(argv) == 2:
