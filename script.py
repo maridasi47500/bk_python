@@ -962,7 +962,7 @@ class S(BaseHTTPRequestHandler):
             #print("MY ROUTE KEYS",myroutes.keys())
             for path in myroutes:
                 #simple=path.split("?")[0]
-                #print("le chemin est %s et la route %s" % (myurlpath,path))
+                print("le chemin est %s et la route %s" % (myurlpath,path))
                 #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) is not None))
                 mysimplefunc=myroutes[path]
                 kk=re.match(path, myurlpath)
@@ -1220,28 +1220,68 @@ if __name__ == "__main__":
 
 
 global route_post
-myroutes = OrderedDict({"/customizemenu":customizemymenu,r"\/rewards\/offers\/\d+(\/)?":showofferfunc,"/rewards/list":rewardsfunc,"/rewards/offers":offersfunc,"/searchrestaurant":searchrestaurantfunc,"/findaddress":findaddressfunc,    "/infolocation":infolocation,r"^/store-locator/address$":addressfunc,r"^/store-locator/service-mode$":servicemode,r"^/store-locator$":servicemode,"/listlocation":listlocation,"/updateitem/customize":ingredients,"/updateitem/changeitem":changeitem,r"/menu(/)([0-9]+)(/)?": showburger,r"/menu(/)([a-z]+)(/)?": showmenu,r"/menu(/)?([a-z]+)?(/)?": showmenu,"/orders/refresh":refreshmyorders,"/account/orders":myorders,"^/redeem(/.*)?$":code,"\/redeem[\/]+":code,"/account/payment":accountpayment,"/account/payment/add-card":addcard,"/account/payment/add-gift-card":addgiftcard,"/signinuser": signinuser,r"^\/$":homefunc,"/signin":signin,            "/signup": signup,'/account/info': myaccountinfo,'/confirm-otp': confirmotp,"/confirm-jwt": confirmjwt,"/setcookie": setcookie,'/confirm-jwt': confirmjwt})
-global menu
-# POST routes
-route_post=OrderedDict({
-r"\/rewards\/offers\/[0-9]+(\/)?":savetoredeemfunc,
 
-    "/orderlocation":orderlocation,
-    "/offerslocation":offerslocation,
-    "/favlocation":favlocation,
-    "/bkaction":bkaction,
-    "/addburger":addburger,
-    "/savegiftcard": savegiftcard,
-    "/savepayment": savepayment,
-    "/signup": signup_user,
-    "/signin": signmein,
-    "/saveinfo": savemyinfo,
-    "/aftersignup": aftersignup,
-    "/confirm-otp": confirmotp,
-    "/checkemail": checkemail,
-    "/checkuser.json": checkuser,
-    "/validatecode": validatecode
-})
+
+
+myroutes = OrderedDict([("/customizemenu",customizemymenu),(
+r"\/rewards\/offers\/[0-9]+(\/)?",showofferfunc),(
+"/rewards/list",rewardsfunc),(
+"/rewards/offers",offersfunc),(
+"/searchrestaurant",searchrestaurantfunc),(
+"/findaddress",findaddressfunc),(
+    "/infolocation",infolocation),(
+
+r"^/store-locator/address$",addressfunc),(
+r"^/store-locator/service-mode$",servicemode),(
+r"^/store-locator$",servicemode),(
+
+"/listlocation",listlocation),(
+"/updateitem/customize",ingredients),(
+"/updateitem/changeitem",changeitem),(
+
+r"/menu(/)([0-9]+)(/)?", showburger),(
+r"/menu(/)([a-z]+)(/)?", showmenu),(
+r"/menu(/)?([a-z]+)?(/)?", showmenu),(
+"/orders/refresh",refreshmyorders),(
+"/account/orders",myorders),(
+"^/redeem(/.*)?$",code),(
+"\/redeem[\/]+",code),(
+"/account/payment",accountpayment),(
+"/account/payment/add-card",addcard),(
+"/account/payment/add-gift-card",addgiftcard),(
+"/signinuser", signinuser),(
+r"^\/$",homefunc),(
+"/signin",signin),(
+            "/signup", signup),(
+            #"/rewards/offers", offersfunc),(
+            #"/rewards/list", rewardsfunc),(
+'/account/info', myaccountinfo),(
+'/confirm-otp', confirmotp),(
+"/confirm-jwt", confirmjwt),(
+"/setcookie", setcookie),(
+
+'/confirm-jwt', confirmjwt)
+])
+route_post=OrderedDict([(
+r"\/rewards\/offers\/[0-9]+(\/)?",savetoredeemfunc),(
+
+    "/orderlocation",orderlocation),(
+    "/offerslocation",offerslocation),(
+    "/favlocation",favlocation),(
+    "/bkaction",bkaction),(
+    "/addburger",addburger),(
+    "/savegiftcard", savegiftcard),(
+    "/savepayment", savepayment),(
+    "/signup", signup_user),(
+    "/signin", signmein),(
+    "/saveinfo", savemyinfo),(
+    "/aftersignup", aftersignup),(
+    "/confirm-otp", confirmotp),(
+    "/checkemail", checkemail),(
+    "/checkuser.json", checkuser),(
+    "/validatecode", validatecode)
+])
+
 if len(argv) == 3:
     run(port=int(argv[1]),host=argv[2])
 elif len(argv) == 2:
