@@ -19,8 +19,8 @@ class offerspage(directory):
       try:
         userid=params["userid"][0]
         self.set_header_with_path_and_address("headersignedin.html",userid)
-        sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.burger_number ) as countoffers, (case when (select count(myoffers.id) as countmyoff from myoffers left join offers off on off.id = myoffers.offer_id where myoffers.user_id = ? and off.burger_id = burgers.burger_number) > 0 then 1 else 0 end) as nbmyoffers,(select count(offers.id) from offers where offers.bk_id = (select restaurant_id from users where user_number = ?)) as countrestaus from burgers where countoffers > 0 and countrestaus > 0 "
-        myparams=("countoffers","nbmyoffers",'countrestaus',)
+        sql="select *,(select count(offers.id) from offers where offers.burger_id = burgers.burger_number ) as countoffers, (case when (select count(myoffers.id) as countmyoff from myoffers left join offers off on off.id = myoffers.offer_id where myoffers.user_id = ? and off.burger_id = burgers.burger_number) > 0 then 1 else 0 end) as nbmyoffers,(select count(offers.id) from offers where offers.bk_id = (select restaurant_id from users where user_number = ?)) as countrestaus from burgers where countoffers > 0 and countrestaus > 0 "
+        myparams=("countoffers","nbmyoffers",'countrestaus')
         mytemplatenames=("nbmyoffers",)
         myarg=(userid,userid,)
       except:
@@ -28,7 +28,7 @@ class offerspage(directory):
         self.set_header_with_path("mynav.html")
         sql="select *, (select count(offers.id) from offers where offers.burger_id = burgers.burger_number) as countoffers from burgers where countoffers > 0"
         myarg=()
-        myparams=("countoffers",)
+        myparams=("countoffers","userid",)
         mytemplatenames=("",)
       self.set_footer_with_path("footer.html")
       tablename="burgers"

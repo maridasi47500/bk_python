@@ -57,7 +57,10 @@ global render_pages
 global connection
 global get_file
 global switcher
-__mots__={"/favlocation":{"partiedemesmots":"favlocation"},    r"\/rewards\/offers\/\d+(\/)?":{"partiedemesmots":"showoffer"},    "/rewards/list":{"partiedemesmots":"rewards"},    "/rewards/offers":{"partiedemesmots":"offers"},    "/searchrestaurant":{"partiedemesmots":"searchrestaurant"},"/findaddress":{"partiedemesmots":"findaddress"},"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"^/redeem(/.*)?$":{"partiedemesmots":"royalprk"},"\/redeem[\/]+":{"partiedemesmots":"royalprk"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"}, r"/menu(/)([0-9]+)(/)?": {"partiedemesmots":"Personnaliser votre commande"},  r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
+__mots__={"/favlocation":{"partiedemesmots":"favlocation"},    r"\/rewards\/offers\/\d+(\/)?":{"partiedemesmots":"showoffer"},    "/rewards/list":{"partiedemesmots":"rewards"},    
+r"\/rewards\/offers\/[0-9]+(\/)?":{"partiedemesmots":"offer"},    
+"/rewards/offers":{"partiedemesmots":"offers"},    
+"/searchrestaurant":{"partiedemesmots":"searchrestaurant"},"/findaddress":{"partiedemesmots":"findaddress"},"/offerslocation":{"partiedemesmots":"offerslocation"},"/orderlocation":{"partiedemesmots":"orderlocation"},"/infolocation":{"partiedemesmots":"infolocation"},"/bkaction":{"partiedemesmots":"id"},"/listlocation":{"partiedemesmots":"listlocation"},"^/redeem(/.*)?$":{"partiedemesmots":"royalprk"},"\/redeem[\/]+":{"partiedemesmots":"royalprk"},r"^/store-locator/service-mode$":{"partiedemesmots":"Emplacements"},r"^/store-locator/address$":{"partiedemesmots":"Entrez votre adresse"},r"^/store-locator$":{"partiedemesmots":"Emplacements"},"/account/info":{"partiedemesmots":"Account"},"/confirm-jwt":{"partiedemesmots":""},"/updateitem/changeitem":{"partiedemesmots":"burger"},"/updateitem/customize":{"partiedemesmots":"bacon"},"/customizemenu":{"partiedemesmots":"burger"}, r"/menu(/)([0-9]+)(/)?": {"partiedemesmots":"Personnaliser votre commande"},  r"/menu(/)([a-z]+)(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"}, r"/menu(/)?([a-z]+)?(/)?": {"partiedemesmots":"Hamburgers grillés à la flamme"},"/menu(/)?":{"partiedemesmots":"Hamburgers grillés à la flamme"},"^\/$":{"partiedemesmots":"Get rewarded like Royalty"},"/signin":{"partiedemesmots":"sign-in-form\""},"/signup":{"partiedemesmots":"J'accepte ce qui suit : Politique de confidentialité Conditions d'utilisation des récompenses Conditions d'utilisation"}}
 from customizemymenu import customizemymenupage
 
 from accountpayment import pageaccountpayment
@@ -955,14 +958,14 @@ class S(BaseHTTPRequestHandler):
                 print("-- user connecté --")
             except:
                 print("aucun user connecté")
-            print('path',myurlpath , query_components,"what params")
+            #print('path',myurlpath , query_components,"what params")
             #x=searchmyparams(query_components,myurlpath)
             #print(myroutes)
             #blabla=myroutes.sorted(
             #print("MY ROUTE KEYS",myroutes.keys())
             for path in myroutes:
                 #simple=path.split("?")[0]
-                print("le chemin est %s et la route %s" % (myurlpath,path))
+                #print("le chemin est %s et la route %s" % (myurlpath,path))
                 #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) is not None))
                 mysimplefunc=myroutes[path]
                 kk=re.match(path, myurlpath)
@@ -1086,14 +1089,10 @@ class S(BaseHTTPRequestHandler):
             Program.set_url(self.path)
             urlpath=Program.get_url()
             query_components = parse_qs(urlparse(urlpath).query)
-            x=searchmyparams(query_components,urlpath)
-            if x:
-                print(x)
-                query_components=x[1]
-                urlpath=x[0]
+            
             try:
                 query_components["path"]=[urlpath]
-                print("-- urlpath --",urlpath)
+                print("-- urlpath --",urlpath,'query components', query_components)
             except:
                 print("aucun url path")
             try:
@@ -1105,101 +1104,130 @@ class S(BaseHTTPRequestHandler):
                 query_components["neworder"]=[session.neworder]
             except:
                 print("aucune nouvelle commande")
-            print "in post method"
+            print "in post method POST METHOD!!!"
             self.data_string = self.rfile.read(int(self.headers['Content-Length']))
             fields = parse_qs(self.data_string)
+            print("fields",fields)
+            for myparam in fields:
+              query_components[myparam] = fields[myparam]
             myurlpath=urlpath.split("?")[0]
-            try:
-                print('my path')
-                print(myurlpath)
-                print(route_post.get(myurlpath))
-                if route_post.get(myurlpath) is not None:
-                    print("route trouve")
-                    print(fields)
-                    res=route_post.get(myurlpath)(fields)
-                    if isinstance(res,str):
-                        codehtml = res
-                        print("is code HTML")
-                        #print(codehtml)
-                    elif isinstance(res,erreur):
-                        Program=res
-                    elif isinstance(res,jsoncontent):
-                        Program=res
-                    elif isinstance(res,directory):
-                        print("is object")
-                        print(res)
-                        Program=res
-                        try:
-                            if isinstance(Program,setuserpage):
-                                session.current_user=Program.get_session()
-                        except:
-                            print("pas de session")
-                        if Program.get_current_user() is not None and Program.get_current_user() != ():
-                            print("current_user")
-                            print(Program.get_current_user())
-                            session.current_user=Program.get_current_user()
-            except KeyError:
-                print("erreur 6")
+            for path in route_post:
+                #simple=path.split("?")[0]
+                #print("le chemin est %s et la route %s" % (myurlpath,path))
+                #print("la route a été trouvée ?%r" % (re.match(path, myurlpath) is not None))
+                mysimplefunc=route_post[path]
+                kk=re.match(path, myurlpath)
+                if kk is not None:
+                    for x in range(len(kk.groups())):
+                        print(kk.group(0),x,kk.group(x))
+                        query_components["param"+str(x)] = kk.group(x)
+                    routetrouve=path
+                    code=mysimplefunc(query_components)
+                    #code=Program.gethtml()
+                    print("le code récupéré")
+                    break
 
-
-        #self.data_string = params
-            urlpath=self.path
-            print("redirect post:")
-            print(Program.get_redirect())
-            copy()
-            reloadmymodules()
-            #myaccountinfo()
-            #home()
+            if routetrouve:
+                print("La route a été trouvée ? %r, c'est %s" % (routetrouve is not None, routetrouve))
+            else:
+                print("La route n'a pas été trouvée ?  %r" % (routetrouve is None,))
             try:
-                mytype=Program.get_mimetype() or self.path.split(".")[-1]
-                print(urlpath)
-                print("my type")
-                print(mytype)
-                print("Program.get json")
-                print(Program.get_json() is not None)
-                print(Program.get_json())
-                print(route_post.get(myurlpath))
+              if code is None:
+                print("code in none")
+                code=""
             except:
-                print("no mimetype(redirect)")
-            print("redirect")
-            print(Program.get_redirect())
-            print(str(Program.get_redirect()) != 'None')
-            if Program and isinstance(Program,redirectaction):
-                myred=Program.get_redirect()
-                print("vous serez redirigée à %s " % myred)
-
+                code=""
+            
+            if isinstance(code,redirectaction):
                 self.send_response(301)
+                myred=code.get_redirect()
+                print("vous serez redirigée à %s " % myred)
                 self.send_header('Location',myred)
-            elif isinstance(Program,jsoncontent):
+            elif isinstance(code,jsoncontent):
                 print("return json")
-                data=Program.get_json()
-                Program.set_json(None)
+                data=code.get_json()
+                code.set_json(None)
 
                 self._set_headers(switcher.get("json"))
                 self.wfile.write(str(data).replace("'",'"'))
-            elif mytype is not None:
-                if mytype != "html":
-                    if switcher.get(mytype) is not None:
-                        if myroutes.get(urlpath) is not None:
-                            self._set_headers(switcher.get(mytype))
-                            self.wfile.write(codehtml)
-            else:
-                print(mytype)
-                self._set_headers(switcher.get(mytype))
-                self.wfile.write(codehtml)
-            session.neworder=None
-            self.end_headers()
-        except UnboundLocalError:
-            print("erreur post")
-            file="404.html"
-            dir="./erreur"
-            Program.set_path(dir)
-            k= open(Program.get_path()+"/"+file,'r')
+            elif myurlpath.split(".")[-1] in ["css","scss"]:
+                print("le mimetype est %s et la réponse est %s" % ("css",200))
+                self._set_headers(switcher["css"])
 
-            self._set_headers(switcher.get("html"))
-            self.wfile.write(k.read().decode('utf-8'))
+                code=open(os.getcwd()+myurlpath, "rb").read().decode('utf-8')
+                self.wfile.write(code)
+            elif myurlpath.split(".")[-1] in ["png","gif"]:
+                print("le mimetype est %s et la réponse est %s" % ("png",200))
+                self._set_headers(switcher[myurlpath.split(".")[-1]])
+
+                code=open(os.getcwd()+myurlpath, "rb").read()
+                self.wfile.write(code)
+            elif myurlpath.split(".")[-1] in ["js"]:
+                print("le mimetype est %s et la réponse est %s" % ("js",200))
+                self._set_headers(switcher["js"])
+
+                code=open(os.getcwd()+myurlpath, "rb").read()
+                self.wfile.write(code)
+            elif routetrouve:
+                
+                try:
+                    dic=__mots__[routetrouve]
+                    if dic["partiedemesmots"]:
+                        print("partie de mes mots cherches : "+dic["partiedemesmots"])
+                        print("une partie de mes mots a été cherchée?vrai")
+                        try:
+                            if code.index(dic["partiedemesmots"]):
+                                print("la route est html")
+
+                                print("le mimetype est %s et la réponse est %s" % ("html",200))
+                                self._set_headers(switcher["html"])
+
+
+                                self.wfile.write(code)
+                                print("les mots ed la page ont été reconnus?vrai")
+                        except Exception as e:
+                            print("retrouver l'output dans myoutput.html ")
+                            k=open("myoutput.html","w")
+                            k.write(code)
+                            k.close()
+                            print("une partie de mes mots n'a ps été trouvee")
+                            print("la route nest pas html")
+                            print(str(e)+str(traceback.format_exc()))
+                            try:
+                              motscherches=dic["partiedemesmots"]
+                            except:
+                              motscherches="aucun mot n'a ete cherche"
+                            mycode=erreur("erreur::  "+motscherches+": mot non trouves")
+
+
+                            mycode.set_erreur(str(traceback.format_exc()))
+                            mycode.set_title("Erreur "+motscherches+": mot non trouves")
+                            self._set_headers(switcher["html"])
+
+                            self.wfile.write(render_figure("hhh.html",mycode))
+                except Exception as e:
+                        print("les mots ed la page ont été reconnu?faux",code)
+                        print(str(e)+str(traceback.format_exc()))
+                        self._set_headers(switcher["html"])
+                        motscherches="aucun mot n'a ete cherche ni trouve"
+                        mycode=erreur("erreur:: "+motscherches+": mot non trouves")
+
+
+                        mycode.set_erreur("<br>peut etre que la route n'est pas dans le dictionnaire<br>"+str(traceback.format_exc()))
+                        mycode.set_title("Erreur "+motscherches+": mot non trouves")
+
+
+                        self.wfile.write(render_figure("hhh.html",mycode))
+            else:
+                self._mon_erreur("ni une erreur ni css js ou image")
+        except UnboundLocalError as e:
+
+
+          self._set_headers(switcher["html"])
+          self.wfile.write(str(e)+str(traceback.format_exc()))
 
         return
+
 
 
 def run(server_class=HTTPServer, handler_class=S, port=8000,host="localhost"):
